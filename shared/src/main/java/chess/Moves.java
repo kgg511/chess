@@ -41,6 +41,9 @@ public class Moves {
 
     //functions: fd, bd, f, b, L
     //track: how many spaces
+    ArrayList<ChessPosition> getValid_moves(){
+        return this.valid_moves;
+    }
 
     void forward(){
         //if a pawn is in a certain row then it gets two moves
