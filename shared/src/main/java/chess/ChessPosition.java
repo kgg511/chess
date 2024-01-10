@@ -14,6 +14,15 @@ public class ChessPosition {
         this.col = col;
     }
 
+    public boolean equals(ChessPosition o) {
+        if (this == o) return true;
+        if(o.getColumn() == this.getColumn() && o.getRow() == this.getRow()){
+            return true;
+        }
+        return false
+
+    }
+
     /**
      * @return which row this position is in
      * 1 codes for the bottom row

@@ -1,6 +1,8 @@
 package chess;
 
+import javax.swing.*;
 import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * Represents a single chess piece
@@ -52,6 +54,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        //how would you know what the promotion piece is? That is the player's choice????
         //create a list of strings
         int spaces;
         boolean forward = false;
@@ -108,6 +111,21 @@ public class ChessPiece {
         Moves l = new Moves(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
         //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,
         // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
+
+
+        for(ChessPosition end_position: l.getValid_moves()){
+            if(this.type != PieceType.PAWN){
+                //promotionPiece = null;
+                break;
+            }
+
+            //ChessMove(ChessPosition startPosition, ChessPosition endPosition,
+             //       ChessPiece.PieceType promotionPiece)
+        }
+        //arg if we have a pawn and the ending position is an edge then it gets promoted
+        // the ending position
+        Collection<ChessMove> moves = new ArrayList<>();
+        return moves;
     }
     //the board knows about the pieces on it
     //myPosition is
