@@ -1,4 +1,5 @@
 package chess;
+import java.util.ArrayList;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -7,9 +8,12 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-
+    private ArrayList<ChessPiece> pieces;
+    private ArrayList<ChessPosition> positions;
     public ChessBoard() {
-        
+         //uncaptured pieces
+        this.pieces = new ArrayList<ChessPiece>();
+        this.positions = new ArrayList<ChessPosition>();
     }
 
     /**
@@ -19,7 +23,15 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        this.pieces.add(piece);
+        this.positions.add(position);
+    }
+
+    public ArrayList<ChessPiece> getPieces(){
+        return this.pieces;
+    }
+    public ArrayList<ChessPosition> getPositions(){
+        return this.positions;
     }
 
     /**
@@ -30,7 +42,14 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        //get the index of position, use that index to fetch from pieces
+        System.out.println("get piece");
+        int index = this.positions.indexOf(position);
+        if(index == -1){
+            System.out.println("No piece in this position");
+            return null;
+        }
+        return this.pieces.get(index);
     }
 
     /**
@@ -38,6 +57,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        this.pieces = new ArrayList<ChessPiece>();
+        this.positions = new ArrayList<ChessPosition>();
     }
 }
