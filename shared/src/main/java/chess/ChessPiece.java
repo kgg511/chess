@@ -3,6 +3,7 @@ package chess;
 import javax.swing.*;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -11,7 +12,6 @@ import java.util.ArrayList;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
     private ChessGame.TeamColor color;
     private ChessPiece.PieceType type;
 
@@ -44,6 +44,24 @@ public class ChessPiece {
      */
     public PieceType getPieceType() {
         return this.type;
+    }
+
+    @Override
+    public String toString() {
+        return "I am a " + this.getPieceType() + " and I am " + this.getTeamColor();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return color == that.color && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, type);
     }
 
     /**
@@ -111,28 +129,29 @@ public class ChessPiece {
         Moves l = new Moves(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
         //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,
         // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
+        Collection<ChessMove> complete_moves = new ArrayList<>();
+        ChessPiece.PieceType promotionP = null;
+        System.out.println(this.toString());
+        ChessMove move = null;
+        for(ChessPosition end_position: l.getValidMoves()){ //go through the moves and make ChessMove objects
+            System.out.println(end_position.toString());
 
-
-        for(ChessPosition end_position: l.getValid_moves()){
-            if(this.type != PieceType.PAWN){
-                //promotionPiece = null;
-                break;
+            if(this.type == PieceType.PAWN && (end_position.getRow() == 7 || end_position.getRow() == 0)){ //if its a pawn and end position is at end do it 4 times
+                move = new ChessMove(myPosition, end_position, PieceType.ROOK);
+                complete_moves.add(move);
+                move = new ChessMove(myPosition, end_position, PieceType.KNIGHT);
+                complete_moves.add(move);
+                move = new ChessMove(myPosition, end_position, PieceType.BISHOP);
+                complete_moves.add(move);
+                move = new ChessMove(myPosition, end_position, PieceType.QUEEN);
+                complete_moves.add(move);
             }
-
-            //ChessMove(ChessPosition startPosition, ChessPosition endPosition,
-             //       ChessPiece.PieceType promotionPiece)
+            else{
+                move = new ChessMove(myPosition, end_position, null);
+                complete_moves.add(move);
+            }
         }
-        //arg if we have a pawn and the ending position is an edge then it gets promoted
-        // the ending position
-        Collection<ChessMove> moves = new ArrayList<>();
-        return moves;
+        return complete_moves;
     }
-    //the board knows about the pieces on it
-    //myPosition is
+
 }   //row 1-8, col 1-8, 1,1
-//KING,
-//        QUEEN,
-//        BISHOP,
-//        KNIGHT,
-//        ROOK,
-//        PAWN

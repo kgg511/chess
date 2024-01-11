@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 public class Moves {
-
     //TODO: make pieces unable to jump over other pieces
     //TODO: add the horsey
     private int spaces;
@@ -31,6 +30,7 @@ public class Moves {
         this.backwardDiag = backwardDiag;
         this.leftRight = leftRight;
         this.horse = horse;
+
         this.valid_moves = new ArrayList<ChessPosition>();
         this.position = position;
         this.board = board;
@@ -41,7 +41,14 @@ public class Moves {
 
     //functions: fd, bd, f, b, L
     //track: how many spaces
-    ArrayList<ChessPosition> getValid_moves(){
+    ArrayList<ChessPosition> getValidMoves(){
+        //call the appropriate function to fill it
+        if(this.forward){forward();}
+        if(this.backward){backward();}
+        if(this.forwardDiag){forward_diag();}
+        if(this.backwardDiag){backward_diag();}
+        if(this.leftRight){left(); right();}
+        if(horse){horse();}
         return this.valid_moves;
     }
 
@@ -53,14 +60,20 @@ public class Moves {
         }
         //go forward spaces number of spaces
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + temp_spaces; i++){
+            if(out_of_bounds(i)){
+                break;
+            }
             if(in_bounds(i, this.position.getColumn())){//if in bounds
                 ChessPosition p = new ChessPosition(i, this.position.getColumn());
                 if (this.board.getPiece(p) == null || ((this.board.getPiece(p).getTeamColor() != this.color) && (this.type != ChessPiece.PieceType.PAWN))){
                     this.valid_moves.add(p);
                 }
             }
-            //we are going up rows
         }
+    }
+
+    boolean out_of_bounds(int num){ //num represents position, NOT INDEX
+        return num > 8 || num < 1;
     }
     void backward(){ //for king/queen/rook, NOT pawn
         //go forward spaces number of spaces
@@ -103,7 +116,6 @@ public class Moves {
 
     void forward_diag(){ //now both column and rows will change
         //if it is a pawn, there must be something there
-
         //left diag: row increments, col decreases
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
@@ -160,9 +172,13 @@ public class Moves {
         }
     }
 
-    boolean in_bounds(int row, int col){
-        return !(row < 1 || row > 8 || col < 1 || col > 8);
+    void horse(){
+        System.out.println("horsey has not been coded yet");
+        //does horsey moves
     }
 
+    //boolean in_bounds(int row, int col){
+        return !(row < 1 || row > 8 || col < 1 || col > 8);
+    }
 
 }
