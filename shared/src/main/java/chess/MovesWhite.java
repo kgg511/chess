@@ -1,7 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
-public class Moves {
+public class MovesWhite {
     //TODO: make pieces unable to jump over other pieces
     //TODO: add the horsey
     private int spaces;
@@ -22,7 +22,7 @@ public class Moves {
 
     //= new ArrayList<>();
     //it's either 1,2, or 7 spaces, -1 for horse bc wth
-    public Moves(int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse, ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type){
+    public MovesWhite(int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse, ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type){
         this.spaces = spaces;
         this.forward = forward;
         this.backward = backward;
@@ -60,7 +60,7 @@ public class Moves {
         if(this.type == ChessPiece.PieceType.PAWN && (this.position.getRow() == 2 || this.position.getRow() == 7)){ //color no matter bc if at 7 you can't move 2
             temp_spaces = 2;
         }
-        for(int i = this.position.getRow() + 1; i < this.position.getRow() + temp_spaces; i++){
+        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + temp_spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(i, this.position.getColumn());
             if(this.board.getPiece(p) != null){
@@ -98,7 +98,7 @@ public class Moves {
         //go forward spaces number of spaces
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("right moves");
-        for(int i = this.position.getColumn() + 1; i < this.position.getColumn() + this.spaces; i++){
+        for(int i = this.position.getColumn() + 1; i <= this.position.getColumn() + this.spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
             if(this.board.getPiece(p) != null){

@@ -60,10 +60,10 @@ public class ChessPiece {
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
 
-        HashSet<ChessMove> set1 = new HashSet<>(complete_moves);
-        HashSet<ChessMove> set2 = new HashSet<>(that.complete_moves);
+        //HashSet<ChessMove> set1 = new HashSet<>(complete_moves);
+        //HashSet<ChessMove> set2 = new HashSet<>(that.complete_moves);
 
-        return color == that.color && type == that.type && Objects.equals(set1, set2);
+        return color == that.color && type == that.type && Objects.equals(this.complete_moves, complete_moves);
     }
 
 
@@ -132,17 +132,27 @@ public class ChessPiece {
             System.out.println("the heck is this");
             spaces = 1;
         }
-        Moves l = new Moves(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
+
+        ArrayList<ChessPosition> l = null;
+        if(this.color == ChessGame.TeamColor.WHITE){
+            MovesWhite m = new MovesWhite(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
+            l = m.getValidMoves();
+        }
+        else{
+            MovesBlack m = new MovesBlack(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
+            l = m.getValidMoves();
+        }
+
         //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,
         // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
 
         ChessPiece.PieceType promotionP = null;
         System.out.println(this.toString());
         ChessMove move = null;
-        for(ChessPosition end_position: l.getValidMoves()){ //go through the moves and make ChessMove objects
+        for(ChessPosition end_position: l){ //go through the moves and make ChessMove objects
             System.out.println(end_position.toString());
 
-            if(this.type == PieceType.PAWN && (end_position.getRow() == 7 || end_position.getRow() == 0)){ //if its a pawn and end position is at end do it 4 times
+            if(this.type == PieceType.PAWN && (end_position.getRow() == 8 || end_position.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
                 System.out.println("SPECIAL CASE PAWN");
                 move = new ChessMove(myPosition, end_position, PieceType.ROOK);
                 this.complete_moves.add(move);
