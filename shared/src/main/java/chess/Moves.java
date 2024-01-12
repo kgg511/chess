@@ -55,6 +55,7 @@ public class Moves {
     void forward(){
         System.out.println("forward moves");
         //if a pawn is in a certain row then it gets two moves
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         int temp_spaces = this.spaces;
         if(this.type == ChessPiece.PieceType.PAWN && this.position.getRow() == 2){ //only white side
             temp_spaces = 2;
@@ -62,12 +63,13 @@ public class Moves {
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + temp_spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(i, this.position.getColumn());
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || ((this.board.getPiece(p).getTeamColor() != this.color) && (this.type != ChessPiece.PieceType.PAWN))){
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
+            if(done){break;}
         }
     }
 
@@ -76,86 +78,92 @@ public class Moves {
     }
     void backward(){ //for king/queen/rook, NOT pawn
         //go forward spaces number of spaces
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("backward moves");
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(i, this.position.getColumn());
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
             //we are going up rows
+            if(done){break;}
         }
     }
 
     void right(){ //for king/queen/rook
         //go forward spaces number of spaces
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("right moves");
         for(int i = this.position.getColumn() + 1; i < this.position.getColumn() + this.spaces; i++){
             if(out_of_bounds(i)){break;}
-            ChessPosition p = new ChessPosition(this.position.getRow(), i);;
+            ChessPosition p = new ChessPosition(this.position.getRow(), i);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
             //we are going up rows
+            if(done){break;}
         }
     }
 
     void left(){ //for king/queen/rook
         //go forward spaces number of spaces
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("left moves");
-        for(int i = this.position.getColumn() - 1; i < this.position.getColumn() - this.spaces; i--){
+        for(int i = this.position.getColumn() - 1; i >= this.position.getColumn() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
+            if(done){break;}
         }
     }
 
     void forward_diag(){ //now both column and rows will change
         //if it is a pawn, there must be something there
         //left diag: row increments, col decreases
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("time to go forward diag");
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
                 if((this.board.getPiece(p).getTeamColor() != this.color)){
                     this.valid_moves.add(p);
-                    if(this.board.getPiece(p) != null){
-                        break;
-                    }
                 }
             }
             else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
+            if(done){break;}
             j -= 1; //col decrease also
         }
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
+        done = false;
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
                 if((this.board.getPiece(p).getTeamColor() != this.color)){
                     this.valid_moves.add(p);
-                    if(this.board.getPiece(p) != null){
-                        break;
-                    }
                 }
 
             }
@@ -166,36 +174,42 @@ public class Moves {
                 }
             }
             j += 1; //col increment also
+            if(done){break;}
         }
     }
     void backward_diag(){ //now both column and rows will change
         System.out.println("time to go backward diag" + this.position.getColumn()  + "" + this.position.getRow() );
         //left back diag: row decrements, col decreases
-
+        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
             System.out.println("backward diag" + i + " " + j);
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
                 this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
             }
             j -= 1; //col decrease also
         }
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
+        done = false;
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
+            if(this.board.getPiece(p) != null){
+                done = true;
+            }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
                 this.valid_moves.add(p);
                 if(this.board.getPiece(p) != null){
                     break;
                 }
             }
+            if(done){break;}
             j += 1; //col increment also
         }
     }
