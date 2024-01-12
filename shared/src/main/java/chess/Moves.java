@@ -53,6 +53,7 @@ public class Moves {
     }
 
     void forward(){
+        System.out.println("forward moves");
         //if a pawn is in a certain row then it gets two moves
         int temp_spaces = this.spaces;
         if(this.type == ChessPiece.PieceType.PAWN && this.position.getRow() == 2){ //only white side
@@ -75,6 +76,7 @@ public class Moves {
     }
     void backward(){ //for king/queen/rook, NOT pawn
         //go forward spaces number of spaces
+        System.out.println("backward moves");
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(i, this.position.getColumn());
@@ -90,6 +92,7 @@ public class Moves {
 
     void right(){ //for king/queen/rook
         //go forward spaces number of spaces
+        System.out.println("right moves");
         for(int i = this.position.getColumn() + 1; i < this.position.getColumn() + this.spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);;
@@ -105,6 +108,7 @@ public class Moves {
 
     void left(){ //for king/queen/rook
         //go forward spaces number of spaces
+        System.out.println("left moves");
         for(int i = this.position.getColumn() - 1; i < this.position.getColumn() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
@@ -197,8 +201,7 @@ public class Moves {
     }
 
     void horse(){
-        System.out.println("horsey has not been coded yet");  //8 moves
-        //does horsey moves
+        System.out.println("horse moves");
         int r = this.position.getRow();
         int c = this.position.getColumn();
         //move 2, move 1

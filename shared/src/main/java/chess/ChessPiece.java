@@ -112,16 +112,12 @@ public class ChessPiece {
             spaces = 1; //one or two ehhhhh
             forward = true;
             forwardDiag = true;
-            backwardDiag = true;
         }
         else if(this.type == PieceType.ROOK){ //the forward/back
-            spaces = 1;
+            spaces = 7;
             forward = true;
             backward = true;
-            forwardDiag = true;
-            backwardDiag = true;
             leftRight = true;
-            horse = false;
         }
         else if(this.type == PieceType.KNIGHT){ //horsey
             spaces = 1; //NA
