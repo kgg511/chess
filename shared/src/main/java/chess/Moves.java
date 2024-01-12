@@ -57,7 +57,7 @@ public class Moves {
         //if a pawn is in a certain row then it gets two moves
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         int temp_spaces = this.spaces;
-        if(this.type == ChessPiece.PieceType.PAWN && this.position.getRow() == 2){ //only white side
+        if(this.type == ChessPiece.PieceType.PAWN && (this.position.getRow() == 2 || this.position.getRow() == 7)){ //color no matter bc if at 7 you can't move 2
             temp_spaces = 2;
         }
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + temp_spaces; i++){
@@ -142,7 +142,7 @@ public class Moves {
                 done = true;
             }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
-                if((this.board.getPiece(p).getTeamColor() != this.color)){
+                if((this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() != this.color)){ //must be OTHER color not just null
                     this.valid_moves.add(p);
                 }
             }
