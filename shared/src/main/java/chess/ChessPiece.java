@@ -84,7 +84,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //how would you know what the promotion piece is? That is the player's choice????
         //create a list of strings
-        int spaces;
+        int spaces = 0;
         boolean forward = false;
         boolean backward = false;
         boolean forwardDiag = false;
@@ -120,7 +120,6 @@ public class ChessPiece {
             leftRight = true;
         }
         else if(this.type == PieceType.KNIGHT){ //horsey
-            spaces = 1; //NA
             horse = true;
         }
         else if(this.type == PieceType.BISHOP){ //diag guy

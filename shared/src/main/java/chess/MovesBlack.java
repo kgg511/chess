@@ -223,44 +223,52 @@ public class MovesBlack {
         int r = this.position.getRow();
         int c = this.position.getColumn();
         //move 2, move 1
-
-        if(in_bounds(r,c)){ //up right
-            ChessPosition p = new ChessPosition(r+2, c+1);
+        //it only fails if there is a piece there and it is white
+        ChessPosition p = new ChessPosition(r+2, c+1);
+        if(!out_bounds(r+2, c+1, p)){ //up right
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //up left
-            ChessPosition p = new ChessPosition(r+2, c-1);
+        p = new ChessPosition(r+2, c-1);
+        if(!out_bounds(r+2, c-1, p)){ //up left
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //down
-            ChessPosition p = new ChessPosition(r-2, c+1);
+        p = new ChessPosition(r-2, c+1);
+        if(!out_bounds(r-2, c+1, p)){ //down
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //down
-            ChessPosition p = new ChessPosition(r-2, c-1);
+        p = new ChessPosition(r-2, c-1);
+        if(!out_bounds(r-2, c-1, p)){ //down
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //right
-            ChessPosition p = new ChessPosition(r+1, c+2);
+        p = new ChessPosition(r+1, c+2);
+        if(!out_bounds(r+1, c+2, p)){ //right
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //right
-            ChessPosition p = new ChessPosition(r-1, c+2);
+        p = new ChessPosition(r-1, c+2);
+        if(!out_bounds(r-1, c+2, p)){ //right
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //down
-            ChessPosition p = new ChessPosition(r-1, c-2);
+        p = new ChessPosition(r-1, c-2);
+        if(!out_bounds(r-1, c-2, p)){ //down
             this.valid_moves.add(p);
         }
-        if(in_bounds(r,c)){ //down
-            ChessPosition p = new ChessPosition(r+1, c-2);
+        p = new ChessPosition(r+1, c-2);
+        if(!out_bounds(r+1, c-2, p)){ //down
             this.valid_moves.add(p);
         }
     }
 
-    boolean in_bounds(int r, int c){ //this is 1 to 8
-        return r < 1 || c < 1 || r > 8 || c > 8;
+    boolean out_bounds(int r, int c, ChessPosition p){ //this is 1 to 8
+        if(r < 1 || c < 1 || r > 8 || c > 8){
+            System.out.println("rejected1" + p.toString());
+            return true;
+        }
+        if(this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() == this.color){
+            System.out.println(this.board.getPiece(p).getTeamColor() + "rejected2" + p.toString());
+            return true;
+        }
 
+        return false;
     }
 
 
