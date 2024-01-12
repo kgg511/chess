@@ -135,7 +135,7 @@ public class MovesBlack {
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("time to go back diag");
         int j = this.position.getColumn() - 1;
-        for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
+        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.board.getPiece(p) != null){
@@ -150,7 +150,7 @@ public class MovesBlack {
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
         done = false;
-        for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
+        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.board.getPiece(p) != null){
@@ -181,8 +181,6 @@ public class MovesBlack {
             }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
                 if((this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() != this.color)){ //must be OTHER color not just null
-                    System.out.println("" + this.board.getPiece(p).getTeamColor() + " " + this.color);
-                    System.out.println("KILL");
                     this.valid_moves.add(p);
                 }
             }
@@ -202,8 +200,6 @@ public class MovesBlack {
             }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
                 if((this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() != this.color)){ //must be OTHER color not just null
-                    System.out.println("" + this.board.getPiece(p).getTeamColor() + " " + this.color);
-                    System.out.println("KILL");
                     this.valid_moves.add(p);
                 }
             }

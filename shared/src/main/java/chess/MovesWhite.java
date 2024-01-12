@@ -135,7 +135,7 @@ public class MovesWhite {
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         System.out.println("time to go forward diag");
         int j = this.position.getColumn() - 1;
-        for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
+        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.board.getPiece(p) != null){
@@ -155,14 +155,15 @@ public class MovesWhite {
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
         done = false;
-        for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
+        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.board.getPiece(p) != null){
                 done = true;
             }
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
-                if((this.board.getPiece(p).getTeamColor() != this.color)){
+                //if there is something diagonal which is NOT OUR color
+                if(this.board.getPiece(p) != null && (this.board.getPiece(p).getTeamColor() != this.color)){
                     this.valid_moves.add(p);
                 }
 
