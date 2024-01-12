@@ -20,7 +20,7 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
-        this.complete_moves = new ArrayList<>();
+        this.complete_moves = new HashSet<>();
     }
 
     /**

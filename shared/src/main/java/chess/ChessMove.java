@@ -23,7 +23,7 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "start:" + this.startPos.toString() + " end:" + this.endPos.toString() + " promo:" + this.promotionPiece.toString();
+        return "start:" + this.startPos.toString() + " end:" + this.endPos.toString();
     }
 
     /**
