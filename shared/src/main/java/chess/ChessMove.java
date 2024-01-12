@@ -21,6 +21,11 @@ public class ChessMove {
         //do I have to force it to be null
     }
 
+    @Override
+    public String toString() {
+        return "start:" + this.startPos.toString() + " end:" + this.endPos.toString();
+    }
+
     /**
      * @return ChessPosition of starting location
      */

@@ -58,15 +58,13 @@ public class Moves {
         if(this.type == ChessPiece.PieceType.PAWN && this.position.getRow() == 2){ //only white side
             temp_spaces = 2;
         }
-        //go forward spaces number of spaces
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + temp_spaces; i++){
-            if(out_of_bounds(i)){
-                break;
-            }
-            if(in_bounds(i, this.position.getColumn())){//if in bounds
-                ChessPosition p = new ChessPosition(i, this.position.getColumn());
-                if (this.board.getPiece(p) == null || ((this.board.getPiece(p).getTeamColor() != this.color) && (this.type != ChessPiece.PieceType.PAWN))){
-                    this.valid_moves.add(p);
+            if(out_of_bounds(i)){break;}
+            ChessPosition p = new ChessPosition(i, this.position.getColumn());
+            if (this.board.getPiece(p) == null || ((this.board.getPiece(p).getTeamColor() != this.color) && (this.type != ChessPiece.PieceType.PAWN))){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
         }
@@ -77,11 +75,13 @@ public class Moves {
     }
     void backward(){ //for king/queen/rook, NOT pawn
         //go forward spaces number of spaces
-        for(int i = this.position.getRow() - 1; i < this.position.getRow() - this.spaces; i--){
-            if(in_bounds(i, this.position.getColumn())){//if in bounds
-                ChessPosition p = new ChessPosition(i, this.position.getColumn());
-                if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                    this.valid_moves.add(p);
+        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
+            if(out_of_bounds(i)){break;}
+            ChessPosition p = new ChessPosition(i, this.position.getColumn());
+            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
             //we are going up rows
@@ -91,10 +91,12 @@ public class Moves {
     void right(){ //for king/queen/rook
         //go forward spaces number of spaces
         for(int i = this.position.getColumn() + 1; i < this.position.getColumn() + this.spaces; i++){
-            if(in_bounds(this.position.getRow(), i)){//if in bounds
-                ChessPosition p = new ChessPosition(this.position.getRow(), i);;
-                if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                    this.valid_moves.add(p);
+            if(out_of_bounds(i)){break;}
+            ChessPosition p = new ChessPosition(this.position.getRow(), i);;
+            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
             //we are going up rows
@@ -104,30 +106,37 @@ public class Moves {
     void left(){ //for king/queen/rook
         //go forward spaces number of spaces
         for(int i = this.position.getColumn() - 1; i < this.position.getColumn() - this.spaces; i--){
-            if(in_bounds(this.position.getRow(), i)){//if in bounds
-                ChessPosition p = new ChessPosition(this.position.getRow(), i);
-                if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                    this.valid_moves.add(p);
+            if(out_of_bounds(i)){break;}
+            ChessPosition p = new ChessPosition(this.position.getRow(), i);
+            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
-            //we are going up rows
         }
     }
 
     void forward_diag(){ //now both column and rows will change
         //if it is a pawn, there must be something there
         //left diag: row increments, col decreases
+        System.out.println("time to go forward diag");
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
-            if(in_bounds(i, j)){//if in bounds
-                ChessPosition p = new ChessPosition(i, j);
-                if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
-                    if((this.board.getPiece(p).getTeamColor() != this.color)){
-                        this.valid_moves.add(p);
+            if(out_of_bounds(i) || out_of_bounds(j)){break;}
+            ChessPosition p = new ChessPosition(i, j);
+            if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
+                if((this.board.getPiece(p).getTeamColor() != this.color)){
+                    this.valid_moves.add(p);
+                    if(this.board.getPiece(p) != null){
+                        break;
                     }
                 }
-                else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
-                    this.valid_moves.add(p);
+            }
+            else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
             j -= 1; //col decrease also
@@ -135,37 +144,52 @@ public class Moves {
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
         for(int i = this.position.getRow() + 1; i < this.position.getRow() + this.spaces; i++){
+            if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
                 if((this.board.getPiece(p).getTeamColor() != this.color)){
                     this.valid_moves.add(p);
+                    if(this.board.getPiece(p) != null){
+                        break;
+                    }
                 }
+
             }
             else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
                 this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
+                }
             }
             j += 1; //col increment also
         }
     }
     void backward_diag(){ //now both column and rows will change
+        System.out.println("time to go backward diag" + this.position.getColumn()  + "" + this.position.getRow() );
         //left back diag: row decrements, col decreases
+
         int j = this.position.getColumn() - 1;
-        for(int i = this.position.getRow() - 1; i < this.position.getRow() - this.spaces; i--){
-            if(in_bounds(i, j)){//if in bounds
-                ChessPosition p = new ChessPosition(i, j);
-                if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                    this.valid_moves.add(p);
+        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
+            System.out.println("backward diag" + i + " " + j);
+            if(out_of_bounds(i) || out_of_bounds(j)){break;}
+            ChessPosition p = new ChessPosition(i, j);
+            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
             j -= 1; //col decrease also
         }
         //right diag: row increment, col increment
         j = this.position.getColumn() + 1;
-        for(int i = this.position.getRow() - 1; i < this.position.getRow() - this.spaces; i--){
-            if(in_bounds(i, j)){//if in bounds
-                ChessPosition p = new ChessPosition(i, j);
-                if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                    this.valid_moves.add(p);
+        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
+            if(out_of_bounds(i) || out_of_bounds(j)){break;}
+            ChessPosition p = new ChessPosition(i, j);
+            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                this.valid_moves.add(p);
+                if(this.board.getPiece(p) != null){
+                    break;
                 }
             }
             j += 1; //col increment also
@@ -173,12 +197,55 @@ public class Moves {
     }
 
     void horse(){
-        System.out.println("horsey has not been coded yet");
+        System.out.println("horsey has not been coded yet");  //8 moves
         //does horsey moves
+        int r = this.position.getRow();
+        int c = this.position.getColumn();
+        //move 2, move 1
+
+        if(in_bounds(r,c)){ //up right
+            ChessPosition p = new ChessPosition(r+2, c+1);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //up left
+            ChessPosition p = new ChessPosition(r+2, c-1);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //down
+            ChessPosition p = new ChessPosition(r-2, c+1);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //down
+            ChessPosition p = new ChessPosition(r-2, c-1);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //right
+            ChessPosition p = new ChessPosition(r+1, c+2);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //right
+            ChessPosition p = new ChessPosition(r-1, c+2);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //down
+            ChessPosition p = new ChessPosition(r-1, c-2);
+            this.valid_moves.add(p);
+        }
+        if(in_bounds(r,c)){ //down
+            ChessPosition p = new ChessPosition(r+1, c-2);
+            this.valid_moves.add(p);
+        }
     }
 
-    //boolean in_bounds(int row, int col){
-        return !(row < 1 || row > 8 || col < 1 || col > 8);
+    boolean in_bounds(int r, int c){ //this is 1 to 8
+        return r < 1 || c < 1 || r > 8 || c > 8;
+
     }
+
+
+
+    //no one but horse can jump
+    //aka, if you encounter an opponent, you can add it, but you have to stop right after
+
 
 }

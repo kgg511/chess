@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -14,10 +15,12 @@ import java.util.Objects;
 public class ChessPiece {
     private ChessGame.TeamColor color;
     private ChessPiece.PieceType type;
+    private Collection<ChessMove> complete_moves;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
+        this.complete_moves = new ArrayList<>();
     }
 
     /**
@@ -56,12 +59,19 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
-        return color == that.color && type == that.type;
+
+        HashSet<ChessMove> set1 = new HashSet<>(complete_moves);
+        HashSet<ChessMove> set2 = new HashSet<>(that.complete_moves);
+
+        return color == that.color && type == that.type && Objects.equals(set1, set2);
     }
+
+
+
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, type);
+        return Objects.hash(color, type, complete_moves);
     }
 
     /**
@@ -129,7 +139,7 @@ public class ChessPiece {
         Moves l = new Moves(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
         //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,
         // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
-        Collection<ChessMove> complete_moves = new ArrayList<>();
+
         ChessPiece.PieceType promotionP = null;
         System.out.println(this.toString());
         ChessMove move = null;
@@ -137,21 +147,25 @@ public class ChessPiece {
             System.out.println(end_position.toString());
 
             if(this.type == PieceType.PAWN && (end_position.getRow() == 7 || end_position.getRow() == 0)){ //if its a pawn and end position is at end do it 4 times
+                System.out.println("SPECIAL CASE PAWN");
                 move = new ChessMove(myPosition, end_position, PieceType.ROOK);
-                complete_moves.add(move);
+                this.complete_moves.add(move);
                 move = new ChessMove(myPosition, end_position, PieceType.KNIGHT);
-                complete_moves.add(move);
+                this.complete_moves.add(move);
                 move = new ChessMove(myPosition, end_position, PieceType.BISHOP);
-                complete_moves.add(move);
+                this.complete_moves.add(move);
                 move = new ChessMove(myPosition, end_position, PieceType.QUEEN);
-                complete_moves.add(move);
+                this.complete_moves.add(move);
             }
             else{
                 move = new ChessMove(myPosition, end_position, null);
-                complete_moves.add(move);
+                this.complete_moves.add(move);
             }
         }
-        return complete_moves;
+        return this.complete_moves;
     }
+
+
+
 
 }   //row 1-8, col 1-8, 1,1
