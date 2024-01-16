@@ -2,8 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 public class MovesWhite {
-    //TODO: make pieces unable to jump over other pieces
-    //TODO: add the horsey
     private int spaces;
     private boolean forward;
     private boolean backward;
