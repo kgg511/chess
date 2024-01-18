@@ -16,6 +16,10 @@ public class ChessBoard {
          //uncaptured pieces
         this.grid = new ChessPiece[8][8];
     }
+
+    public ChessPiece[][] getGrid(){
+        return this.grid;
+    }
     public void showBoard() {
         //ArrayList<ChessPiece> pieces
         System.out.println("It's time to print out the board! :)");
@@ -56,7 +60,6 @@ public class ChessBoard {
         if(this.grid[position.getRow()-1][position.getColumn()-1] != null){
             return this.grid[position.getRow()-1][position.getColumn()-1];
         }
-        System.out.println("PIECE NOT HERE");
         return null;
     }
     /**
