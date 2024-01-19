@@ -56,7 +56,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        System.out.println("Is there a piece at position:" + position.toString());
+        //System.out.println("calling get piece on" + position.toString());
         if(this.grid[position.getRow()-1][position.getColumn()-1] != null){
             return this.grid[position.getRow()-1][position.getColumn()-1];
         }

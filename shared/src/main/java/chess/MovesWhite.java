@@ -51,7 +51,7 @@ public class MovesWhite {
     }
 
     void forward(){
-        System.out.println("forward moves");
+        //System.out.println("forward moves");
         //if a pawn is in a certain row then it gets two moves
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         int temp_spaces = this.spaces;
@@ -77,7 +77,7 @@ public class MovesWhite {
     void backward(){ //for king/queen/rook, NOT pawn
         //go forward spaces number of spaces
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        System.out.println("backward moves");
+        //System.out.println("backward moves");
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(i, this.position.getColumn());
@@ -95,7 +95,7 @@ public class MovesWhite {
     void right(){ //for king/queen/rook
         //go forward spaces number of spaces
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        System.out.println("right moves");
+        //System.out.println("right moves");
         for(int i = this.position.getColumn() + 1; i <= this.position.getColumn() + this.spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
@@ -113,7 +113,7 @@ public class MovesWhite {
     void left(){ //for king/queen/rook
         //go forward spaces number of spaces
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        System.out.println("left moves");
+        //System.out.println("left moves");
         for(int i = this.position.getColumn() - 1; i >= this.position.getColumn() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
@@ -131,7 +131,7 @@ public class MovesWhite {
         //if it is a pawn, there must be something there
         //left diag: row increments, col decreases
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        System.out.println("time to go forward diag");
+        //System.out.println("time to go forward diag");
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
@@ -177,12 +177,12 @@ public class MovesWhite {
         }
     }
     void backward_diag(){ //now both column and rows will change
-        System.out.println("time to go backward diag" + this.position.getColumn()  + "" + this.position.getRow() );
+        //System.out.println("time to go backward diag" + this.position.getColumn()  + "" + this.position.getRow() );
         //left back diag: row decrements, col decreases
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         int j = this.position.getColumn() - 1;
         for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
-            System.out.println("backward diag" + i + " " + j);
+            //System.out.println("backward diag" + i + " " + j);
             if(out_of_bounds(i) || out_of_bounds(j)){break;}
             ChessPosition p = new ChessPosition(i, j);
             if(this.board.getPiece(p) != null){
@@ -214,7 +214,7 @@ public class MovesWhite {
     }
 
     void horse(){
-        System.out.println("horse moves");
+        //System.out.println("horse moves");
         int r = this.position.getRow();
         int c = this.position.getColumn();
         //move 2, move 1
