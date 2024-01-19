@@ -246,6 +246,7 @@ public class ChessGame {
         if(isInCheck(teamColor)){ //check != stalemate
             return false;
         }
+        System.out.println("not in check");
         ChessPiece piece;
         ChessPiece killed;
         Collection<ChessMove> m;
@@ -259,14 +260,16 @@ public class ChessGame {
                         killed = doMove(this.board, move, piece);
                         if(!isInCheck(teamColor)){
                             undoMove(this.board, move, piece, killed);
-                            return true;
+                            return false;
+                            //if I find even one move that takes me out of stalemate, return false
                         }
+
                         undoMove(this.board, move, piece, killed);
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
     /**

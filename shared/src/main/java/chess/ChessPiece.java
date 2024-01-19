@@ -146,10 +146,10 @@ public class ChessPiece {
         // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
 
         ChessPiece.PieceType promotionP = null;
-        System.out.println(this.toString());
+        //System.out.println(this.toString());
         ChessMove move = null;
         for(ChessPosition end_position: l){ //go through the moves and make ChessMove objects
-            System.out.println(end_position.toString());
+            //System.out.println(end_position.toString());
 
             if(this.type == PieceType.PAWN && (end_position.getRow() == 8 || end_position.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
                 System.out.println("SPECIAL CASE PAWN");
