@@ -94,15 +94,19 @@ public class MovesBlack {
 
     void left(){ //for king/queen/rook
         //go forward spaces number of spaces
+        System.out.println("LEFT");
         boolean done = false; //use to break out of loop if we encounter another piece regardless of color
         //System.out.println("leftt moves");
         for(int i = this.position.getColumn() + 1; i <= this.position.getColumn() + this.spaces; i++){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
+            System.out.println("I moved left onto position " + p.toString());
             if(this.board.getPiece(p) != null){
+                System.out.println("woops, collided with another piece");
                 done = true;
             }
             if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
+                System.out.println("To valid moves I add" + this.position.toString()  + p.toString());
                 this.valid_moves.add(p);
             }
             //we are going up rows
@@ -117,6 +121,7 @@ public class MovesBlack {
         for(int i = this.position.getColumn() - 1; i >= this.position.getColumn() - this.spaces; i--){
             if(out_of_bounds(i)){break;}
             ChessPosition p = new ChessPosition(this.position.getRow(), i);
+            System.out.println("I moved right onto position " + p.toString());
             if(this.board.getPiece(p) != null){
                 done = true;
             }

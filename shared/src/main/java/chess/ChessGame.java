@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -62,20 +59,25 @@ public class ChessGame {
         ChessPiece piece_here = this.board.getPiece(startPosition);
         //if checkmate or stalemate, we are done
         Collection<ChessMove> all_moves = piece_here.pieceMoves(this.board, startPosition);
-        Collection<ChessMove> remaining_moves = new ArrayList<ChessMove>();
+        Collection<ChessMove> remaining_moves = new HashSet<ChessMove>();
         if(isInCheckmate(piece_here.getTeamColor()) || isInStalemate(piece_here.getTeamColor())){
             return Collections.emptyList();
         }
         //go to a move where we are not in check
         for(ChessMove m: all_moves){
+            System.out.println("How about " + m.getStartPosition() + "->" + m.getEndPosition());
             killed = doMove(this.board, m, piece_here);
             if(!isInCheck(piece_here.getTeamColor())){
+                System.out.println("Welp I won't be in check if i move here");
                 remaining_moves.add(m);
             }
             undoMove(this.board, m, piece_here, killed);
         }
         //remove all moves which put us into check
-        return all_moves;
+        return remaining_moves;
+
+        //allmoves is based on the original board
+        //how does moving a piece on it affect it
     }
 
     public ChessPiece doMove(ChessBoard board, ChessMove m, ChessPiece p){
@@ -162,6 +164,7 @@ public class ChessGame {
                 p = new ChessPosition(i,k); //one indexing!
                 piece = this.board.getPiece(p);
                 if(piece != null && piece.getTeamColor() != teamColor){
+                    System.out.println("The position at position " + p + "can go here");
                     possible_moves = piece.pieceMoves(this.board, p); //opponents possible moves;
                     for(ChessMove move: possible_moves){ //are any of these the kings position???
                         found_piece = this.board.getPiece(move.getEndPosition());
