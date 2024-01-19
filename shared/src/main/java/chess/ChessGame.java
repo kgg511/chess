@@ -54,6 +54,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        ChessPiece killed;
         System.out.println("validMoves");
         if(this.board.getPiece(startPosition) == null){
             return null;
@@ -67,21 +68,22 @@ public class ChessGame {
         }
         //go to a move where we are not in check
         for(ChessMove m: all_moves){
-            doMove(this.board, m, piece_here);
+            killed = doMove(this.board, m, piece_here);
             if(!isInCheck(piece_here.getTeamColor())){
                 remaining_moves.add(m);
             }
-            undoMove(this.board, m, piece_here);
+            undoMove(this.board, m, piece_here, killed);
         }
         //remove all moves which put us into check
         return all_moves;
     }
 
-    public void doMove(ChessBoard board, ChessMove m, ChessPiece p){
+    public ChessPiece doMove(ChessBoard board, ChessMove m, ChessPiece p){
         System.out.println("Domove");
         //make a move, undo the move
         //move: startpos, endpos, promotionp
         ChessPiece promo;
+        ChessPiece killed = null; //save piece at destination
         //make move
         if(m.getPromotionPiece() != null){
             promo = new ChessPiece(p.getTeamColor(), m.getPromotionPiece());
@@ -89,17 +91,21 @@ public class ChessGame {
             board.addPiece(m.getEndPosition(), promo); //move piece
         }
         else{
+            if(board.getPiece(m.getEndPosition()) != null){
+                killed = board.getPiece(m.getEndPosition());
+            }
             board.addPiece(m.getEndPosition(), p); //move piece
         }
         board.addPiece(m.getStartPosition(), null); //remove piece from start
         System.out.println("exit Domove");
+        return killed;
     }
 
-    public void undoMove(ChessBoard board, ChessMove m, ChessPiece p){
+    public void undoMove(ChessBoard board, ChessMove m, ChessPiece p, ChessPiece killed){
         System.out.println("undo move");
         //undo move
         board.addPiece(m.getStartPosition(), p);
-        board.addPiece(m.getEndPosition(), null);
+        board.addPiece(m.getEndPosition(), killed); //killed may be null but who cares
     }
 
 
@@ -188,6 +194,7 @@ public class ChessGame {
         //continue
         //chesspiece has Collection<ChessMove> complete_moves
         ChessPiece piece;
+        ChessPiece killed;
         Collection<ChessMove> m;
         for(int i = 1; i <= 8; i++){
             for(int k = 1; k <= 8; k++){
@@ -196,12 +203,12 @@ public class ChessGame {
                 if(piece != null && piece.getTeamColor() == teamColor){ //if there is a piece on OUR SIDE
                     m = piece.pieceMoves(board, p);
                     for(ChessMove move: m){
-                        doMove(this.board, move, piece);
+                        killed = doMove(this.board, move, piece);
                         if(!isInCheck(teamColor)){
-                            undoMove(this.board, move, piece);
+                            undoMove(this.board, move, piece, killed);
                             return false; //I made a move and am no longer in check
                         }
-                        undoMove(this.board, move, piece);
+                        undoMove(this.board, move, piece, killed);
                     }
                 }
             }
@@ -240,6 +247,7 @@ public class ChessGame {
             return false;
         }
         ChessPiece piece;
+        ChessPiece killed;
         Collection<ChessMove> m;
         for(int i = 1; i <= 8; i++){
             for(int k = 1; k <= 8; k++){
@@ -248,12 +256,12 @@ public class ChessGame {
                 if(piece != null && piece.getTeamColor() == teamColor){ //if there is a piece on OUR SIDE
                     m = piece.pieceMoves(board, p);
                     for(ChessMove move: m){
-                        doMove(this.board, move, piece);
+                        killed = doMove(this.board, move, piece);
                         if(!isInCheck(teamColor)){
-                            undoMove(this.board, move, piece);
+                            undoMove(this.board, move, piece, killed);
                             return true;
                         }
-                        undoMove(this.board, move, piece);
+                        undoMove(this.board, move, piece, killed);
                     }
                 }
             }
