@@ -44,7 +44,13 @@ public class ChessBoard {
             System.out.println("out of bounds");
             return;
         }
-        System.out.println("ADDING" + piece.toString() + "at position " + position.toString());
+        if(piece == null){
+            System.out.println("CLEARING position" + position.toString());
+        }
+        else{
+            System.out.println("ADDING" + piece.toString() + "at position " + position.toString());
+        }
+
         this.grid[position.getRow()-1][position.getColumn()-1] = piece;
     }
 

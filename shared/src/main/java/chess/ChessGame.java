@@ -85,12 +85,14 @@ public class ChessGame {
         //make move
         if(m.getPromotionPiece() != null){
             promo = new ChessPiece(p.getTeamColor(), m.getPromotionPiece());
+            System.out.println("PROMO");
             board.addPiece(m.getEndPosition(), promo); //move piece
         }
         else{
             board.addPiece(m.getEndPosition(), p); //move piece
         }
         board.addPiece(m.getStartPosition(), null); //remove piece from start
+        System.out.println("exit Domove");
     }
 
     public void undoMove(ChessBoard board, ChessMove m, ChessPiece p){
