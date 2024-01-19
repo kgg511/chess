@@ -79,7 +79,7 @@ public class ChessGame {
     }
 
     public ChessPiece doMove(ChessBoard board, ChessMove m, ChessPiece p){
-        System.out.println("Domove");
+        System.out.println("Domove" + m.getStartPosition() + " to " + m.getEndPosition());
         //make a move, undo the move
         //move: startpos, endpos, promotionp
         ChessPiece promo;
@@ -124,6 +124,7 @@ public class ChessGame {
         }
 
         Collection<ChessMove> moves = validMoves(move.getStartPosition());
+        System.out.println("finished validMoves");
         ChessPiece p = null;
         ChessGame.TeamColor color = null;
         if(moves.contains(move)){ //if not invalid move, make the move
@@ -134,8 +135,8 @@ public class ChessGame {
             }
             else{
                 this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition())); //move the piece
-                this.board.addPiece(move.getStartPosition(), null); //remove the piece from original location
             }
+            this.board.addPiece(move.getStartPosition(), null); //remove the piece from original location
         }
         else{
             throw new InvalidMoveException();
