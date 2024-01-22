@@ -84,62 +84,16 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //how would you know what the promotion piece is? That is the player's choice????
         //create a list of strings
-        int spaces = 0;
-        boolean forward = false;
-        boolean backward = false;
-        boolean forwardDiag = false;
-        boolean backwardDiag = false;
-        boolean leftRight = false;
-        boolean horse = false;
-        //bishop, knight, rook, pawn
-        if(this.type == PieceType.KING){
-            spaces = 1;
-            forward = true;
-            backward = true;
-            forwardDiag = true;
-            backwardDiag = true;
-            leftRight = true;
-        }
-        else if(this.type == PieceType.QUEEN){
-            spaces = 7;
-            forward = true;
-            backward = true;
-            forwardDiag = true;
-            backwardDiag = true;
-            leftRight = true;
-        }
-        else if(this.type == PieceType.PAWN){ //if a pawn is in a certain row then it gets two moves
-            spaces = 1; //one or two ehhhhh
-            forward = true;
-            forwardDiag = true;
-        }
-        else if(this.type == PieceType.ROOK){ //the forward/back
-            spaces = 7;
-            forward = true;
-            backward = true;
-            leftRight = true;
-        }
-        else if(this.type == PieceType.KNIGHT){ //horsey
-            horse = true;
-        }
-        else if(this.type == PieceType.BISHOP){ //diag guy
-            spaces = 7;
-            forwardDiag = true;
-            backwardDiag = true;
-        }
-        else{//just so it doesn't get mad
-            System.out.println("the heck is this");
-            spaces = 1;
-        }
-
-        ArrayList<ChessPosition> l = null;
+        HashSet<ChessPosition> l = null;
         if(this.color == ChessGame.TeamColor.WHITE){
-            MovesWhite m = new MovesWhite(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
-            l = m.getValidMoves();
+            //(ChessPiece.PieceType type, ChessPosition pos, ChessBoard board)
+
+            MovesWhite m = new MovesWhite(this.type, myPosition, board);
+            l = m.fillValid();
         }
         else{
-            MovesBlack m = new MovesBlack(spaces, forward, backward, forwardDiag, backwardDiag, leftRight, horse, myPosition, board, this.color, this.type);
-            l = m.getValidMoves();
+            MovesBlack m = new MovesBlack(this.type, myPosition, board);
+            l = m.fillValid();
         }
 
         //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,

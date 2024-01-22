@@ -1,279 +1,344 @@
 package chess;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+
 public class MovesBlack {
-    private int spaces;
-    private boolean forward;
-    private boolean backward;
-    private boolean forwardDiag;
-    private boolean backwardDiag;
-
-    private boolean leftRight; //no piece can go exclusively one
-
-    private boolean horse;
-    private ArrayList<ChessPosition> valid_moves;
-    private ChessPosition position;
-    private ChessBoard board;
-    private ChessGame.TeamColor color; //passed in
-
     private ChessPiece.PieceType type;
+    private boolean pawn = false;
+    private ChessPosition pos;
+    private ChessBoard board;
 
-    //= new ArrayList<>();
-    //it's either 1,2, or 7 spaces, -1 for horse bc wth
-    public MovesBlack(int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse, ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type){
-        this.spaces = spaces;
-        this.forward = forward;
-        this.backward = backward;
-        this.forwardDiag = forwardDiag;
-        this.backwardDiag = backwardDiag;
-        this.leftRight = leftRight;
-        this.horse = horse;
+    private HashSet<ChessPosition> valid;
+    private int spaces;
 
-        this.valid_moves = new ArrayList<ChessPosition>();
-        this.position = position;
-        this.board = board;
-        this.color = color;
+    MovesBlack(ChessPiece.PieceType type, ChessPosition pos, ChessBoard board){
         this.type = type;
-    } //assume it contains everything
+        this.pos = pos;
+        this.board = board;
+        this.valid = new HashSet<ChessPosition>(); //valid end positions for the piece
+        if(type == ChessPiece.PieceType.PAWN){
+            this.pawn = true;
+        }
 
-
-    //functions: fd, bd, f, b, L
-    //track: how many spaces
-    ArrayList<ChessPosition> getValidMoves(){
-        //call the appropriate function to fill it
-        if(this.forward){forward();}
-        if(this.backward){backward();}
-        if(this.forwardDiag){forward_diag();}
-        if(this.backwardDiag){backward_diag();}
-        if(this.leftRight){left(); right();}
-        if(horse){horse();}
-        return this.valid_moves;
     }
 
-    void backward(){
-        //System.out.println("back moves");
-        //if a pawn is in a certain row then it gets two moves
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
-            if(out_of_bounds(i)){break;}
-            ChessPosition p = new ChessPosition(i, this.position.getColumn());
-            if(this.board.getPiece(p) != null){
-                done = true;
+    public HashSet<ChessPosition> fillValid(){
+        if(type == ChessPiece.PieceType.KING){
+            this.spaces = 1;
+            this.forward();
+            this.backward();
+            this.leftRight();
+            this.forwardDiag();
+            this.backwardDiag();
+        }
+        else if(type == ChessPiece.PieceType.QUEEN){
+            this.spaces = 7;
+            this.forward();
+            this.backward();
+            this.leftRight();
+            this.forwardDiag();
+            this.backwardDiag();
+
+        }
+        else if(type == ChessPiece.PieceType.BISHOP){
+            this.spaces = 7;
+            this.forwardDiag();
+            this.backwardDiag();
+        }
+        else if(type == ChessPiece.PieceType.KNIGHT){
+            this.horse();
+        }
+        else if(type == ChessPiece.PieceType.ROOK){
+            this.spaces = 7;
+            this.forward();
+            this.backward();
+            this.leftRight();
+        }
+        else if(type == ChessPiece.PieceType.PAWN){
+            this.spaces = 1;
+            this.forward();
+            this.forwardDiag();
+        }
+        return this.valid;
+    }
+
+    public void forward(){ //move up rows
+        //pawn can move 2, pawn cannot kill
+        //rows decrement
+        ChessPosition p;
+        int temp = this.spaces;
+        if(this.pawn && this.pos.getRow() == 7){temp = 2;} //row two means first move
+
+        for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - temp; i--){
+            p = new ChessPosition(i, this.pos.getColumn());
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                valid.add(p);
             }
-            if (this.board.getPiece(p) == null || ((this.board.getPiece(p).getTeamColor() != this.color) && (this.type != ChessPiece.PieceType.PAWN))){
-                this.valid_moves.add(p);
+            else if(board.getPiece(p) != null){ //yes IF we are not a pawn and its the other side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK && !this.pawn){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
             }
-            if(done){break;}
+        }
+
+    }
+
+    public void backward(){
+        ChessPosition p;
+        for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + spaces; i++){
+            p = new ChessPosition(i, this.pos.getColumn());
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else if(board.getPiece(p) != null){ //yes IF we are not a pawn and its the other side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
+            }
         }
     }
 
-    boolean out_of_bounds(int num){ //num represents position, NOT INDEX
-        return num > 8 || num < 1;
-    }
-    void forward(){ //for king/queen/rook, NOT pawn
-        //go forward spaces number of spaces
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        //System.out.println("forward moves");
-        int temp_spaces = this.spaces;
-        if(this.type == ChessPiece.PieceType.PAWN && (this.position.getRow() == 2 || this.position.getRow() == 7)){ //color no matter bc if at 7 you can't move 2
-            temp_spaces = 2;
-        }
-        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - temp_spaces; i--){
-            if(out_of_bounds(i)){break;}
-            ChessPosition p = new ChessPosition(i, this.position.getColumn());
-            if(this.board.getPiece(p) != null){
-                done = true;
-            }
-            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                this.valid_moves.add(p);
-            }
-            //we are going up rows
-            if(done){break;}
-        }
-    }
+    public void leftRight(){ //row same, col change
+        //right
+        ChessPosition p;
+        for(int i = this.pos.getColumn() - 1; i >= this.pos.getColumn() - spaces; i--){
+            p = new ChessPosition(this.pos.getRow(), i);
+            if(!in_bounds(p)){continue;}
 
-    void left(){ //for king/queen/rook
-        //go forward spaces number of spaces
-        System.out.println("LEFT");
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        //System.out.println("leftt moves");
-        for(int i = this.position.getColumn() + 1; i <= this.position.getColumn() + this.spaces; i++){
-            if(out_of_bounds(i)){break;}
-            ChessPosition p = new ChessPosition(this.position.getRow(), i);
-            System.out.println("I moved left onto position " + p.toString());
-            if(this.board.getPiece(p) != null){
-                System.out.println("woops, collided with another piece");
-                done = true;
+            if(board.getPiece(p) == null){
+                valid.add(p);
             }
-            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                System.out.println("To valid moves I add" + this.position.toString()  + p.toString());
-                this.valid_moves.add(p);
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
             }
-            //we are going up rows
-            if(done){break;}
+        }
+
+        //left
+        for(int i = this.pos.getColumn() + 1; i <= this.pos.getColumn() + spaces; i++){
+            p = new ChessPosition(this.pos.getRow(), i);
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
+            }
         }
     }
 
-    void right(){ //for king/queen/rook
-        //go forward spaces number of spaces
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        //System.out.println("right moves");
-        for(int i = this.position.getColumn() - 1; i >= this.position.getColumn() - this.spaces; i--){
-            if(out_of_bounds(i)){break;}
-            ChessPosition p = new ChessPosition(this.position.getRow(), i);
-            System.out.println("I moved right onto position " + p.toString());
-            if(this.board.getPiece(p) != null){
-                done = true;
-            }
-            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                this.valid_moves.add(p);
-            }
-            if(done){break;}
-        }
-    }
 
-    void backward_diag(){ //now both column and rows will change
-        //if it is a pawn, there must be something there
-        //left diag: row increments, col decreases
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        //System.out.println("time to go back diag");
-        int j = this.position.getColumn() - 1;
-        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
-            if(out_of_bounds(i) || out_of_bounds(j)){break;}
-            ChessPosition p = new ChessPosition(i, j);
-            if(this.board.getPiece(p) != null){
-                done = true;
-            }
-            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
-                this.valid_moves.add(p);
-            }
-            if(done){break;}
-            j -= 1; //col decrease also
-        }
-        //right diag: row increment, col increment
-        j = this.position.getColumn() + 1;
-        done = false;
-        for(int i = this.position.getRow() + 1; i <= this.position.getRow() + this.spaces; i++){
-            if(out_of_bounds(i) || out_of_bounds(j)){break;}
-            ChessPosition p = new ChessPosition(i, j);
-            if(this.board.getPiece(p) != null){
-                done = true;
-            }
+    public void forwardDiag(){
+        //i for row, j for col
+        ChessPosition p;
+        //forward left
+        int j = this.pos.getColumn() - 1;
+        for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - spaces; i--){
+            p = new ChessPosition(i, j);
+            if(!in_bounds(p)){continue;}
 
-            if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){ //case: all others
-                this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
+            if(board.getPiece(p) == null){
+                if(!this.pawn){ //pawn can only go diag IF there's someone to kill
+                    valid.add(p);
                 }
             }
-            j += 1; //col increment also
-            if(done){break;}
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
+            }
+            j -= 1;
         }
+        //forward right
+        j = this.pos.getColumn() + 1;
+        for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - spaces; i--){
+            p = new ChessPosition(i, j);
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                if(!this.pawn){ //pawn can only go diag IF there's someone to kill
+                    valid.add(p);
+                }
+            }
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
+                }
+                break; //we found a piece so we are done
+            }
+            j += 1;
+        }
+
+
     }
-    void forward_diag(){ //now both column and rows will change
-        //System.out.println("time to go forward diag" + this.position.getColumn()  + "" + this.position.getRow() );
-        //left back diag: row decrements, col decreases
-        boolean done = false; //use to break out of loop if we encounter another piece regardless of color
-        int j = this.position.getColumn() - 1;
-        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
-            //System.out.println("forward diag" + i + " " + j);
-            if(out_of_bounds(i) || out_of_bounds(j)){break;}
-            ChessPosition p = new ChessPosition(i, j);
-            if(this.board.getPiece(p) != null){
-                done = true;
+
+    public void backwardDiag(){ //no pawn stuff
+        //i for row, j for col
+        ChessPosition p;
+
+        //backward left
+        int j = this.pos.getColumn() - 1;
+        for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + spaces; i++){
+            p = new ChessPosition(i, j);
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                valid.add(p);
             }
-            if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
-                if((this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() != this.color)){ //must be OTHER color not just null
-                    this.valid_moves.add(p);
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
                 }
+                break; //we found a piece so we are done
             }
-            else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                this.valid_moves.add(p);
-            }
-            j -= 1; //col decrease also
+            j -= 1;
         }
-        //right diag: row increment, col increment
-        j = this.position.getColumn() + 1;
-        done = false;
-        for(int i = this.position.getRow() - 1; i >= this.position.getRow() - this.spaces; i--){
-            if(out_of_bounds(i) || out_of_bounds(j)){break;}
-            ChessPosition p = new ChessPosition(i, j);
-            if(this.board.getPiece(p) != null){
-                done = true;
+
+        //backward right
+        j = this.pos.getColumn() + 1;
+        for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + spaces; i++){
+            p = new ChessPosition(i, j);
+            if(!in_bounds(p)){continue;}
+
+            if(board.getPiece(p) == null){
+                valid.add(p);
             }
-            if(this.type == ChessPiece.PieceType.PAWN){ //case:PAWN
-                if((this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() != this.color)){ //must be OTHER color not just null
-                    this.valid_moves.add(p);
+            else if(board.getPiece(p) != null){ //someone there nad its not our side
+                if(board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p);
                 }
+                break; //we found a piece so we are done
             }
-            else if (this.board.getPiece(p) == null || (this.board.getPiece(p).getTeamColor() != this.color)){
-                this.valid_moves.add(p);
-                if(this.board.getPiece(p) != null){
-                    break;
-                }
-            }
-            if(done){break;}
-            j += 1; //col increment also
+            j += 1;
         }
     }
 
-    void horse(){
-        //System.out.println("horse moves");
-        int r = this.position.getRow();
-        int c = this.position.getColumn();
-        //move 2, move 1
-        //it only fails if there is a piece there and it is white
-        ChessPosition p = new ChessPosition(r+2, c+1);
-        if(!out_bounds(r+2, c+1, p)){ //up right
-            this.valid_moves.add(p);
+    public void horse(){
+        //8 moves, lets work them out on paper
+        int r = this.pos.getRow();
+        int c = this.pos.getColumn();
+
+        //if in bounds && if there is someone there they are not our color
+        // r+2, c-1
+        ChessPosition p = new ChessPosition(r+2, c-1);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
-        p = new ChessPosition(r+2, c-1);
-        if(!out_bounds(r+2, c-1, p)){ //up left
-            this.valid_moves.add(p);
+
+        // r+2, c+1
+        p = new ChessPosition(r+2, c+1);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
+
+        // r-2, c+1
         p = new ChessPosition(r-2, c+1);
-        if(!out_bounds(r-2, c+1, p)){ //down
-            this.valid_moves.add(p);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
+
+        //r-2, c-1
         p = new ChessPosition(r-2, c-1);
-        if(!out_bounds(r-2, c-1, p)){ //down
-            this.valid_moves.add(p);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
+
+        //r+1, c+2
         p = new ChessPosition(r+1, c+2);
-        if(!out_bounds(r+1, c+2, p)){ //right
-            this.valid_moves.add(p);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
+
+        //r-1, c+2
         p = new ChessPosition(r-1, c+2);
-        if(!out_bounds(r-1, c+2, p)){ //right
-            this.valid_moves.add(p);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
-        p = new ChessPosition(r-1, c-2);
-        if(!out_bounds(r-1, c-2, p)){ //down
-            this.valid_moves.add(p);
-        }
+
+        //r+1, c-2
         p = new ChessPosition(r+1, c-2);
-        if(!out_bounds(r+1, c-2, p)){ //down
-            this.valid_moves.add(p);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
+        }
+
+        //r-1, c-2
+        p = new ChessPosition(r-1, c-2);
+        if(in_bounds(p)){
+            if(this.board.getPiece(p) == null){
+                valid.add(p);
+            }
+            else{
+                if(this.board.getPiece(p).getTeamColor() != ChessGame.TeamColor.BLACK){
+                    valid.add(p); //kilzz
+                }
+            }
         }
     }
 
-    boolean out_bounds(int r, int c, ChessPosition p){ //this is 1 to 8
-        if(r < 1 || c < 1 || r > 8 || c > 8){
-            System.out.println("rejected1" + p.toString());
-            return true;
-        }
-        if(this.board.getPiece(p) != null && this.board.getPiece(p).getTeamColor() == this.color){
-            System.out.println(this.board.getPiece(p).getTeamColor() + "rejected2" + p.toString());
-            return true;
-        }
-
-        return false;
+    public boolean in_bounds(ChessPosition pos){
+        return pos.getColumn() <= 8 && pos.getColumn() >= 1 && pos.getRow() >= 1 && pos.getRow() <=8;
     }
-
-
-
-    //no one but horse can jump
-    //aka, if you encounter an opponent, you can add it, but you have to stop right after
-
 
 }

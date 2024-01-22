@@ -9,35 +9,30 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
-    private ChessPosition startPos;
-    private ChessPosition endPos;
-    private ChessPiece.PieceType promotionPiece = null;
+
+    private ChessPosition startPosition;
+    private ChessPosition endPosition;
+    private ChessPiece.PieceType promotionPiece=null;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this.startPos = startPosition;
-        this.endPos = endPosition;
-        this.promotionPiece = promotionPiece; //null if not being promoted
-        //do I have to force it to be null
-    }
-
-    @Override
-    public String toString() {
-        return "start:" + this.startPos.toString() + " end:" + this.endPos.toString();
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.promotionPiece = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return this.startPos;
+        return this.startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return this.endPos;
+        return this.endPosition;
     }
 
     /**
@@ -55,11 +50,11 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(startPos, chessMove.startPos) && Objects.equals(endPos, chessMove.endPos) && promotionPiece == chessMove.promotionPiece;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPos, endPos, promotionPiece);
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 }

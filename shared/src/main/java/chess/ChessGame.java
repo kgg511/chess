@@ -164,7 +164,7 @@ public class ChessGame {
                 p = new ChessPosition(i,k); //one indexing!
                 piece = this.board.getPiece(p);
                 if(piece != null && piece.getTeamColor() != teamColor){
-                    System.out.println("The position at position " + p + "can go here");
+                    System.out.println("Where can the piece" + piece.getPieceType().toString()+ "at position " + p + "go?");
                     possible_moves = piece.pieceMoves(this.board, p); //opponents possible moves;
                     for(ChessMove move: possible_moves){ //are any of these the kings position???
                         found_piece = this.board.getPiece(move.getEndPosition());
