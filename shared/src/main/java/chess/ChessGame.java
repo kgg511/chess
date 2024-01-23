@@ -63,14 +63,16 @@ public class ChessGame {
         if(isInCheckmate(piece_here.getTeamColor()) || isInStalemate(piece_here.getTeamColor())){
             return Collections.emptyList();
         }
+        System.out.println("Not in checkmate or statelmeate");
         //go to a move where we are not in check
+        System.out.println(this.board.toString());
         for(ChessMove m: all_moves){
-            System.out.println("How about " + m.getStartPosition() + "->" + m.getEndPosition());
+            //System.out.println("How about " + m.getStartPosition() + "->" + m.getEndPosition());
             killed = doMove(this.board, m, piece_here);
             if(!isInCheck(piece_here.getTeamColor())){
-                System.out.println("Welp I won't be in check if i move here");
                 remaining_moves.add(m);
             }
+            //(ChessBoard board, ChessMove m, ChessPiece p, ChessPiece killed)
             undoMove(this.board, m, piece_here, killed);
         }
         //remove all moves which put us into check
@@ -99,12 +101,12 @@ public class ChessGame {
             board.addPiece(m.getEndPosition(), p); //move piece
         }
         board.addPiece(m.getStartPosition(), null); //remove piece from start
-        System.out.println("exit Domove");
+
         return killed;
     }
 
     public void undoMove(ChessBoard board, ChessMove m, ChessPiece p, ChessPiece killed){
-        System.out.println("undo move");
+
         //undo move
         board.addPiece(m.getStartPosition(), p);
         board.addPiece(m.getEndPosition(), killed); //killed may be null but who cares
@@ -120,9 +122,9 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         System.out.println("make move");
-        if(this.board.getPiece(move.getStartPosition()) == null){
-            System.out.println("Can't makeMove there's nothing to move");
-            return;
+        if(this.board.getPiece(move.getStartPosition()) == null || (this.board.getPiece(move.getStartPosition()).getTeamColor() != turn)){
+            System.out.println("Nothing to move or it is not this piece's turn");
+            throw new InvalidMoveException();
         }
 
         Collection<ChessMove> moves = validMoves(move.getStartPosition());
@@ -139,9 +141,19 @@ public class ChessGame {
                 this.board.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition())); //move the piece
             }
             this.board.addPiece(move.getStartPosition(), null); //remove the piece from original location
+            setTurn(); //switch turns
         }
         else{
             throw new InvalidMoveException();
+        }
+    }
+
+    public void setTurn(){
+        if(turn == TeamColor.BLACK){
+            turn = TeamColor.WHITE;
+        }
+        else if(turn == TeamColor.WHITE){
+            turn = TeamColor.BLACK;
         }
     }
 
@@ -152,7 +164,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        System.out.println("is in check?");
+        System.out.println("is" + teamColor + " in check?");
         //they are in check if any of the other teams pieces valid moves contains the kings current position
         //loop through the grid, if they are other side look at their valid moves, if contain kings position return true
         ChessPosition p = null;
@@ -164,14 +176,25 @@ public class ChessGame {
                 p = new ChessPosition(i,k); //one indexing!
                 piece = this.board.getPiece(p);
                 if(piece != null && piece.getTeamColor() != teamColor){
-                    System.out.println("Where can the piece" + piece.getPieceType().toString()+ "at position " + p + "go?");
+                    //System.out.println("Where can the piece" + piece.getPieceType().toString()+ "at position " + p + "go?");
+                    System.out.println("possible moves given we are in position" + p.toString());
+                    System.out.println(this.board.toString());
+                    possible_moves= null;
+                    System.out.println("MOVE FOR " + this.board.getPiece(p) + p.toString());
                     possible_moves = piece.pieceMoves(this.board, p); //opponents possible moves;
-                    for(ChessMove move: possible_moves){ //are any of these the kings position???
+                    //possible moves is ALWAYS the same
+                    for(ChessMove move: possible_moves){
+                        System.out.println(move.toString());
+                    }
+                    //p is supposed to be the pieces current position
+                    for(ChessMove move: possible_moves){ //are any of these the kings position??
                         found_piece = this.board.getPiece(move.getEndPosition());
                         if(found_piece != null && found_piece.getPieceType() == ChessPiece.PieceType.KING && found_piece.getTeamColor() == teamColor){
+                            System.out.println("we are in check");
                             return true; //if this piece can kill our king then its check
                         }
                     }
+                    possible_moves = null;
                 }
             }
         }
@@ -187,7 +210,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        System.out.println("is in checkmate?");
+        System.out.println("is" + teamColor + "in checkmate?");
         //doMove(ChessBoard board, ChessMove m, ChessPiece p)
         //undoMove
         //must be inn check
@@ -210,13 +233,16 @@ public class ChessGame {
                         killed = doMove(this.board, move, piece);
                         if(!isInCheck(teamColor)){
                             undoMove(this.board, move, piece, killed);
+                            System.out.println("Not in checkmate");
                             return false; //I made a move and am no longer in check
+
                         }
                         undoMove(this.board, move, piece, killed);
                     }
                 }
             }
         }
+        System.out.println("in checkmate");
         return true;
         //a giant list of all the valid_moves
         //pawn special case
@@ -240,13 +266,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        System.out.println("is in stalemate");
-        //you are in stalemate if no matter what move you make
-        //you are still in check
-        //sooo...go through every single check piece on our side, check it's valid moves,
-        //see if we would still be in check if we made those moves
-
-        //stalemate is almost like check except you are not currently in check
+        System.out.println("is " + teamColor + " in stalemate");
+        //you are not in check, but you will be in check if no matter what move you make
         if(isInCheck(teamColor)){ //check != stalemate
             return false;
         }
@@ -264,15 +285,16 @@ public class ChessGame {
                         killed = doMove(this.board, move, piece);
                         if(!isInCheck(teamColor)){
                             undoMove(this.board, move, piece, killed);
+                            System.out.println("Not in stalemate");
                             return false;
                             //if I find even one move that takes me out of stalemate, return false
                         }
-
                         undoMove(this.board, move, piece, killed);
                     }
                 }
             }
         }
+        System.out.println("in stalemate");
         return true;
     }
 

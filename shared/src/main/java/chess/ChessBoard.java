@@ -136,4 +136,32 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.hashCode(grid);
     }
+    public String toString() {
+        //ArrayList<ChessPiece> pieces
+        String result = "";
+        System.out.println("It's time to print out the board! :)");
+        //print the chess pieces
+        String line = "";
+        for (int i = 0; i < this.grid.length; i++) {
+            // Iterate through columns
+            line = "";
+            for (int j = 0; j < this.grid[i].length; j++) {
+                if(this.grid[i][j] != null){
+                    if(this.grid[i][j].getTeamColor() == ChessGame.TeamColor.WHITE){
+                        line+="B";
+                    }
+                    else{
+                        line+="W";
+                    }
+                    line +=  this.grid[i][j].getPieceType() + "(" + i + ","+ j + ")" + "*";
+                }
+                else{
+                    line += " NULL(" + i + ","+ j + ")" + "*";
+                }
+            }
+            result += line + "\n";
+            // Move to the next line after printing each row
+        }
+        return result;
+    }
 }

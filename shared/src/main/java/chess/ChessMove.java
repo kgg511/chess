@@ -21,6 +21,10 @@ public class ChessMove {
         this.promotionPiece = promotionPiece;
     }
 
+    public String toString(){
+        return this.startPosition.toString() + "->" + this.endPosition.toString();
+    }
+
     /**
      * @return ChessPosition of starting location
      */

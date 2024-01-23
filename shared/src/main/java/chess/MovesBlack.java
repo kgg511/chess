@@ -106,11 +106,13 @@ public class MovesBlack {
 
     public void leftRight(){ //row same, col change
         //right
+        System.out.println("LEFT RIGHT" + board.toString());
         ChessPosition p;
         for(int i = this.pos.getColumn() - 1; i >= this.pos.getColumn() - spaces; i--){
             p = new ChessPosition(this.pos.getRow(), i);
-            if(!in_bounds(p)){continue;}
 
+            if(!in_bounds(p)){continue;}
+            System.out.println("left moved to " + p.toString());
             if(board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -126,7 +128,7 @@ public class MovesBlack {
         for(int i = this.pos.getColumn() + 1; i <= this.pos.getColumn() + spaces; i++){
             p = new ChessPosition(this.pos.getRow(), i);
             if(!in_bounds(p)){continue;}
-
+            System.out.println("right moved to " + p.toString());
             if(board.getPiece(p) == null){
                 valid.add(p);
             }
