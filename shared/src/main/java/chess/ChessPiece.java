@@ -66,9 +66,6 @@ public class ChessPiece {
         return color == that.color && type == that.type && Objects.equals(this.complete_moves, complete_moves);
     }
 
-
-
-
     @Override
     public int hashCode() {
         return Objects.hash(color, type, complete_moves);
@@ -96,16 +93,10 @@ public class ChessPiece {
             l = m.fillValid();
         }
 
-        //int spaces, boolean forward, boolean backward, boolean forwardDiag, boolean backwardDiag, boolean leftRight, boolean horse,
-        // ChessPosition position, ChessBoard board, ChessGame.TeamColor color, ChessPiece.PieceType type)
-
         ChessPiece.PieceType promotionP = null;
-        //System.out.println(this.toString());
         ChessMove move = null;
         this.complete_moves = new HashSet<>();
         for(ChessPosition end_position: l){ //go through the moves and make ChessMove objects
-            //System.out.println(end_position.toString());
-            System.out.println("chessPiece endposition" + end_position);
             if(this.type == PieceType.PAWN && (end_position.getRow() == 8 || end_position.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
                 System.out.println("SPECIAL CASE PAWN");
                 move = new ChessMove(myPosition, end_position, PieceType.ROOK);
