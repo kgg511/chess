@@ -4,6 +4,7 @@ import model.*;
 import service.LoginService;
 import spark.*;
 import dataAccess.*;
+import Response.*;
 
 public class Handler {
     //turns out the handlers will call the service possibly everything
@@ -31,11 +32,15 @@ public class Handler {
             LoginService service = new LoginService(new AuthDAO(), new GameDAO(), new UserDAO());
             UserData realUser = service.getUser(user.username());
 
-            if(realUser == null){
+            if(realUser == null){ //probably would have been caught by dataaccess
                 throw error;
             }
             String authToken = service.createAuth(realUser.username());
-            return new Gson().toJson(authToken);
+
+
+            LoginResponse R = new LoginResponse(realUser.username(), authToken);
+            res.status(200);
+            return new Gson().toJson(R);
 
             //service code
         }
