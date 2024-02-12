@@ -1,57 +1,55 @@
 package dataAccess;
 
-import Model.Game;
+import model.GameData;
 
 import java.util.ArrayList;
 
 //talks to the Game DB
 public class GameDAO {
 
-
-    private ArrayList<Game> GameDB = new ArrayList<Game>();
-    Game createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
-                    chess.ChessGame game){
-        return new Model.Game(gameID, whiteUsername, blackUsername, gameName, game);
+    private ArrayList<GameData> GameDB = new ArrayList<GameData>();
+    public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
+                        chess.ChessGame game){
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
     //TODO: how to autofill id?
-    boolean insertGame(Game game){
+    public boolean insertGame(GameData game){
         this.GameDB.add(game);
         return true;
     }
 
-    boolean deleteGame(Game game){
+    public boolean deleteGame(GameData game){
         boolean removed = this.GameDB.remove(game);
         return removed;
     }
 
-    ArrayList<Game> getGames(){
+    public ArrayList<GameData> getGames(){
         return GameDB;
     }
 
-    Game getGameById(int id){
-        for(Game g: GameDB){
-            if(g.getGameID() == id){return g;}
+    public GameData getGameById(int id){
+        for(GameData g: GameDB){
+            if(g.gameID() == id){return g;}
         }
         return null;
     }
 
-    boolean updateGame(Game game){
+    public boolean updateGame(GameData game){
         //updates game based on id if it exists
-        Game old;
-        if((old = getGameById(game.getGameID())) != null){
+        GameData old;
+        if((old = getGameById(game.gameID())) != null){
             deleteGame(old);
             insertGame(game);
+            return true;
             //would this logic work?
             //no weird issues due to references?
         }
-
+        return false; //game not in database
     }
 
-
-
-    void clearGame(){
-        GameDB = new ArrayList<Game>();
+    public void clearGame(){
+        GameDB = new ArrayList<GameData>();
     }
 
 

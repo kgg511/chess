@@ -1,28 +1,27 @@
 package dataAccess;
-import Model.Auth;
-import Model.User;
+import model.UserData;
 import java.util.ArrayList;
 public class UserDAO {
     //create user
 
-    private ArrayList<User> UserDB = new ArrayList<User>();
-    User createUser(String username, String password, String email){
-        return new Model.User(username, password, email);
+    private ArrayList<UserData> UserDB = new ArrayList<UserData>();
+    public UserData createUser(String username, String password, String email){
+        return new UserData(username, password, email);
     }
 
-    boolean insertUser(User user){
+    public boolean insertUser(UserData user){
         this.UserDB.add(user);
         return true;
     }
 
-    boolean deleteUser(User user){
+    public boolean deleteUser(UserData user){
         boolean removed = this.UserDB.remove(user);
         return removed;
     }
 
-    User getUser(String username){
-        for(User u: UserDB){
-            if(u.getUsername().equals(username)){
+    public UserData getUser(String username){
+        for(UserData u: UserDB){
+            if(u.username().equals(username)){
                 return u;
             }
         }
@@ -30,8 +29,8 @@ public class UserDAO {
     }
 
     //no update method currently
-    void clearUser(){
-        UserDB = new ArrayList<User>();
+    public void clearUser(){
+        UserDB = new ArrayList<UserData>();
     }
 
 }
