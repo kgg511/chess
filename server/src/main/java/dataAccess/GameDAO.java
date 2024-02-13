@@ -57,8 +57,6 @@ public class GameDAO {
             deleteGame(old);
             insertGame(game);
             return true;
-            //would this logic work?
-            //no weird issues due to references?
         }
         return false; //game not in database
     }
