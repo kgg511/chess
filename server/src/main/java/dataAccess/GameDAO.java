@@ -53,8 +53,8 @@ public class GameDAO {
 
     public boolean updateGame(GameData game) throws DataAccessException{
         //updates game based on id if it exists
-        GameData old;
-        if((old = getGameById(game.gameID())) != null){
+        GameData old = getGameById(game.gameID());
+        if(old != null){
             deleteGame(old);
             insertGame(game);
             return true;
@@ -63,7 +63,7 @@ public class GameDAO {
     }
 
     public void clearGame() throws DataAccessException {
-        GameDB = new ArrayList<GameData>();
+        GameDB.clear();
     }
 
     public int numGames() throws DataAccessException{

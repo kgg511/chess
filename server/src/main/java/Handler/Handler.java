@@ -132,8 +132,9 @@ public class Handler {
                 throw new ResponseException(400, "Error: bad request");
             }
             JoinGameRequest g = new Gson().fromJson(req.body(), JoinGameRequest.class);
+            System.out.println("your join game request is " + g.toString());
             JoinGameService service = new JoinGameService();
-            JoinGameResponse r = service.joinGame(authToken, g.clientColor(), g.gameID());
+            JoinGameResponse r = service.joinGame(authToken, g.playerColor(), g.gameID());
             res.status(200);
             return new Gson().toJson(r);
         }

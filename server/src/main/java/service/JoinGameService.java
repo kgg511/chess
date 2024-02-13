@@ -12,7 +12,7 @@ public class JoinGameService extends BaseService{
         super();
     }
 
-    public JoinGameResponse joinGame(String authToken, ChessGame.TeamColor clientColor,
+    public JoinGameResponse joinGame(String authToken, String clientColor,
                               int gameid) throws DataAccessException, ResponseException {
         AuthData auth = this.verifyUser(authToken);
         GameData game = this.getGame(gameid);
@@ -28,14 +28,18 @@ public class JoinGameService extends BaseService{
         return this.getGameDB().getGameById(gameid);
     }
 
-    GameData addUserToGame(String username, ChessGame.TeamColor clientColor, GameData game) throws ResponseException{
+    GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
         //if(clientColor == null){} //add as spectator. Maybe phase 6?
-        if(clientColor == ChessGame.TeamColor.WHITE){
-            if(game.whiteUsername() != null){throw new ResponseException(403, "Error: already taken");}
+        if(clientColor.equals("WHITE")){
+            System.out.println("I shall join white");
+            if(game.whiteUsername() != ""){throw new ResponseException(403, "Error: already taken");}
+            System.out.println("ooh they even have space");
             return new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
         }
-        else if(clientColor == ChessGame.TeamColor.BLACK){
-            if(game.blackUsername() != null){throw new ResponseException(403, "Error: already taken");}
+        else if(clientColor.equals("BLACK")){
+            System.out.println("I shall join black");
+            if(game.blackUsername() != ""){throw new ResponseException(403, "Error: already taken");}
+            System.out.println("ooh they even have space");
             return new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         }
         return game;

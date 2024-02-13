@@ -60,6 +60,6 @@ public class AuthDAO {
     }
 
     public void clearAuth() throws DataAccessException {
-        AuthDB = new ArrayList<AuthData>();
+        AuthDB.clear();
     }
 }

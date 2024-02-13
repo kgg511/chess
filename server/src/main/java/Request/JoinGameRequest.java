@@ -2,4 +2,9 @@ package Request;
 
 import chess.ChessGame;
 
-public record JoinGameRequest(ChessGame.TeamColor clientColor, int gameID){}
+public record JoinGameRequest(String playerColor, int gameID){
+
+    public String toString(){
+        return "joinGameRequest color: " + playerColor + " id: " + gameID;
+    }
+}

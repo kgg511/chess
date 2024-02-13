@@ -40,7 +40,7 @@ public class UserDAO {
 
     //no update method currently
     public void clearUser() throws DataAccessException{
-        UserDB = new ArrayList<UserData>();
+        UserDB.clear();
     }
 
 }
