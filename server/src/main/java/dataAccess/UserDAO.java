@@ -1,5 +1,7 @@
 package dataAccess;
 import model.UserData;
+
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 public class UserDAO {
     private static UserDAO instance = null;
@@ -37,7 +39,7 @@ public class UserDAO {
     }
 
     //no update method currently
-    public void clearUser(){
+    public void clearUser() throws DataAccessException{
         UserDB = new ArrayList<UserData>();
     }
 

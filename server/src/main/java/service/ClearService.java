@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.AuthDAO;
+import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 
@@ -10,20 +11,20 @@ public class ClearService extends BaseService{
         super();
     }
 
-    public void clearDB(){
+    public void clearDB() throws DataAccessException{
         this.clearAuth();
         this.clearGame();
         this.clearUser();
     }
-    private void clearAuth(){
+    private void clearAuth() throws DataAccessException {
         this.getAuthDB().clearAuth();
     }
 
-    private void clearUser(){
+    private void clearUser() throws DataAccessException{
         this.getUserDB().clearUser();
     }
 
-    private void clearGame(){
+    private void clearGame() throws DataAccessException{
         this.getGameDB().clearGame();
     }
 

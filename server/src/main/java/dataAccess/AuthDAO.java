@@ -2,6 +2,7 @@ package dataAccess;
 
 import model.AuthData;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 /**fetches from Auth DB*/
@@ -58,7 +59,7 @@ public class AuthDAO {
         return null;
     }
 
-    public void clearAuth(){
+    public void clearAuth() throws DataAccessException {
         AuthDB = new ArrayList<AuthData>();
     }
 }

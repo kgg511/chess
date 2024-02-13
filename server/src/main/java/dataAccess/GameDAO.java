@@ -3,6 +3,7 @@ package dataAccess;
 import chess.ChessGame;
 import model.GameData;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class GameDAO {
     }
 
     //TODO: how to autofill id?
-    public int insertGame(GameData game) {
+    public int insertGame(GameData game) throws DataAccessException{
         this.GameDB.add(game);
         return game.gameID();
     }
@@ -61,11 +62,11 @@ public class GameDAO {
         return false; //game not in database
     }
 
-    public void clearGame(){
+    public void clearGame() throws DataAccessException {
         GameDB = new ArrayList<GameData>();
     }
 
-    public int numGames(){
+    public int numGames() throws DataAccessException{
         return GameDB.size();
     }
 

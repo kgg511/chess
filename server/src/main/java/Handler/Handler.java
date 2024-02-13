@@ -147,11 +147,17 @@ public class Handler {
     }
 
     public String clearDBHandler(Request req, Response res){
-        ClearService clearService = new ClearService();
-        clearService.clearDB();
+        try{
+            ClearService clearService = new ClearService();
+            clearService.clearDB();
 
-        res.status(200);
-        return new Gson().toJson(null);
+            res.status(200);
+            return new Gson().toJson(null);
+        }
+        catch (DataAccessException e) {
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
+        }
+
     }
 
     //None for clear data because there's no serialization stuff
