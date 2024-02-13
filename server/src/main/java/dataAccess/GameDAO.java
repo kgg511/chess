@@ -24,9 +24,9 @@ public class GameDAO {
     }
 
     //TODO: how to autofill id?
-    public boolean insertGame(GameData game) {
+    public int insertGame(GameData game) {
         this.GameDB.add(game);
-        return true;
+        return game.gameID();
     }
 
     public boolean deleteGame(GameData game) throws DataAccessException{
@@ -67,5 +67,8 @@ public class GameDAO {
         GameDB = new ArrayList<GameData>();
     }
 
+    public int numGames(){
+        return GameDB.size();
+    }
 
 }

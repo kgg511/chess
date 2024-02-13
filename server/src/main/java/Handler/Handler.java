@@ -88,6 +88,7 @@ public class Handler {
             if(authToken == null){
                 throw new ResponseException(400, "Error: bad request");
             }
+
             ListGamesService service = new ListGamesService();
             ListGamesResponse r = service.listGames(authToken);
             res.status(200);
@@ -101,15 +102,25 @@ public class Handler {
         }
     }
 
+    //{ "gameName":"" }
     public String createGamesHandler(Request req, Response res){
-        //TODO: error if no authtoken header
-        String authToken = req.headers("authorization");
-        if(authToken == null){
-            //throw error;
+        try{
+            String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
+            if(authToken == null || req.body() == null || req.body().isEmpty()){
+                throw new ResponseException(400, "Error: bad request");
+            }
+            GameData g = new Gson().fromJson(req.body(), GameData.class);
+            CreateGameService service = new CreateGameService();
+            CreateGameResponse r = service.createGame(authToken, g.gameName());
+            res.status(200);
+            return new Gson().toJson(r);
         }
-        //create Game using gameName (apparently it knows which one it is)
-        GameData game = new Gson().fromJson(req.body(), GameData.class);
-        return null;
+        catch (ResponseException e){
+            return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
+        }
     }
 
     //header authorization
