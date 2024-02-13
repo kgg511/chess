@@ -7,7 +7,7 @@ import dataAccess.UserDAO;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
-
+import java.util.UUID;
 public class BaseService {
 
     private final AuthDAO authDB;
@@ -36,11 +36,14 @@ public class BaseService {
     }
     public String createAuth(String username){
         //TODO: code to create authToken
-        String authToken = "hardCode";
+        UUID uuid = UUID.randomUUID();
+        String authToken = uuid.toString();
         AuthData a = new AuthData(authToken, username);
         this.authDB.insertAuth(a);
         return authToken;
     }
+
+
     public UserData verifyUser(String authToken){return null;}
 
 }

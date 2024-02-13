@@ -32,6 +32,7 @@ public class AuthDAO {
     public boolean deleteByToken(String authToken) throws DataAccessException{
         for(AuthData a: AuthDB){
             if(a.authToken().equals(authToken)){
+                System.out.println("authToken has been removed");
                 AuthDB.remove(a);
                 return true;
             }
