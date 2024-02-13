@@ -6,8 +6,8 @@ import dataAccess.UserDAO;
 
 public class ClearService extends BaseService{
 
-    public ClearService(AuthDAO authDB, GameDAO gameDB, UserDAO userDB) {
-        super(authDB, gameDB, userDB);
+    public ClearService() {
+        super();
     }
 
     public void clearDB(){

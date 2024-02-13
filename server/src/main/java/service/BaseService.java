@@ -14,10 +14,10 @@ public class BaseService {
     private final GameDAO gameDB;
     private final UserDAO userDB;
 
-    public BaseService(AuthDAO authDB, GameDAO gameDB, UserDAO userDB){
-        this.authDB = authDB;
-        this.gameDB = gameDB;
-        this.userDB = userDB;
+    public BaseService(){
+        this.authDB = AuthDAO.getInstance();
+        this.gameDB = GameDAO.getInstance();
+        this.userDB = UserDAO.getInstance();
     }
 
     public AuthDAO getAuthDB() {
@@ -31,14 +31,8 @@ public class BaseService {
     public UserDAO getUserDB() {
         return userDB;
     }
-    public UserData getUser(String username) throws ResponseException{
-        try{
-            return this.userDB.getUser(username);
-        }
-        catch (DataAccessException e){ //no user found
-            throw new ResponseException(401, "Error: unauthorized");
-        }
-
+    public UserData getUser(String username) throws DataAccessException{
+        return this.userDB.getUser(username);
     }
     public String createAuth(String username){
         //TODO: code to create authToken

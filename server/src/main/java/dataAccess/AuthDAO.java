@@ -6,14 +6,21 @@ import java.util.ArrayList;
 
 /**fetches from Auth DB*/
 public class AuthDAO {
-
+    private static AuthDAO instance = null;
     private ArrayList<AuthData> AuthDB = new ArrayList<AuthData>();
+    //singleton
+    public static synchronized AuthDAO getInstance() {
+        if (instance == null) {
+            instance = new AuthDAO();
+        }
+        return instance;
+    }
     AuthData createAuth(String authToken, String username){
         return new model.AuthData(authToken, username);
     }
-
     public boolean insertAuth(AuthData auth){
         this.AuthDB.add(auth);
+        System.out.println("AUTHDB LENGTH:" + this.AuthDB.size());
         return true;
     }
 

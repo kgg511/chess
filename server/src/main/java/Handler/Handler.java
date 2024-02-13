@@ -22,7 +22,7 @@ public class Handler {
                 throw new ResponseException(400, "Error: bad request");
             }
             UserData user = new Gson().fromJson(req.body(), UserData.class);
-            RegisterService service = new RegisterService(new AuthDAO(), new GameDAO(), new UserDAO());
+            RegisterService service = new RegisterService();
             RegisterResponse r = service.register(user.username(), user.password(), user.email());
             //[200] { "username":"", "authToken":"" }
             res.status(200);
@@ -30,6 +30,9 @@ public class Handler {
         }
         catch (ResponseException e){
             return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
         }
 
     }
@@ -41,13 +44,16 @@ public class Handler {
                 throw new ResponseException(400, "Error: bad request");
             }
             UserData user = new Gson().fromJson(req.body(), UserData.class);
-            LoginService service = new LoginService(new AuthDAO(), new GameDAO(), new UserDAO());
+            LoginService service = new LoginService();
             LoginResponse r = service.login(user.username(), user.password());
             res.status(200);
             return new Gson().toJson(r);
         }
         catch (ResponseException e){
             return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
         }
     }
 
@@ -59,7 +65,7 @@ public class Handler {
             if(authToken == null){
                 throw new ResponseException(400, "Error: bad request");
             }
-            LogoutService service = new LogoutService(new AuthDAO(), new GameDAO(), new UserDAO());
+            LogoutService service = new LogoutService();
             LogoutResponse r = service.logout(authToken);
             res.status(200);
             return new Gson().toJson(r);
@@ -109,7 +115,7 @@ public class Handler {
     }
 
     public String clearDBHandler(Request req, Response res){
-        ClearService clearService = new ClearService(new AuthDAO(), new GameDAO(), new UserDAO());
+        ClearService clearService = new ClearService();
         clearService.clearDB();
 
         res.status(200);

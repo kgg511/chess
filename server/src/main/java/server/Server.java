@@ -20,7 +20,7 @@ public class Server {
         Spark.get("/game", h::listGamesHandler);
         Spark.post("/game", h::createGamesHandler);
         Spark.put("/game", h::joinGamesHandler);
-        Spark.exception(ResponseException.class, h::exceptionHandler);
+        //Spark.exception(ResponseException.class, h::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
     }

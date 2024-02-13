@@ -8,8 +8,8 @@ import javax.xml.crypto.Data;
 
 public class LogoutService extends BaseService{
 
-    public LogoutService(AuthDAO authDB, GameDAO gameDB, UserDAO userDB) {
-        super(authDB, gameDB, userDB);
+    public LogoutService() {
+        super();
     }
 
     public LogoutResponse logout(String authToken) throws DataAccessException, ResponseException{

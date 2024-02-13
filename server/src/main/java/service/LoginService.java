@@ -5,11 +5,11 @@ import model.*;
 import dataAccess.*;
 public class LoginService extends BaseService{
 
-    public LoginService(AuthDAO authDB, GameDAO gameDB, UserDAO userDB) {
-        super(authDB, gameDB, userDB);
+    public LoginService() {
+        super();
     }
 
-    public LoginResponse login(String username, String password) throws ResponseException {
+    public LoginResponse login(String username, String password) throws ResponseException, DataAccessException {
         UserData realUser = this.getUser(username);
         //CASE: wrong username/password
         if(realUser == null || !this.checkPassword(realUser, password)){
