@@ -17,7 +17,7 @@ public class CreateGameService extends BaseService{
             throw new ResponseException(401, "Error: unauthorized");
         }
 
-        GameData game = this.getGameDB().createGame(this.getGameDB().numGames(), null, null, gameName, null);
+        GameData game = this.getGameDB().createGame(this.getGameDB().numGames(), "", "", gameName, null);
         int id = this.getGameDB().insertGame(game);
         return new CreateGameResponse(id);
     }

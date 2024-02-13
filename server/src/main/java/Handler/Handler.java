@@ -82,7 +82,6 @@ public class Handler {
 
     //authToken header
     public String listGamesHandler(Request req, Response res){
-        //TODO: error if no authtoken header
         try{
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
             if(authToken == null){

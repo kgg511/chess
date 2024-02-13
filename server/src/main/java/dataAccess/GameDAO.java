@@ -20,7 +20,6 @@ public class GameDAO {
     }
     public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
                         chess.ChessGame game){
-        GameDB = new ArrayList<>();
         return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
@@ -35,13 +34,14 @@ public class GameDAO {
         return removed;
     }
 
-    public ArrayList<ChessGame> getGames() throws DataAccessException{
+    public ArrayList<GameData> getGames() throws DataAccessException{
         //for each game, take out the ChessGame
-        ArrayList<ChessGame> gamez = new ArrayList<>();
-        for(GameData g: GameDB){
-            gamez.add(g.game());
-        }
-        return gamez;
+        return this.GameDB;
+        //ArrayList<ChessGame> gamez = new ArrayList<>();
+        //for(GameData g: GameDB){
+         //   gamez.add(g.game());
+        //}
+        //return gamez;
     }
 
     public GameData getGameById(int id) throws DataAccessException{
