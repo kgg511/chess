@@ -3,14 +3,14 @@ package Handler;
 import com.google.gson.Gson;
 
 import model.*;
-import service.ClearService;
-import service.LoginService;
-import service.LogoutService;
-import service.RegisterService;
+import service.*;
 import spark.*;
 import dataAccess.*;
 import Response.*;
 import exception.ResponseException;
+
+import java.util.List;
+
 public class Handler {
     //handlers convert JSON -> Java and Java -> JSON
 
@@ -83,12 +83,22 @@ public class Handler {
     //authToken header
     public String listGamesHandler(Request req, Response res){
         //TODO: error if no authtoken header
-        String authToken = req.headers("authorization");
-        if(authToken == null){
-            //throw error;
+        try{
+            String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
+            if(authToken == null){
+                throw new ResponseException(400, "Error: bad request");
+            }
+            ListGamesService service = new ListGamesService();
+            ListGamesResponse r = service.listGames(authToken);
+            res.status(200);
+            return new Gson().toJson(r);
         }
-
-        return null;
+        catch (ResponseException e){
+            return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
+        }
     }
 
     public String createGamesHandler(Request req, Response res){

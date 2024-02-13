@@ -1,7 +1,9 @@
 package dataAccess;
 
+import chess.ChessGame;
 import model.GameData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //talks to the Game DB
@@ -32,8 +34,13 @@ public class GameDAO {
         return removed;
     }
 
-    public ArrayList<GameData> getGames() throws DataAccessException{
-        return GameDB;
+    public ArrayList<ChessGame> getGames() throws DataAccessException{
+        //for each game, take out the ChessGame
+        ArrayList<ChessGame> gamez = new ArrayList<>();
+        for(GameData g: GameDB){
+            gamez.add(g.game());
+        }
+        return gamez;
     }
 
     public GameData getGameById(int id) throws DataAccessException{

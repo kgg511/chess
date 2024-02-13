@@ -44,6 +44,12 @@ public class BaseService {
     }
 
 
-    public UserData verifyUser(String authToken){return null;}
+    public AuthData verifyUser(String authToken) throws DataAccessException, ResponseException{
+        AuthData a = this.getAuthDB().getAuthByToken(authToken);
+        if(a == null){
+            throw new ResponseException(401, "Error: unauthorized");
+        }
+        return a;
+    }
 
 }
