@@ -8,7 +8,7 @@ import spark.*;
 import dataAccess.*;
 import Response.*;
 import exception.ResponseException;
-
+import Request.*;
 import java.util.List;
 
 public class Handler {
@@ -125,14 +125,25 @@ public class Handler {
 
     //header authorization
     //body { "playerColor":"WHITE/BLACK", "gameID": 1234 }
-    public String joinGamesHandler(Request req, Response res){
-        //TODO: error if no authtoken header
-        String authToken = req.headers("authorization");
-        if(authToken == null){
-            //throw error;
+    //oh no what if playercolor not similar enough
+    public String joinGameHandler(Request req, Response res){
+        try{
+            String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
+            if(authToken == null || req.body() == null || req.body().isEmpty()){
+                throw new ResponseException(400, "Error: bad request");
+            }
+            JoinGameRequest g = new Gson().fromJson(req.body(), JoinGameRequest.class);
+            JoinGameService service = new JoinGameService();
+            JoinGameResponse r = service.joinGame(authToken, g.clientColor(), g.gameID());
+            res.status(200);
+            return new Gson().toJson(r);
         }
-        GameData game = new Gson().fromJson(req.body(), GameData.class);
-        return null;
+        catch (ResponseException e){
+            return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
+        }
     }
 
     public String clearDBHandler(Request req, Response res){

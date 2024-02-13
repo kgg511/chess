@@ -19,7 +19,7 @@ public class Server {
         Spark.delete("/session", h::logoutHandler);
         Spark.get("/game", h::listGamesHandler);
         Spark.post("/game", h::createGamesHandler);
-        Spark.put("/game", h::joinGamesHandler);
+        Spark.put("/game", h::joinGameHandler);
         //Spark.exception(ResponseException.class, h::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
