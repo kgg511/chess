@@ -9,21 +9,17 @@ public class LoginService extends BaseService{
         super(authDB, gameDB, userDB);
     }
 
-
     public LoginResponse login(String username, String password) throws ResponseException {
         UserData realUser = this.getUser(username);
-
-        //error case: what if there is no user with that username
-        this.checkPassword(realUser, password);
-
-
-        //[401] { "message": "Error: unauthorized" }
-
+        //CASE: wrong username/password
+        if(realUser == null || !this.checkPassword(realUser, password)){
+            //[401] { "message": "Error: unauthorized" }
+            throw new ResponseException(401, "Error: unauthorized");
+        }
 
         //success case
         String authToken = this.createAuth(realUser.username());
         LoginResponse R = new LoginResponse(realUser.username(), authToken);
-        //
         return R;
     }
 

@@ -16,12 +16,10 @@ public class Handler {
     //{ "username":"", "password":"", "email":"" }
     public String registerHandler(Request req, Response res){
         //TODO: how do I handle error of nothing passed in? Or, not everything?
-        if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
-            res.status(400);
-            return new Gson().toJson(new ExceptionResponse("Error: bad request"));
-        }
-
         try{
+            if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
+                throw new ResponseException(400, "Error: bad request");
+            }
             UserData user = new Gson().fromJson(req.body(), UserData.class);
             RegisterService service = new RegisterService(new AuthDAO(), new GameDAO(), new UserDAO());
             RegisterResponse r = service.register(user.username(), user.password(), user.email());
