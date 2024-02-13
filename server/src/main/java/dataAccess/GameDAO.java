@@ -14,28 +14,28 @@ public class GameDAO {
     }
 
     //TODO: how to autofill id?
-    public boolean insertGame(GameData game){
+    public boolean insertGame(GameData game) {
         this.GameDB.add(game);
         return true;
     }
 
-    public boolean deleteGame(GameData game){
+    public boolean deleteGame(GameData game) throws DataAccessException{
         boolean removed = this.GameDB.remove(game);
         return removed;
     }
 
-    public ArrayList<GameData> getGames(){
+    public ArrayList<GameData> getGames() throws DataAccessException{
         return GameDB;
     }
 
-    public GameData getGameById(int id){
+    public GameData getGameById(int id) throws DataAccessException{
         for(GameData g: GameDB){
             if(g.gameID() == id){return g;}
         }
         return null;
     }
 
-    public boolean updateGame(GameData game){
+    public boolean updateGame(GameData game) throws DataAccessException{
         //updates game based on id if it exists
         GameData old;
         if((old = getGameById(game.gameID())) != null){

@@ -14,12 +14,12 @@ public class UserDAO {
         return true;
     }
 
-    public boolean deleteUser(UserData user){
+    public boolean deleteUser(UserData user) throws DataAccessException{
         boolean removed = this.UserDB.remove(user);
         return removed;
     }
 
-    public UserData getUser(String username){
+    public UserData getUser(String username) throws DataAccessException{
         for(UserData u: UserDB){
             if(u.username().equals(username)){
                 return u;

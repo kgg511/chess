@@ -17,12 +17,12 @@ public class AuthDAO {
         return true;
     }
 
-    public boolean deleteAuth(AuthData auth){ //returns false if it didn't have anything to delete
+    public boolean deleteAuth(AuthData auth) throws DataAccessException{ //returns false if it didn't have anything to delete
        boolean removed = this.AuthDB.remove(auth);
         return removed;
     }
 
-    public boolean deleteByToken(String authToken){
+    public boolean deleteByToken(String authToken) throws DataAccessException{
         for(AuthData a: AuthDB){
             if(a.authToken().equals(authToken)){
                 AuthDB.remove(a);
@@ -32,16 +32,16 @@ public class AuthDAO {
         return false;
     }
 
-    public AuthData getAuth(String username){
+    public AuthData getAuth(String username) throws DataAccessException{
         for(AuthData a: AuthDB){
             if(a.username().equals(username)){
                 return a;
             }
         }
-        return null;
+        return null; //do i have to manually throw the exception
     }
 
-    public AuthData getAuthByToken(String authToken){
+    public AuthData getAuthByToken(String authToken) throws DataAccessException{
         for(AuthData a: AuthDB){
             if(a.authToken().equals(authToken)){
                 return a;

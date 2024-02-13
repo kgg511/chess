@@ -1,9 +1,9 @@
 package server;
 
 import spark.*;
-import java.nio.file.Paths;
 
-import Handler;
+import Handler.Handler;
+import exception.ResponseException;
 public class Server {
 
     public int run(int desiredPort) {
@@ -12,16 +12,15 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        //TODO: what do I do about multiple endpoints having the same path?
-        Spark.delete("/db", Handler::clearDBHandler);
-        Spark.post("/user", Handler::RegisterHandler);
-        Spark.post("/session", Handler::LoginHandler);
-        Spark.delete("/session", Handler::LogoutHandler);
-        Spark.get("/game", Handler::ListGamesHandler);
-        Spark.post("/game", Handler::CreateGamesHandler);
-        Spark.put("/game", Handler::JoinGamesHandler);
-
-        //Spark.exception(ResponseException.class, this::exceptionHandler);
+        Handler h = new Handler();
+        Spark.delete("/db", h::clearDBHandler);
+        Spark.post("/user", h::registerHandler);
+        Spark.post("/session", h::loginHandler);
+        Spark.delete("/session", h::logoutHandler);
+        Spark.get("/game", h::listGamesHandler);
+        Spark.post("/game", h::createGamesHandler);
+        Spark.put("/game", h::joinGamesHandler);
+        Spark.exception(ResponseException.class, h::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -29,5 +28,9 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    public static void main(String[] args) {
+        new Server().run(8080);
     }
 }

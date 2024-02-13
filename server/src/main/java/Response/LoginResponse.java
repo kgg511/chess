@@ -1,2 +1,5 @@
-package Response;public class LoginResponse {
-}
+package Response;
+
+
+
+public record LoginResponse(String username, String authToken) {}

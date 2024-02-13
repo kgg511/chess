@@ -1,2 +1,3 @@
-package Response;public class RegisterResponse {
-}
+package Response;
+
+public record RegisterResponse(String username, String authToken) {}

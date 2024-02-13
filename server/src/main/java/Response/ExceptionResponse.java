@@ -1,2 +1,4 @@
-package Response;public class ExceptionResponse {
+package Response;
+
+public record ExceptionResponse(String message) {
 }
