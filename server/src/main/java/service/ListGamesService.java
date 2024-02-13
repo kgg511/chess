@@ -15,8 +15,6 @@ public class ListGamesService extends BaseService{
         if(auth == null){
             throw new ResponseException(401, "Error: unauthorized");
         }
-        System.out.println("the gamez: " + this.getGameDB().getGames().get(0).toString());
-
 
         return new ListGamesResponse(this.getGameDB().getGames());
     }

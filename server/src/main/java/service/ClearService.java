@@ -26,6 +26,7 @@ public class ClearService extends BaseService{
 
     private void clearGame() throws DataAccessException{
         this.getGameDB().clearGame();
+        System.out.println("game has been cleared");
     }
 
 }

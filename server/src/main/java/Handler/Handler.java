@@ -150,7 +150,6 @@ public class Handler {
         try{
             ClearService clearService = new ClearService();
             clearService.clearDB();
-
             res.status(200);
             return new Gson().toJson(null);
         }

@@ -19,7 +19,6 @@ public class UserDAO {
 
     public boolean insertUser(UserData user){
         this.UserDB.add(user);
-        System.out.println("SIZE:" + UserDB.size());
         return true;
     }
 
@@ -29,7 +28,6 @@ public class UserDAO {
     }
 
     public UserData getUser(String username) throws DataAccessException{
-        System.out.println("getUser function USERDAO the db length is " + this.UserDB.size());
         for(UserData u: UserDB){
             if(u.username().equals(username)){
                 return u;
