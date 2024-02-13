@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.*;
 import service.ClearService;
 import service.LoginService;
+import service.LogoutService;
 import service.RegisterService;
 import spark.*;
 import dataAccess.*;
@@ -35,11 +36,10 @@ public class Handler {
 
     //{username, password}
     public String loginHandler(Request req, Response res){
-        if (req.body() == null || req.body().isEmpty()){
-            res.status(400);
-            return new Gson().toJson(new ExceptionResponse("Error: bad request"));
-        }
         try{
+            if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
+                throw new ResponseException(400, "Error: bad request");
+            }
             UserData user = new Gson().fromJson(req.body(), UserData.class);
             LoginService service = new LoginService(new AuthDAO(), new GameDAO(), new UserDAO());
             LoginResponse r = service.login(user.username(), user.password());
@@ -53,14 +53,25 @@ public class Handler {
 
     //headers contain authorization: <authToken>
     public String logoutHandler(Request req, Response res){
-        //TODO: error if no authtoken header
+        //TODO: do i care if they pass in a body which is unnecessaru
+        try{
+            String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
+            if(authToken == null){
+                throw new ResponseException(400, "Error: bad request");
+            }
+            LogoutService service = new LogoutService(new AuthDAO(), new GameDAO(), new UserDAO());
+            LogoutResponse r = service.logout(authToken);
+            res.status(200);
+            return new Gson().toJson(r);
 
-        String authToken = req.headers("authorization");
-        if(authToken == null){
-            //throw error;
-            res.status(400);
         }
-        return null;
+        catch (ResponseException e){
+            return new Gson().toJson(exceptionHandler(e, req, res));
+        }
+        catch (DataAccessException e ){
+            return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
+        }
+
     }
 
     //authToken header
