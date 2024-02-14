@@ -55,6 +55,13 @@ public class GameDAO {
         return null;
     }
 
+    public GameData getGameByName(String gameName) throws DataAccessException{
+        for(GameData g: GameDB){
+            if(g.gameName().equals(gameName)){return g;}
+        }
+        return null;
+    }
+
     public boolean updateGame(GameData game) throws DataAccessException{
         //updates game based on id if it exists
         GameData old = getGameById(game.gameID());
@@ -65,6 +72,7 @@ public class GameDAO {
         }
         return false; //game not in database
     }
+
 
     public void clearGame() throws DataAccessException {
         GameDB.clear();

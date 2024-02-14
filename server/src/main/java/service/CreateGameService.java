@@ -16,6 +16,9 @@ public class CreateGameService extends BaseService{
         if(auth == null){
             throw new ResponseException(401, "Error: unauthorized");
         }
+        else if(this.getGameDB().getGameByName(gameName) != null){
+            throw new ResponseException(400, "Error: bad request: Game name in use");
+        }
 
         GameData game = this.getGameDB().createGame(this.getGameDB().numGames(), "", "", gameName, null);
         int id = this.getGameDB().insertGame(game);
