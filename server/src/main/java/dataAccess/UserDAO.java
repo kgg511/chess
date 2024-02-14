@@ -27,6 +27,10 @@ public class UserDAO {
         return removed;
     }
 
+    public boolean isEmpty(){
+        return this.UserDB.size() == 0;
+    }
+
     public UserData getUser(String username) throws DataAccessException{
         for(UserData u: UserDB){
             if(u.username().equals(username)){

@@ -151,7 +151,8 @@ public class Handler {
             ClearService clearService = new ClearService();
             clearService.clearDB();
             res.status(200);
-            return new Gson().toJson(null);
+            return "{}";
+
         }
         catch (DataAccessException e) {
             return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));

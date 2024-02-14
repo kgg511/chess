@@ -34,6 +34,10 @@ public class GameDAO {
         return removed;
     }
 
+    public boolean isEmpty(){
+        return this.GameDB.size() == 0;
+    }
+
     public ArrayList<GameData> getGames() throws DataAccessException{
         //for each game, take out the ChessGame
         return this.GameDB;

@@ -23,7 +23,7 @@ public class LoginService extends BaseService{
         return R;
     }
 
-    public boolean checkPassword(UserData user, String password){
+    private boolean checkPassword(UserData user, String password){
         return user.password().equals(password);
     }
 

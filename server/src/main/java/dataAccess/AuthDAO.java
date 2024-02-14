@@ -30,6 +30,9 @@ public class AuthDAO {
         return removed;
     }
 
+    public boolean isEmpty(){
+        return this.AuthDB.size() == 0;
+    }
     public boolean deleteByToken(String authToken) throws DataAccessException{
         for(AuthData a: AuthDB){
             if(a.authToken().equals(authToken)){
