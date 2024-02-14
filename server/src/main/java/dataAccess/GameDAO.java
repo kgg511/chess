@@ -10,7 +10,7 @@ import java.util.ArrayList;
 //talks to the Game DB
 public class GameDAO {
     private static GameDAO instance;
-    private static ArrayList<GameData> GameDB = new ArrayList<GameData>();
+    private static ArrayList<GameData> gameDB = new ArrayList<GameData>();
 
     public static synchronized GameDAO getInstance() {
         if (instance == null) {
@@ -22,59 +22,45 @@ public class GameDAO {
                         chess.ChessGame game){
         return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
-
-    //TODO: how to autofill id?
     public int insertGame(GameData game) throws DataAccessException{
-        this.GameDB.add(game);
+        this.gameDB.add(game);
         return game.gameID();
     }
-
     public boolean deleteGame(GameData game) throws DataAccessException{
-        boolean removed = this.GameDB.remove(game);
+        boolean removed = this.gameDB.remove(game);
         return removed;
     }
-
     public boolean isEmpty(){
-        return this.GameDB.size() == 0;
+        return this.gameDB.size() == 0;
     }
-
     public ArrayList<GameData> getGames() throws DataAccessException{
-        return this.GameDB;
+        return this.gameDB;
     }
-
     public GameData getGameById(int id) throws DataAccessException{
-        for(GameData g: GameDB){
+        for(GameData g: gameDB){
             if(g.gameID() == id){return g;}
         }
         return null;
     }
-
     public GameData getGameByName(String gameName) throws DataAccessException{
-        for(GameData g: GameDB){
+        for(GameData g: gameDB){
             if(g.gameName().equals(gameName)){return g;}
         }
         return null;
     }
-
-
-
     public boolean updateGame(GameData game) throws DataAccessException{
         //updates game based on id if it exists
         GameData old = getGameById(game.gameID());
         if(old != null){
-            this.GameDB.set(this.GameDB.indexOf(old), game);
+            this.gameDB.set(this.gameDB.indexOf(old), game);
             return true;
         }
         return false; //game not in database
     }
-
-
     public void clearGame() throws DataAccessException {
-        GameDB.clear();
+        gameDB.clear();
     }
-
     public int numGames() throws DataAccessException{
-        return GameDB.size();
+        return gameDB.size();
     }
-
 }

@@ -5,7 +5,7 @@ import javax.xml.crypto.Data;
 import java.util.ArrayList;
 public class UserDAO {
     private static UserDAO instance = null;
-    private ArrayList<UserData> UserDB = new ArrayList<UserData>();
+    private ArrayList<UserData> userDB = new ArrayList<UserData>();
 
     public static synchronized UserDAO getInstance() {
         if (instance == null) {
@@ -18,31 +18,25 @@ public class UserDAO {
     }
 
     public boolean insertUser(UserData user){
-        this.UserDB.add(user);
+        this.userDB.add(user);
         return true;
     }
-
     public boolean deleteUser(UserData user) throws DataAccessException{
-        boolean removed = this.UserDB.remove(user);
+        boolean removed = this.userDB.remove(user);
         return removed;
     }
-
     public boolean isEmpty(){
-        return this.UserDB.size() == 0;
+        return this.userDB.size() == 0;
     }
-
     public UserData getUser(String username) throws DataAccessException{
-        for(UserData u: UserDB){
+        for(UserData u: userDB){
             if(u.username().equals(username)){
                 return u;
             }
         }
         return null;
     }
-
-    //no update method currently
     public void clearUser() throws DataAccessException{
-        UserDB.clear();
+        userDB.clear();
     }
-
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**fetches from Auth DB*/
 public class AuthDAO {
     private static AuthDAO instance = null;
-    private ArrayList<AuthData> AuthDB = new ArrayList<AuthData>();
+    private ArrayList<AuthData> authDB = new ArrayList<AuthData>();
     //singleton
     public static synchronized AuthDAO getInstance() {
         if (instance == null) {
@@ -16,53 +16,44 @@ public class AuthDAO {
         }
         return instance;
     }
-    AuthData createAuth(String authToken, String username){
-        return new model.AuthData(authToken, username);
-    }
     public boolean insertAuth(AuthData auth){
-        this.AuthDB.add(auth);
-        System.out.println("AUTHDB LENGTH:" + this.AuthDB.size());
+        this.authDB.add(auth);
         return true;
     }
 
     public boolean deleteAuth(AuthData auth) throws DataAccessException{ //returns false if it didn't have anything to delete
-       boolean removed = this.AuthDB.remove(auth);
-        return removed;
+       return this.authDB.remove(auth);
     }
-
     public boolean isEmpty(){
-        return this.AuthDB.size() == 0;
+        return this.authDB.size() == 0;
     }
     public boolean deleteByToken(String authToken) throws DataAccessException{
-        for(AuthData a: AuthDB){
+        for(AuthData a: authDB){
             if(a.authToken().equals(authToken)){
                 System.out.println("auth removed");
-                AuthDB.remove(a);
+                authDB.remove(a);
                 return true;
             }
         }
         return false;
     }
-
     public AuthData getAuth(String username) throws DataAccessException{
-        for(AuthData a: AuthDB){
+        for(AuthData a: authDB){
             if(a.username().equals(username)){
                 return a;
             }
         }
         return null; //do i have to manually throw the exception
     }
-
     public AuthData getAuthByToken(String authToken) throws DataAccessException{
-        for(AuthData a: AuthDB){
+        for(AuthData a: authDB){
             if(a.authToken().equals(authToken)){
                 return a;
             }
         }
         return null;
     }
-
     public void clearAuth() throws DataAccessException {
-        AuthDB.clear();
+        authDB.clear();
     }
 }

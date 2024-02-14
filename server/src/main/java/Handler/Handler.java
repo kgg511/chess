@@ -13,18 +13,12 @@ import java.util.List;
 
 public class Handler {
     //handlers convert JSON -> Java and Java -> JSON
-
-    //{ "username":"", "password":"", "email":"" }
     public String registerHandler(Request req, Response res){
-        //TODO: how do I handle error of nothing passed in? Or, not everything?
         try{
-            if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
-                throw new ResponseException(400, "Error: bad request");
-            }
+            checkBodyAuth(req, true, false, "");
             UserData user = new Gson().fromJson(req.body(), UserData.class);
             RegisterService service = new RegisterService();
             RegisterResponse r = service.register(user.username(), user.password(), user.email());
-            //[200] { "username":"", "authToken":"" }
             res.status(200);
             return new Gson().toJson(r);
         }
@@ -34,15 +28,11 @@ public class Handler {
         catch (DataAccessException e){
             return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
         }
-
     }
 
-    //{username, password}
     public String loginHandler(Request req, Response res){
         try{
-            if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
-                throw new ResponseException(400, "Error: bad request");
-            }
+            checkBodyAuth(req, true, false, "");
             UserData user = new Gson().fromJson(req.body(), UserData.class);
             LoginService service = new LoginService();
             LoginResponse r = service.login(user.username(), user.password());
@@ -57,14 +47,10 @@ public class Handler {
         }
     }
 
-    //headers contain authorization: <authToken>
     public String logoutHandler(Request req, Response res){
-        //TODO: do i care if they pass in a body which is unnecessaru
         try{
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
-            if(authToken == null){
-                throw new ResponseException(400, "Error: bad request");
-            }
+            checkBodyAuth(req, false, true, authToken);
             LogoutService service = new LogoutService();
             LogoutResponse r = service.logout(authToken);
             res.status(200);
@@ -80,14 +66,10 @@ public class Handler {
 
     }
 
-    //authToken header
     public String listGamesHandler(Request req, Response res){
         try{
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
-            if(authToken == null){
-                throw new ResponseException(400, "Error: bad request");
-            }
-
+            checkBodyAuth(req, false, true, authToken);
             ListGamesService service = new ListGamesService();
             ListGamesResponse r = service.listGames(authToken);
             res.status(200);
@@ -101,13 +83,10 @@ public class Handler {
         }
     }
 
-    //{ "gameName":"" }
     public String createGamesHandler(Request req, Response res){
         try{
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
-            if(authToken == null || req.body() == null || req.body().isEmpty()){
-                throw new ResponseException(400, "Error: bad request");
-            }
+            checkBodyAuth(req, true, true, authToken);
             GameData g = new Gson().fromJson(req.body(), GameData.class);
             CreateGameService service = new CreateGameService();
             CreateGameResponse r = service.createGame(authToken, g.gameName());
@@ -122,15 +101,10 @@ public class Handler {
         }
     }
 
-    //header authorization
-    //body { "playerColor":"WHITE/BLACK", "gameID": 1234 }
-    //oh no what if playercolor not similar enough
     public String joinGameHandler(Request req, Response res){
         try{
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
-            if(authToken == null || req.body() == null || req.body().isEmpty()){
-                throw new ResponseException(400, "Error: bad request");
-            }
+            checkBodyAuth(req, true, true, authToken);
             JoinGameRequest g = new Gson().fromJson(req.body(), JoinGameRequest.class);
             System.out.println("your join game request is " + g.toString());
             JoinGameService service = new JoinGameService();
@@ -152,22 +126,28 @@ public class Handler {
             clearService.clearDB();
             res.status(200);
             return "{}";
-
         }
         catch (DataAccessException e) {
             return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
         }
-
     }
 
-    //None for clear data because there's no serialization stuff
-
-
-
     public ExceptionResponse exceptionHandler(ResponseException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         return new ExceptionResponse(ex.getMessage());
     }
 
+    private void checkBodyAuth(Request req, boolean body, boolean auth, String authToken) throws ResponseException{
+        if(body){
+            if (req.body() == null || req.body().isEmpty()){ //if didn't pass in stuff
+                throw new ResponseException(400, "Error: bad request");
+            }
+        }
+        if(auth){
+            if(authToken == null){
+                throw new ResponseException(400, "Error: bad request");
+            }
+        }
 
+    }
 }
