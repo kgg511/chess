@@ -16,9 +16,9 @@ public class LogoutServiceTest {
     public void testLogoutPositive() throws DataAccessException{
         try{
             LogoutService s = new LogoutService();
-            s.getAuthDB().insertAuth(new AuthData("ajskdfhjkadf", "kgg9"));
+            s.getAuthDB().insertAuth(new AuthData("ajskdfhjkadf", "beepo"));
             LogoutResponse r = s.logout("ajskdfhjkadf");
-            assert s.getAuthDB().getAuth("kgg9") == null;
+            assert s.getAuthDB().getAuth("beepo") == null;
             assert r != null;
         }
         catch (Exception e) {

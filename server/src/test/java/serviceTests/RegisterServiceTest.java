@@ -15,10 +15,10 @@ public class RegisterServiceTest {
     public void testRegisterPositive() throws DataAccessException{
         try{
             RegisterService s = new RegisterService();
-            RegisterResponse r = s.register("kgg9", "1234", "k@email");
+            RegisterResponse r = s.register("joe", "1234", "k@email");
             //added to user and auth
-            assert s.getUserDB().getUser("kgg9") != null;
-            assert s.getAuthDB().getAuth("kgg9") != null;
+            assert s.getUserDB().getUser("joe") != null;
+            assert s.getAuthDB().getAuth("joe") != null;
             assert r != null;
             assert r.authToken() != null;
 

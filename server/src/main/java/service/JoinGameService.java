@@ -14,12 +14,13 @@ public class JoinGameService extends BaseService{
 
     public JoinGameResponse joinGame(String authToken, String clientColor,
                               int gameid) throws DataAccessException, ResponseException {
+        if(gameid <= 0){throw new ResponseException(400, "400 Bad Request: error due to invalid gameid");}
         AuthData auth = this.verifyUser(authToken);
         GameData game = this.getGame(gameid);
         game = this.addUserToGame(auth.username(), clientColor, game);
         boolean updated = this.getGameDB().updateGame(game); //make sure no weird objects stuff can mess it up
         if(!updated){ //the game passed in was not already in the game dictionary
-            throw new ResponseException(404, "Game to be updated not found in existing dictionary");
+            throw new ResponseException(404, "404 error: Game to be updated not found in existing dictionary");
         }
         return new JoinGameResponse();
     }

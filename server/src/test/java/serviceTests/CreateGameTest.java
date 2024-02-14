@@ -33,7 +33,7 @@ public class CreateGameTest {
         //try to create game but gameName is already in use
         CreateGameService s = new CreateGameService();
         s.getAuthDB().insertAuth(new AuthData("22", "kgg9"));
-        s.getGameDB().insertGame(new GameData(0, "null", "null", "cookie", null));
+        s.getGameDB().insertGame(new GameData(0, null, null, "cookie", null));
 
         assertThrows(ResponseException.class, () -> {
             s.createGame("22","cookie");

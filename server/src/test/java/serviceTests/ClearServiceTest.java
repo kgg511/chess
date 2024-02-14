@@ -13,7 +13,7 @@ public class ClearServiceTest {
         ClearService c = new ClearService();
         c.getAuthDB().insertAuth(new AuthData("asdfjksgs", "kgg9"));
         c.getUserDB().insertUser(new UserData("kgg9", "1234", "k@email"));
-        c.getGameDB().insertGame(new GameData(0, "", "", "best game", null));
+        c.getGameDB().insertGame(new GameData(0, null, null, "best game", null));
         c.clearDB();
         assert c.getGameDB().isEmpty();
         assert c.getUserDB().isEmpty();
