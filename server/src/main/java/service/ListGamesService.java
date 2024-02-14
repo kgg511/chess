@@ -20,6 +20,4 @@ public class ListGamesService extends BaseService{
     }
 
 
-
-
 }
