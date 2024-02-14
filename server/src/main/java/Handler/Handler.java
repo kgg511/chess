@@ -106,7 +106,6 @@ public class Handler {
             String authToken = req.headers("authorization"); //CASE: didn't pass in authToken
             checkBodyAuth(req, true, true, authToken);
             JoinGameRequest g = new Gson().fromJson(req.body(), JoinGameRequest.class);
-            System.out.println("your join game request is " + g.toString());
             JoinGameService service = new JoinGameService();
             JoinGameResponse r = service.joinGame(authToken, g.playerColor(), g.gameID());
             res.status(200);
