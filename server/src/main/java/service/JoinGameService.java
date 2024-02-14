@@ -24,11 +24,11 @@ public class JoinGameService extends BaseService{
         return new JoinGameResponse();
     }
 
-    GameData getGame(int gameid) throws DataAccessException{
+    private GameData getGame(int gameid) throws DataAccessException{
         return this.getGameDB().getGameById(gameid);
     }
 
-    GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
+    private GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
         //if(clientColor == null){} //add as spectator. Maybe phase 6?
         if(clientColor.equals("WHITE")){
             System.out.println("I shall join white");
