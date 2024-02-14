@@ -26,7 +26,7 @@ public class JoinGameService extends BaseService{
         return this.getGameDB().getGameById(gameid);
     }
     private GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
-        if(clientColor == null){return game;} //add as spectator. Maybe phase 6?
+        if(clientColor == null || clientColor.equals("empty") || clientColor.equals("")){return game;} //add as spectator. Maybe phase 6?
         else if(clientColor.equals("WHITE")){
             if(game.whiteUsername() != null){throw new ResponseException(403, "Error: already taken");}
             return new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
@@ -35,6 +35,8 @@ public class JoinGameService extends BaseService{
             if(game.blackUsername() != null){throw new ResponseException(403, "Error: already taken");}
             return new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         }
-        return game;
+        else{
+            throw new ResponseException(400, "400 Error: That's not a valid join option");
+        }
     }
 }
