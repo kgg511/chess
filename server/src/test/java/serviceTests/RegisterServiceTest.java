@@ -8,9 +8,6 @@ import model.*;
 import Response.*;
 
 public class RegisterServiceTest {
-
-    //register(String username, String password, String email)
-
     @Test
     public void testRegisterPositive() throws DataAccessException{
         try{

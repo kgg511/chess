@@ -8,9 +8,6 @@ import model.*;
 import Response.*;
 
 public class JoinGameTest {
-    //joinGame(String authToken, String clientColor,
-    //                              int gameid)
-
     @Test
     public void testJoinGamePositive() throws DataAccessException{
         try{
@@ -33,7 +30,6 @@ public class JoinGameTest {
         JoinGameService s = new JoinGameService();
         s.getAuthDB().insertAuth(new AuthData("1234", "kgg9"));
         s.getGameDB().insertGame(new GameData(3, null, "bob", "cheetos", null));
-
         assertThrows(ResponseException.class, () -> {
             JoinGameResponse r = s.joinGame("1234", "BLACK", 3);
         });

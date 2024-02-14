@@ -9,7 +9,6 @@ import model.AuthData;
 import model.UserData;
 import java.util.UUID;
 public class BaseService {
-
     private final AuthDAO authDB;
     private final GameDAO gameDB;
     private final UserDAO userDB;
@@ -19,15 +18,12 @@ public class BaseService {
         this.gameDB = GameDAO.getInstance();
         this.userDB = UserDAO.getInstance();
     }
-
     public AuthDAO getAuthDB() {
         return authDB;
     }
-
     public GameDAO getGameDB() {
         return gameDB;
     }
-
     public UserDAO getUserDB() {return userDB;}
     protected UserData getUser(String username) throws DataAccessException{
         return this.userDB.getUser(username);
@@ -39,8 +35,6 @@ public class BaseService {
         this.authDB.insertAuth(a);
         return authToken;
     }
-
-
     protected AuthData verifyUser(String authToken) throws DataAccessException, ResponseException{
         AuthData a = this.getAuthDB().getAuthByToken(authToken);
         if(a == null){

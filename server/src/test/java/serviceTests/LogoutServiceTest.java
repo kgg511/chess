@@ -9,9 +9,6 @@ import Response.*;
 
 
 public class LogoutServiceTest {
-
-    //LogoutResponse logout(String authToken)
-
     @Test
     public void testLogoutPositive() throws DataAccessException{
         try{

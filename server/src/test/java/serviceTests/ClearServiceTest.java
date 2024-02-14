@@ -6,7 +6,6 @@ import org.junit.jupiter.api.*;
 import service.*;
 import model.*;
 
-
 public class ClearServiceTest {
     @Test
     public void testclearDB() throws DataAccessException {

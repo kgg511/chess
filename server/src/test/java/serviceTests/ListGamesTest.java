@@ -7,9 +7,6 @@ import service.*;
 import model.*;
 import Response.*;
 public class ListGamesTest {
-
-    //listGames(String authToken)
-
     @Test
     public void testListGamesPositive() throws DataAccessException{
         try{
@@ -19,7 +16,6 @@ public class ListGamesTest {
             assert r != null;
             assert r.games() != null;
             s.getGameDB().insertGame(new GameData(0, "hi", null, "coolGame", null));
-
             r = s.listGames("1234");
             assert r != null;
             assert r.games() != null;
