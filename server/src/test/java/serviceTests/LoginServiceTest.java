@@ -1,14 +1,13 @@
 package serviceTests;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
-import server.Server;
-import chess.ChessGame;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import service.*;
 import model.*;
 import Response.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 public class LoginServiceTest {
 
     //login(String username, String password)
