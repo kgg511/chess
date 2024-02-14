@@ -7,8 +7,6 @@ import service.*;
 import model.*;
 import Response.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class RegisterServiceTest {
 
     //register(String username, String password, String email)
