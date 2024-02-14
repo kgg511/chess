@@ -28,14 +28,11 @@ public class BaseService {
         return gameDB;
     }
 
-    public UserDAO getUserDB() {
-        return userDB;
-    }
-    public UserData getUser(String username) throws DataAccessException{
+    public UserDAO getUserDB() {return userDB;}
+    protected UserData getUser(String username) throws DataAccessException{
         return this.userDB.getUser(username);
     }
-    public String createAuth(String username){
-        //TODO: code to create authToken
+    protected String createAuth(String username){
         UUID uuid = UUID.randomUUID();
         String authToken = uuid.toString();
         AuthData a = new AuthData(authToken, username);
@@ -44,7 +41,7 @@ public class BaseService {
     }
 
 
-    public AuthData verifyUser(String authToken) throws DataAccessException, ResponseException{
+    protected AuthData verifyUser(String authToken) throws DataAccessException, ResponseException{
         AuthData a = this.getAuthDB().getAuthByToken(authToken);
         if(a == null){
             throw new ResponseException(401, "Error: unauthorized");

@@ -17,9 +17,9 @@ public class CreateGameTest {
             CreateGameResponse r = s.createGame("1234", "coolGame");
 
             assert r != null;
-            assert r.gameid() >= 0;
+            assert r.gameID() >= 0;
             assert s.getGameDB().getGameByName("coolGame") != null;
-            assert s.getGameDB().getGameByName("coolGame") == s.getGameDB().getGameById(r.gameid());
+            assert s.getGameDB().getGameByName("coolGame") == s.getGameDB().getGameById(r.gameID());
 
         }
         catch (Exception e) {
@@ -33,7 +33,7 @@ public class CreateGameTest {
         //try to create game but gameName is already in use
         CreateGameService s = new CreateGameService();
         s.getAuthDB().insertAuth(new AuthData("22", "kgg9"));
-        s.getGameDB().insertGame(new GameData(0, "", "", "cookie", null));
+        s.getGameDB().insertGame(new GameData(0, "null", "null", "cookie", null));
 
         assertThrows(ResponseException.class, () -> {
             s.createGame("22","cookie");

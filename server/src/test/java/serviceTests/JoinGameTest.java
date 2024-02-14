@@ -16,7 +16,7 @@ public class JoinGameTest {
         try{
             JoinGameService s = new JoinGameService();
             s.getAuthDB().insertAuth(new AuthData("1234", "kgg9"));
-            s.getGameDB().insertGame(new GameData(3, "", "", "cheetos", null));
+            s.getGameDB().insertGame(new GameData(3, "null", "null", "cheetos", null));
             JoinGameResponse r = s.joinGame("1234", "WHITE", 3);
             assert r != null;
             assert s.getGameDB().getGameById(3).whiteUsername().equals("kgg9");
@@ -32,7 +32,7 @@ public class JoinGameTest {
         //tried to join a game but place taken
         JoinGameService s = new JoinGameService();
         s.getAuthDB().insertAuth(new AuthData("1234", "kgg9"));
-        s.getGameDB().insertGame(new GameData(3, "", "bob", "cheetos", null));
+        s.getGameDB().insertGame(new GameData(3, "null", "bob", "cheetos", null));
 
         assertThrows(ResponseException.class, () -> {
             JoinGameResponse r = s.joinGame("1234", "BLACK", 3);

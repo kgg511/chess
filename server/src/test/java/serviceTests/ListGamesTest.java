@@ -18,7 +18,7 @@ public class ListGamesTest {
             ListGamesResponse r = s.listGames("1234");
             assert r != null;
             assert r.games() != null;
-            s.getGameDB().insertGame(new GameData(0, "hi", "", "coolGame", null));
+            s.getGameDB().insertGame(new GameData(0, "hi", "null", "coolGame", null));
 
             r = s.listGames("1234");
             assert r != null;

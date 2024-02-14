@@ -39,13 +39,7 @@ public class GameDAO {
     }
 
     public ArrayList<GameData> getGames() throws DataAccessException{
-        //for each game, take out the ChessGame
         return this.GameDB;
-        //ArrayList<ChessGame> gamez = new ArrayList<>();
-        //for(GameData g: GameDB){
-         //   gamez.add(g.game());
-        //}
-        //return gamez;
     }
 
     public GameData getGameById(int id) throws DataAccessException{
