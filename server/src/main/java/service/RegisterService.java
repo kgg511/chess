@@ -21,7 +21,11 @@ public class RegisterService extends BaseService{
         return new RegisterResponse(username, authToken);
     }
 
-    private void createUser(String username, String password, String email){
+    private void createUser(String username, String password, String email) throws ResponseException{
+        if(username == null || password == null || email == null){throw new ResponseException(400, "Error: bad request");}
+        if(username.isEmpty() || password.isEmpty() || email.isEmpty()){
+            throw new ResponseException(400, "Error: bad request");
+        }
         UserData user = this.getUserDB().createUser(username, password, email);
         this.getUserDB().insertUser(user);
     }

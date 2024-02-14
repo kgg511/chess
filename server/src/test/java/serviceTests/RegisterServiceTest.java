@@ -37,7 +37,15 @@ public class RegisterServiceTest {
         assertThrows(ResponseException.class, () -> {
             s.register("kgg9", "1234", "k@email");
         });
+    }
 
+    @Test
+    public void testRegisterNegative2() throws DataAccessException{
+        //doesn't input a password
+        RegisterService s = new RegisterService();
+        assertThrows(ResponseException.class, () -> {
+            RegisterResponse r = s.register("kgg9", "", "k@email");
+        });
     }
 
 
