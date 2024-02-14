@@ -32,13 +32,13 @@ public class JoinGameService extends BaseService{
         if(clientColor == null){return game;} //add as spectator. Maybe phase 6?
         if(clientColor.equals("WHITE")){
             System.out.println("I shall join white");
-            if(game.whiteUsername() != ""){throw new ResponseException(403, "Error: already taken");}
+            if(game.whiteUsername() != null){throw new ResponseException(403, "Error: already taken");}
             System.out.println("ooh they even have space");
             return new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
         }
         else if(clientColor.equals("BLACK")){
             System.out.println("I shall join black");
-            if(game.blackUsername() != ""){throw new ResponseException(403, "Error: already taken");}
+            if(game.blackUsername() != null){throw new ResponseException(403, "Error: already taken");}
             System.out.println("ooh they even have space");
             return new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         }

@@ -20,7 +20,7 @@ public class CreateGameService extends BaseService{
             throw new ResponseException(400, "Error: bad request: Game name in use");
         }
 
-        GameData game = this.getGameDB().createGame(this.getGameDB().numGames() + 1, "", "", gameName, null);
+        GameData game = this.getGameDB().createGame(this.getGameDB().numGames() + 1, null, null, gameName, null);
         int id = this.getGameDB().insertGame(game);
         return new CreateGameResponse(id);
     }

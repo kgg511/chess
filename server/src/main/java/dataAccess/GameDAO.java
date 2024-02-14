@@ -56,12 +56,13 @@ public class GameDAO {
         return null;
     }
 
+
+
     public boolean updateGame(GameData game) throws DataAccessException{
         //updates game based on id if it exists
         GameData old = getGameById(game.gameID());
         if(old != null){
-            deleteGame(old);
-            insertGame(game);
+            this.GameDB.set(this.GameDB.indexOf(old), game);
             return true;
         }
         return false; //game not in database
