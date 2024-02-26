@@ -192,6 +192,11 @@ public class ChessGame {
         if(!isInCheck(teamColor)){
             return false;
         }
+        return checkStale(teamColor);
+
+    }
+
+    public boolean checkStale(TeamColor teamColor){ //shared logic checkMate staleMate
         ChessPiece piece;
         ChessPiece killed;
         Collection<ChessMove> m;
@@ -228,29 +233,7 @@ public class ChessGame {
         if(isInCheck(teamColor)){ //check != stalemate
             return false;
         }
-        ChessPiece piece;
-        ChessPiece killed;
-        Collection<ChessMove> m;
-        for(int i = 1; i <= 8; i++){
-            for(int k = 1; k <= 8; k++){
-                ChessPosition p = new ChessPosition(i, k);
-                piece = this.board.getPiece(p);
-                if(piece != null && piece.getTeamColor() == teamColor){ //if there is a piece on OUR SIDE
-                    m = piece.pieceMoves(board, p);
-                    for(ChessMove move: m){
-                        killed = doMove(this.board, move, piece);
-                        if(!isInCheck(teamColor)){
-                            undoMove(this.board, move, piece, killed);
-                            return false;
-                            //if I find even one move that takes me out of stalemate, return false
-                        }
-                        undoMove(this.board, move, piece, killed);
-                    }
-                }
-            }
-        }
-        System.out.println("in stalemate");
-        return true;
+        return checkStale(teamColor);
     }
 
     /**

@@ -79,7 +79,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //how would you know what the promotion piece is? That is the player's choice????
+
         //create a list of strings
         HashSet<ChessPosition> l = null;
         if(this.color == ChessGame.TeamColor.WHITE){

@@ -2,7 +2,12 @@ package chess;
 
 import java.util.HashSet;
 
-public class MovesBlack {
+
+//forward is +1 or -1
+
+
+
+public class BothMoves{
     private ChessPiece.PieceType type;
     private boolean pawn = false;
     private ChessPosition pos;
@@ -11,16 +16,28 @@ public class MovesBlack {
     private HashSet<ChessPosition> valid;
     private int spaces;
 
-    MovesBlack(ChessPiece.PieceType type, ChessPosition pos, ChessBoard board){
+    private int forward;
+    private int left;
+
+    BothMoves(ChessPiece.PieceType type, ChessPosition pos, ChessBoard board, boolean white){
         this.type = type;
         this.pos = pos;
         this.board = board;
         this.valid = new HashSet<ChessPosition>(); //valid end positions for the piece
+
         if(type == ChessPiece.PieceType.PAWN){
             this.pawn = true;
         }
-
-
+        //white: forward: +1, right: +1, left: -1, backwards: -1
+        //black: forward: -1, right: -1, left: +1, forwards: +1
+        if(white){
+            this.forward = 1;
+            this.left = -1;
+        }
+        else{
+            this.forward = -1;
+            this.left = 1;
+        }
 
     }
 
