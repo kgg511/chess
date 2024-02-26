@@ -15,12 +15,12 @@ import java.util.HashSet;
 public class ChessPiece {
     private ChessGame.TeamColor color;
     private ChessPiece.PieceType type;
-    private Collection<ChessMove> complete_moves;
+    private Collection<ChessMove> completeMoves;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
-        this.complete_moves = new HashSet<>();
+        this.completeMoves = new HashSet<>();
     }
 
     /**
@@ -60,15 +60,15 @@ public class ChessPiece {
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
 
-        //HashSet<ChessMove> set1 = new HashSet<>(complete_moves);
-        //HashSet<ChessMove> set2 = new HashSet<>(that.complete_moves);
+        //HashSet<ChessMove> set1 = new HashSet<>(completeMoves);
+        //HashSet<ChessMove> set2 = new HashSet<>(that.completeMoves);
 
-        return color == that.color && type == that.type && Objects.equals(this.complete_moves, complete_moves);
+        return color == that.color && type == that.type && Objects.equals(this.completeMoves, completeMoves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, type, complete_moves);
+        return Objects.hash(color, type, completeMoves);
     }
 
     /**
@@ -95,25 +95,25 @@ public class ChessPiece {
 
         ChessPiece.PieceType promotionP = null;
         ChessMove move = null;
-        this.complete_moves = new HashSet<>();
-        for(ChessPosition end_position: l){ //go through the moves and make ChessMove objects
-            if(this.type == PieceType.PAWN && (end_position.getRow() == 8 || end_position.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
+        this.completeMoves = new HashSet<>();
+        for(ChessPosition endPosition: l){ //go through the moves and make ChessMove objects
+            if(this.type == PieceType.PAWN && (endPosition.getRow() == 8 || endPosition.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
                 System.out.println("SPECIAL CASE PAWN");
-                move = new ChessMove(myPosition, end_position, PieceType.ROOK);
-                this.complete_moves.add(move);
-                move = new ChessMove(myPosition, end_position, PieceType.KNIGHT);
-                this.complete_moves.add(move);
-                move = new ChessMove(myPosition, end_position, PieceType.BISHOP);
-                this.complete_moves.add(move);
-                move = new ChessMove(myPosition, end_position, PieceType.QUEEN);
-                this.complete_moves.add(move);
+                move = new ChessMove(myPosition, endPosition, PieceType.ROOK);
+                this.completeMoves.add(move);
+                move = new ChessMove(myPosition, endPosition, PieceType.KNIGHT);
+                this.completeMoves.add(move);
+                move = new ChessMove(myPosition, endPosition, PieceType.BISHOP);
+                this.completeMoves.add(move);
+                move = new ChessMove(myPosition, endPosition, PieceType.QUEEN);
+                this.completeMoves.add(move);
             }
             else{
-                move = new ChessMove(myPosition, end_position, null);
-                this.complete_moves.add(move);
+                move = new ChessMove(myPosition, endPosition, null);
+                this.completeMoves.add(move);
             }
         }
-        return this.complete_moves;
+        return this.completeMoves;
     }
 
 

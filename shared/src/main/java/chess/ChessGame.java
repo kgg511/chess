@@ -55,25 +55,25 @@ public class ChessGame {
         if(this.board.getPiece(startPosition) == null){
             return null;
         }
-        ChessPiece piece_here = this.board.getPiece(startPosition);
+        ChessPiece pieceHere = this.board.getPiece(startPosition);
         //if checkmate or stalemate, we are done
-        Collection<ChessMove> all_moves = piece_here.pieceMoves(this.board, startPosition);
-        Collection<ChessMove> remaining_moves = new HashSet<ChessMove>();
-        if(isInCheckmate(piece_here.getTeamColor()) || isInStalemate(piece_here.getTeamColor())){
+        Collection<ChessMove> allMoves = pieceHere.pieceMoves(this.board, startPosition);
+        Collection<ChessMove> remainingMoves = new HashSet<ChessMove>();
+        if(isInCheckmate(pieceHere.getTeamColor()) || isInStalemate(pieceHere.getTeamColor())){
             return Collections.emptyList();
         }
         //go to a move where we are not in check
-        for(ChessMove m: all_moves){
+        for(ChessMove m: allMoves){
             //System.out.println("How about " + m.getStartPosition() + "->" + m.getEndPosition());
-            killed = doMove(this.board, m, piece_here);
-            if(!isInCheck(piece_here.getTeamColor())){
-                remaining_moves.add(m);
+            killed = doMove(this.board, m, pieceHere);
+            if(!isInCheck(pieceHere.getTeamColor())){
+                remainingMoves.add(m);
             }
             //(ChessBoard board, ChessMove m, ChessPiece p, ChessPiece killed)
-            undoMove(this.board, m, piece_here, killed);
+            undoMove(this.board, m, pieceHere, killed);
         }
         //remove all moves which put us into check
-        return remaining_moves;
+        return remainingMoves;
 
         //allmoves is based on the original board
         //how does moving a piece on it affect it
@@ -159,21 +159,21 @@ public class ChessGame {
         //loop through the grid, if they are other side look at their valid moves, if contain kings position return true
         ChessPosition p = null;
         ChessPiece piece = null;
-        ChessPiece found_piece = null; //the piece at the end of the validmove..check if king
-        Collection<ChessMove> possible_moves = null;
+        ChessPiece foundPiece = null; //the piece at the end of the validmove..check if king
+        Collection<ChessMove> possibleMoves = null;
         for(int i = 1; i <= 8; i++){
             for(int k = 1; k <= 8; k++){
                 p = new ChessPosition(i,k); //one indexing!
                 piece = this.board.getPiece(p);
                 if(piece != null && piece.getTeamColor() != teamColor){
-                    possible_moves = piece.pieceMoves(this.board, p); //opponents possible moves;
-                    for(ChessMove move: possible_moves){ //are any of these the kings position??
-                        found_piece = this.board.getPiece(move.getEndPosition());
-                        if(found_piece != null && found_piece.getPieceType() == ChessPiece.PieceType.KING && found_piece.getTeamColor() == teamColor){
+                    possibleMoves = piece.pieceMoves(this.board, p); //opponents possible moves;
+                    for(ChessMove move: possibleMoves){ //are any of these the kings position??
+                        foundPiece = this.board.getPiece(move.getEndPosition());
+                        if(foundPiece != null && foundPiece.getPieceType() == ChessPiece.PieceType.KING && foundPiece.getTeamColor() == teamColor){
                             return true; //if this piece can kill our king then its check
                         }
                     }
-                    possible_moves = null;
+                    possibleMoves = null;
                 }
             }
         }

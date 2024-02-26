@@ -70,7 +70,7 @@ public class MovesWhite {
 
         for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + temp; i++){
             p = new ChessPosition(i, this.pos.getColumn());
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -89,7 +89,7 @@ public class MovesWhite {
         ChessPosition p;
         for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - spaces; i--){
             p = new ChessPosition(i, this.pos.getColumn());
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -109,7 +109,7 @@ public class MovesWhite {
         for(int i = this.pos.getColumn() - 1; i >= this.pos.getColumn() - spaces; i--){
 
             p = new ChessPosition(this.pos.getRow(), i);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -125,7 +125,7 @@ public class MovesWhite {
         //RIGHT
         for(int i = this.pos.getColumn() + 1; i <= this.pos.getColumn() + spaces; i++){
             p = new ChessPosition(this.pos.getRow(), i);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -147,7 +147,7 @@ public class MovesWhite {
         int j = this.pos.getColumn() - 1;
         for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + spaces; i++){
             p = new ChessPosition(i, j);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 if(!this.pawn){ //pawn can only go diag IF there's someone to kill
@@ -166,7 +166,7 @@ public class MovesWhite {
         j = this.pos.getColumn() + 1;
         for(int i = this.pos.getRow() + 1; i <= this.pos.getRow() + spaces; i++){
             p = new ChessPosition(i, j);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 if(!this.pawn){ //pawn can only go diag IF there's someone to kill
@@ -193,7 +193,7 @@ public class MovesWhite {
         int j = this.pos.getColumn() - 1;
         for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - spaces; i--){
             p = new ChessPosition(i, j);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -211,7 +211,7 @@ public class MovesWhite {
         j = this.pos.getColumn() + 1;
         for(int i = this.pos.getRow() - 1; i >= this.pos.getRow() - spaces; i--){
             p = new ChessPosition(i, j);
-            if(!in_bounds(p)){continue;}
+            if(!inBounds(p)){continue;}
 
             if(board.getPiece(p) == null){
                 valid.add(p);
@@ -234,7 +234,7 @@ public class MovesWhite {
         //if in bounds && if there is someone there they are not our color
         // r+2, c-1
         ChessPosition p = new ChessPosition(r+2, c-1);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -247,7 +247,7 @@ public class MovesWhite {
 
         // r+2, c+1
         p = new ChessPosition(r+2, c+1);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -260,7 +260,7 @@ public class MovesWhite {
 
         // r-2, c+1
         p = new ChessPosition(r-2, c+1);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -273,7 +273,7 @@ public class MovesWhite {
 
         //r-2, c-1
         p = new ChessPosition(r-2, c-1);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -286,7 +286,7 @@ public class MovesWhite {
 
         //r+1, c+2
         p = new ChessPosition(r+1, c+2);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -299,7 +299,7 @@ public class MovesWhite {
 
         //r-1, c+2
         p = new ChessPosition(r-1, c+2);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -312,7 +312,7 @@ public class MovesWhite {
 
         //r+1, c-2
         p = new ChessPosition(r+1, c-2);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -325,7 +325,7 @@ public class MovesWhite {
 
         //r-1, c-2
         p = new ChessPosition(r-1, c-2);
-        if(in_bounds(p)){
+        if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
             }
@@ -337,7 +337,7 @@ public class MovesWhite {
         }
     }
 
-    public boolean in_bounds(ChessPosition pos){
+    public boolean inBounds(ChessPosition pos){
         return pos.getColumn() <= 8 && pos.getColumn() >= 1 && pos.getRow() >= 1 && pos.getRow() <=8;
     }
 
