@@ -227,11 +227,8 @@ public class MovesWhite {
     }
 
     public void horse(){
-        //8 moves, lets work them out on paper
         int r = this.pos.getRow();
         int c = this.pos.getColumn();
-
-        //if in bounds && if there is someone there they are not our color
         // r+2, c-1
         ChessPosition p = new ChessPosition(r+2, c-1);
         if(inBounds(p)){
@@ -244,7 +241,6 @@ public class MovesWhite {
                 }
             }
         }
-
         // r+2, c+1
         p = new ChessPosition(r+2, c+1);
         if(inBounds(p)){
@@ -257,7 +253,6 @@ public class MovesWhite {
                 }
             }
         }
-
         // r-2, c+1
         p = new ChessPosition(r-2, c+1);
         if(inBounds(p)){
@@ -270,7 +265,6 @@ public class MovesWhite {
                 }
             }
         }
-
         //r-2, c-1
         p = new ChessPosition(r-2, c-1);
         if(inBounds(p)){
@@ -283,7 +277,6 @@ public class MovesWhite {
                 }
             }
         }
-
         //r+1, c+2
         p = new ChessPosition(r+1, c+2);
         if(inBounds(p)){
@@ -296,7 +289,6 @@ public class MovesWhite {
                 }
             }
         }
-
         //r-1, c+2
         p = new ChessPosition(r-1, c+2);
         if(inBounds(p)){
@@ -309,7 +301,6 @@ public class MovesWhite {
                 }
             }
         }
-
         //r+1, c-2
         p = new ChessPosition(r+1, c-2);
         if(inBounds(p)){
@@ -322,7 +313,6 @@ public class MovesWhite {
                 }
             }
         }
-
         //r-1, c-2
         p = new ChessPosition(r-1, c-2);
         if(inBounds(p)){

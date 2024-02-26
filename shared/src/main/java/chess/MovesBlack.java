@@ -265,7 +265,6 @@ public class MovesBlack {
                 }
             }
         }
-
         //r-2, c-1
         p = new ChessPosition(r-2, c-1);
         if(inBounds(p)){
@@ -278,7 +277,6 @@ public class MovesBlack {
                 }
             }
         }
-
         //r+1, c+2
         p = new ChessPosition(r+1, c+2);
         if(inBounds(p)){
@@ -291,7 +289,6 @@ public class MovesBlack {
                 }
             }
         }
-
         //r-1, c+2
         p = new ChessPosition(r-1, c+2);
         if(inBounds(p)){
@@ -304,7 +301,6 @@ public class MovesBlack {
                 }
             }
         }
-
         //r+1, c-2
         p = new ChessPosition(r+1, c-2);
         if(inBounds(p)){
@@ -317,7 +313,6 @@ public class MovesBlack {
                 }
             }
         }
-
         //r-1, c-2
         p = new ChessPosition(r-1, c-2);
         if(inBounds(p)){
