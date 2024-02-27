@@ -66,21 +66,34 @@ public class MovesBoth {
         return this.valid;
     }
 
-    public boolean forwardInside(int i){
-        ChessPosition p;
-        p = new ChessPosition(i, this.pos.getColumn());
-        if(!inBounds(p)){return true;} //go to the next loop by returning early
+    //pawnKill is only set for forwardDiag
+    //
 
+
+    public boolean checkMove(ChessPosition p, boolean pawnKill){
+        //if pawnKill then allow for killing
+        if(!inBounds(p)){return true;} //go to the next loop by returning early
         if(board.getPiece(p) == null){
+            if(pawnKill && pawn){return true;} //if diagonal then pawn can't kill forward
             valid.add(p);
         }
+
         else if(board.getPiece(p) != null){ //yes IF we are not a pawn and its the other side
-            if(board.getPiece(p).getTeamColor() != this.color && !this.pawn){
-                valid.add(p);
+            if(board.getPiece(p).getTeamColor() != this.color){
+                if(pawnKill && this.pawn){System.out.println("I am a pawn and ready to kill");}
+                if(pawnKill || !this.pawn){ //pawn can only kill on forward diag
+                    valid.add(p);
+                }
             }
             return false; //break if this returns false
         }
         return true;
+    }
+
+    public boolean forwardInside(int i){
+        ChessPosition p;
+        p = new ChessPosition(i, this.pos.getColumn());
+        return checkMove(p, false);
     }
     public void forward(){ //move up rows
         //pawn can move 2, pawn cannot kill
@@ -101,18 +114,7 @@ public class MovesBoth {
     public boolean backwardInside(int i){
         ChessPosition p;
         p = new ChessPosition(i, this.pos.getColumn());
-        if(!inBounds(p)){return true;}
-
-        if(board.getPiece(p) == null){
-            valid.add(p);
-        }
-        else if(board.getPiece(p) != null){ //yes IF we are not a pawn and its the other side
-            if(board.getPiece(p).getTeamColor() != this.color){
-                valid.add(p);
-            }
-            return false;
-        }
-        return true;
+        return checkMove(p, false);
     }
     public void backward(){
         if(white){
@@ -168,40 +170,13 @@ public class MovesBoth {
     public boolean forwardDiagLeftInside(int i, int j){
         ChessPosition p;
         p = new ChessPosition(i, j);
-        if(!inBounds(p)){return true;}
-
-        if(board.getPiece(p) == null){
-            if(!this.pawn){ //pawn can only go diag IF there's someone to kill
-                valid.add(p);
-            }
-        }
-        else if(board.getPiece(p) != null){ //someone there nad its not our side
-            if(board.getPiece(p).getTeamColor() != this.color){
-                valid.add(p);
-            }
-            return false;
-        }
-        return true;
+        return checkMove(p, true);
     }
     public boolean forwardDiagRightInside(int i, int j){
         ChessPosition p;
         p = new ChessPosition(i, j);
-        if(!inBounds(p)){return true;}
-
-        if(board.getPiece(p) == null){
-            if(!this.pawn){ //pawn can only go diag IF there's someone to kill
-                valid.add(p);
-            }
-        }
-        else if(board.getPiece(p) != null){ //someone there nad its not our side
-            if(board.getPiece(p).getTeamColor() != this.color){
-                valid.add(p);
-            }
-            return false;
-        }
-        return true;
+        return checkMove(p, true);
     }
-
 
     public void forwardDiag(){
         //i for row, j for col
@@ -238,35 +213,15 @@ public class MovesBoth {
     public boolean backwardDiagLeftInside(int i, int j){
         ChessPosition p;
         p = new ChessPosition(i, j);
-        if(!inBounds(p)){return true;}
-
-        if(board.getPiece(p) == null){
-            valid.add(p);
-        }
-        else if(board.getPiece(p) != null){ //someone there nad its not our side
-            if(board.getPiece(p).getTeamColor() != this.color){
-                valid.add(p);
-            }
-            return false;
-        }
-        return true;
+        return checkMove(p, false);
     }
+
+
 
     public boolean backwardDiagRightInside(int i, int j){
         ChessPosition p;
         p = new ChessPosition(i, j);
-        if(!inBounds(p)){return true;}
-
-        if(board.getPiece(p) == null){
-            valid.add(p);
-        }
-        else if(board.getPiece(p) != null){ //someone there nad its not our side
-            if(board.getPiece(p).getTeamColor() != this.color){
-                valid.add(p);
-            }
-            return false;
-        }
-        return true;
+        return checkMove(p, false);
 
     }
     public void backwardDiag(){ //no pawn stuff
