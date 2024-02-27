@@ -16,20 +16,6 @@ public class ChessBoard {
          //uncaptured pieces
         this.grid = new ChessPiece[8][8];
     }
-
-    public void showBoard() {
-        //ArrayList<ChessPiece> pieces
-        System.out.println("It's time to print out the board! :)");
-        //print the chess pieces
-        for (int i = 0; i < this.grid.length; i++) {
-            // Iterate through columns
-            for (int j = 0; j < this.grid[i].length; j++) {
-                System.out.print(this.grid[i][j].toString() + "POSITION:" + i + ","+ j);
-            }
-            // Move to the next line after printing each row
-            System.out.println();
-        }
-    }
     /**
      * Adds a chess piece to the chessboard
      *

@@ -33,14 +33,7 @@ public class AuthDAO {
         }
         return false;
     }
-    public AuthData getAuth(String username) throws DataAccessException{
-        for(AuthData a: authDB){
-            if(a.username().equals(username)){
-                return a;
-            }
-        }
-        return null; //do i have to manually throw the exception
-    }
+
     public AuthData getAuthByToken(String authToken) throws DataAccessException{
         for(AuthData a: authDB){
             if(a.authToken().equals(authToken)){

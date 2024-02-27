@@ -131,33 +131,13 @@ public class MovesBoth {
         ChessPosition p;
         for(int i = this.pos.getColumn() - 1; i >= this.pos.getColumn() - spaces; i--){
             p = new ChessPosition(this.pos.getRow(), i);
-            if(!inBounds(p)){continue;}
-
-            if(board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else if(board.getPiece(p) != null){ //someone there nad its not our side
-                if(board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p);
-                }
-                break; //we found a piece so we are done
-            }
+            if(!checkMove(p, false)){break;}
         }
 
         //RIGHT
         for(int i = this.pos.getColumn() + 1; i <= this.pos.getColumn() + spaces; i++){
             p = new ChessPosition(this.pos.getRow(), i);
-            if(!inBounds(p)){continue;}
-
-            if(board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else if(board.getPiece(p) != null){ //someone there nad its not our side
-                if(board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p);
-                }
-                break; //we found a piece so we are done
-            }
+            if(!checkMove(p, false)){break;}
         }
     }
 
