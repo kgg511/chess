@@ -82,14 +82,14 @@ public class ChessPiece {
 
         //create a list of strings
         HashSet<ChessPosition> l = null;
+
         if(this.color == ChessGame.TeamColor.WHITE){
             //(ChessPiece.PieceType type, ChessPosition pos, ChessBoard board)
-
-            MovesWhite m = new MovesWhite(this.type, myPosition, board);
+            MovesBoth m = new MovesBoth(this.type, myPosition, board, true, ChessGame.TeamColor.WHITE);
             l = m.fillValid();
         }
         else{
-            MovesBlack m = new MovesBlack(this.type, myPosition, board);
+            MovesBoth m = new MovesBoth(this.type, myPosition, board, false, ChessGame.TeamColor.BLACK);
             l = m.fillValid();
         }
 

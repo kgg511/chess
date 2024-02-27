@@ -17,9 +17,6 @@ public class ChessBoard {
         this.grid = new ChessPiece[8][8];
     }
 
-    public ChessPiece[][] getGrid(){
-        return this.grid;
-    }
     public void showBoard() {
         //ArrayList<ChessPiece> pieces
         System.out.println("It's time to print out the board! :)");
