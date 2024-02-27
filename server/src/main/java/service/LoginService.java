@@ -14,8 +14,8 @@ public class LoginService extends BaseService{
         }
         //success case
         String authToken = this.createAuth(realUser.username());
-        LoginResponse R = new LoginResponse(realUser.username(), authToken);
-        return R;
+        LoginResponse r = new LoginResponse(realUser.username(), authToken);
+        return r;
     }
     private boolean checkPassword(UserData user, String password){
         return user.password().equals(password);

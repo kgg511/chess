@@ -21,10 +21,6 @@ public class UserDAO {
         this.userDB.add(user);
         return true;
     }
-    public boolean deleteUser(UserData user) throws DataAccessException{
-        boolean removed = this.userDB.remove(user);
-        return removed;
-    }
     public boolean isEmpty(){
         return this.userDB.size() == 0;
     }

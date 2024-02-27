@@ -20,10 +20,6 @@ public class AuthDAO {
         this.authDB.add(auth);
         return true;
     }
-
-    public boolean deleteAuth(AuthData auth) throws DataAccessException{ //returns false if it didn't have anything to delete
-       return this.authDB.remove(auth);
-    }
     public boolean isEmpty(){
         return this.authDB.size() == 0;
     }

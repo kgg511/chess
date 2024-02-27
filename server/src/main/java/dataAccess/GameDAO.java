@@ -26,10 +26,6 @@ public class GameDAO {
         this.gameDB.add(game);
         return game.gameID();
     }
-    public boolean deleteGame(GameData game) throws DataAccessException{
-        boolean removed = this.gameDB.remove(game);
-        return removed;
-    }
     public boolean isEmpty(){
         return this.gameDB.size() == 0;
     }

@@ -65,11 +65,6 @@ public class MovesBoth {
         }
         return this.valid;
     }
-
-    //pawnKill is only set for forwardDiag
-    //
-
-
     public boolean checkMove(ChessPosition p, boolean pawnKill){
         //if pawnKill then allow for killing
         if(!inBounds(p)){return true;} //go to the next loop by returning early
@@ -255,95 +250,7 @@ public class MovesBoth {
 
     }
 
-    public void horse(){
-        int r = this.pos.getRow();
-        int c = this.pos.getColumn();
-        // r+2, c-1
-        ChessPosition p = new ChessPosition(r+2, c-1);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        // r+2, c+1
-        p = new ChessPosition(r+2, c+1);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        // r-2, c+1
-        p = new ChessPosition(r-2, c+1);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        //r-2, c-1
-        p = new ChessPosition(r-2, c-1);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        //r+1, c+2
-        p = new ChessPosition(r+1, c+2);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        //r-1, c+2
-        p = new ChessPosition(r-1, c+2);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        //r+1, c-2
-        p = new ChessPosition(r+1, c-2);
-        if(inBounds(p)){
-            if(this.board.getPiece(p) == null){
-                valid.add(p);
-            }
-            else{
-                if(this.board.getPiece(p).getTeamColor() != this.color){
-                    valid.add(p); //kilzz
-                }
-            }
-        }
-        //r-1, c-2
-        p = new ChessPosition(r-1, c-2);
+    public void checkHorse(ChessPosition p){
         if(inBounds(p)){
             if(this.board.getPiece(p) == null){
                 valid.add(p);
@@ -355,6 +262,35 @@ public class MovesBoth {
             }
         }
     }
+    public void horse(){
+        int r = this.pos.getRow();
+        int c = this.pos.getColumn();
+        // r+2, c-1
+        ChessPosition p = new ChessPosition(r+2, c-1);
+        checkHorse(p);
+        // r+2, c+1
+        p = new ChessPosition(r+2, c+1);
+        checkHorse(p);
+        // r-2, c+1
+        p = new ChessPosition(r-2, c+1);
+        checkHorse(p);
+        //r-2, c-1
+        p = new ChessPosition(r-2, c-1);
+        checkHorse(p);
+        //r+1, c+2
+        p = new ChessPosition(r+1, c+2);
+        checkHorse(p);
+        //r-1, c+2
+        p = new ChessPosition(r-1, c+2);
+        checkHorse(p);
+        //r+1, c-2
+        p = new ChessPosition(r+1, c-2);
+        checkHorse(p);
+        //r-1, c-2
+        p = new ChessPosition(r-1, c-2);
+        checkHorse(p);
+    }
+
 
     public boolean inBounds(ChessPosition pos){
         return pos.getColumn() <= 8 && pos.getColumn() >= 1 && pos.getRow() >= 1 && pos.getRow() <=8;
