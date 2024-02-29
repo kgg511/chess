@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
+import java.sql.ResultSet;
 
 public class AuthDAOSQL {
     ///AuthData(String authToken, String username)
@@ -101,16 +103,65 @@ public class AuthDAOSQL {
 
 
     }
-    public boolean deleteByToken(String authToken) throws DataAccessException{
+    public boolean deleteByToken(String authToken) throws DataAccessException, ResponseException{
+        String sql = "DELETE from auth where authToken = ?";
+        int result = executeUpdate(sql, authToken); //fill statement
 
+        if(result == 0){return false;}
+        return true;
     }
-    public AuthData getAuth(String username) throws DataAccessException{
+    public ArrayList<AuthData> getAuth(String username) throws DataAccessException, ResponseException{
+        ArrayList<AuthData> auths = null;
+        String sql = "SELECT authToken, username FROM auth WHERE username = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(PreparedStatement statement = conn.prepareStatement(sql)){
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
+                auths = new ArrayList<>();
+                while(rs.next()){
+                    String token = rs.getString(1);
+                    String name = rs.getString(2);
+                    auths.add(new AuthData(token, name));
+                }
+                return auths;
+            }
+        }
+        catch (SQLException e) {
+            throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
+        }
+    }
+    public AuthData getAuthByToken(String authToken) throws DataAccessException, ResponseException{
+        ArrayList<AuthData> auths = null;
+        String sql = "SELECT authToken, username FROM auth WHERE authToken = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(PreparedStatement statement = conn.prepareStatement(sql)){
+                statement.setString(1, authToken);
+                ResultSet rs = statement.executeQuery();
+                auths = new ArrayList<>();
+                while(rs.next()){
+                    String token = rs.getString(1);
+                    String name = rs.getString(2);
+                    auths.add(new AuthData(token, name));
+                }
+                if(auths.size() >= 1){return auths.get(0);}
+                else{return null;} //null if found nothing
+            }
+        }
+        catch (SQLException e) {
+            throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
+        }
+    }
 
-    }
-    public AuthData getAuthByToken(String authToken) throws DataAccessException{
-
-    }
-    public void clearAuth() throws DataAccessException {
+    public void clearAuth() throws DataAccessException, ResponseException{
+        var statement = "drop auth if exists auth";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                int rowsChanged = ps.executeUpdate();
+                if(rowsChanged == 0){System.out.println("drop successfully");}
+            }
+        } catch (SQLException e) {
+            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
 
     }
 }
