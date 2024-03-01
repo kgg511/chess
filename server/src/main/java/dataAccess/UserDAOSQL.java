@@ -1,6 +1,5 @@
 package dataAccess;
 
-import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
