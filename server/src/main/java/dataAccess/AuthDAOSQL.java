@@ -26,11 +26,11 @@ public class AuthDAOSQL {
             CREATE TABLE IF NOT EXISTS auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(256) NOT NULL,
-              PRIMARY KEY (`authToken`),
-              foreign key(username) references user(username),
+              PRIMARY KEY (`authToken`)
             )
             """
     };
+    //foreign key(username) references user(username)
 
     private void configureDatabase() throws ResponseException, DataAccessException { //from petshop
         DatabaseManager.createDatabase();
@@ -87,7 +87,6 @@ public class AuthDAOSQL {
                 "    table_schema = 'auth' \n" +
                 "GROUP BY \n" +
                 "    table_schema;";
-
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement); java.sql.ResultSet rs = ps.executeQuery()) {
                 if(rs.next()){
@@ -106,7 +105,6 @@ public class AuthDAOSQL {
     public boolean deleteByToken(String authToken) throws DataAccessException, ResponseException{
         String sql = "DELETE from auth where authToken = ?";
         int result = executeUpdate(sql, authToken); //fill statement
-
         if(result == 0){return false;}
         return true;
     }
