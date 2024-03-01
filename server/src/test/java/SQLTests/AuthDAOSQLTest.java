@@ -52,6 +52,18 @@ public class AuthDAOSQLTest {
         }
     }
 
+    @Test
+    public void testIsEmpty(){
+        try{
+            AuthDAOSQL db = new AuthDAOSQL();
+            assertEquals(db.isEmpty(), true);
+        }
+        catch (Exception e){
+            System.out.println("Auth not inserted into DB properly: " + e.toString());
+        }
+
+    }
+
     @BeforeEach
     @Test
     public void testClearAuth(){

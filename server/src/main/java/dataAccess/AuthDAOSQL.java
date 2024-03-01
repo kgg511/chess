@@ -18,15 +18,13 @@ public class AuthDAOSQL {
         configureDatabase(); //create the database
     }
 
-    ///AuthData(String authToken, String username)
-    //NOT NULL means space can't be left empty
-    //SQL executed to create the database
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(256) NOT NULL,
-              PRIMARY KEY (`authToken`)
+              PRIMARY KEY (`authToken`),
+              foreign key(username) references user(username)
             )
             """
     };
@@ -69,8 +67,6 @@ public class AuthDAOSQL {
         }
     }
 
-
-
     public boolean insertAuth(AuthData auth) throws exception.ResponseException, dataAccess.DataAccessException{ //should we store the actual auth object
         //insert auth into the datab
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
@@ -78,29 +74,20 @@ public class AuthDAOSQL {
         return true; //return true if it works successfully?
     }
     public boolean isEmpty() throws exception.ResponseException, dataAccess.DataAccessException{
-        var statement = "SELECT \n" +
-                "    table_schema AS `Database`, \n" +
-                "    SUM(data_length + index_length) / 1024 / 1024 AS `Size (MB)` \n" +
-                "FROM \n" +
-                "    information_schema.tables \n" +
-                "WHERE \n" +
-                "    table_schema = 'auth' \n" +
-                "GROUP BY \n" +
-                "    table_schema;";
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement); java.sql.ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT COUNT(*) FROM user";
+        try(var conn = DatabaseManager.getConnection()){
+            try(PreparedStatement statement = conn.prepareStatement(sql)){
+                ResultSet rs = statement.executeQuery();
                 if(rs.next()){
-                    double sizeMB = rs.getDouble("Size (MB)");
-                    System.out.println("Database size: " + sizeMB + " MB");
-                    return sizeMB == 0;
+                    int count = rs.getInt(1);
+                    return count == 0;
                 }
-                return false; //always return something
+                return true; //does empty set mean empty table
             }
-        } catch (SQLException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
-
-
+        catch (SQLException e) {
+            throw new ResponseException(500, String.format("unable to getUser: %s, %s", sql, e.getMessage()));
+        }
     }
     public void deleteByToken(String authToken) throws DataAccessException, ResponseException{
         var statement = "DELETE from auth where authToken = ?";
