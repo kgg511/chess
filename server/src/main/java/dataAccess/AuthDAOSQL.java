@@ -102,11 +102,10 @@ public class AuthDAOSQL {
 
 
     }
-    public boolean deleteByToken(String authToken) throws DataAccessException, ResponseException{
-        String sql = "DELETE from auth where authToken = ?";
-        int result = executeUpdate(sql, authToken); //fill statement
-        if(result == 0){return false;}
-        return true;
+    public void deleteByToken(String authToken) throws DataAccessException, ResponseException{
+        var statement = "DELETE from auth where authToken = ?";
+        int result = executeUpdate(statement, authToken); //fill statement
+        System.out.println("delete by token is" + result);
     }
     public ArrayList<AuthData> getAuth(String username) throws DataAccessException, ResponseException{
         ArrayList<AuthData> auths = null;
@@ -123,7 +122,7 @@ public class AuthDAOSQL {
                 }
                 return auths;
             }
-        }
+        } //a username can have multiple authTokens, but one authToken should only have one username
         catch (SQLException e) {
             throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
         }
@@ -151,7 +150,7 @@ public class AuthDAOSQL {
     }
 
     public void clearAuth() throws DataAccessException, ResponseException{
-        var statement = "drop auth if exists auth";
+        var statement = "TRUNCATE TABLE auth;";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 int rowsChanged = ps.executeUpdate();
