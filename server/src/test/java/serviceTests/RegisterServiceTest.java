@@ -8,6 +8,19 @@ import model.*;
 import Response.*;
 
 public class RegisterServiceTest {
+
+    @BeforeEach
+    public void clearAll(){
+        try{
+            ClearService c = new ClearService();
+            c.clearDB();
+        }
+        catch (Exception e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown while clearing: " + e.getMessage());
+        }
+    }
+
     @Test
     public void testRegisterPositive() throws DataAccessException{
         try{
