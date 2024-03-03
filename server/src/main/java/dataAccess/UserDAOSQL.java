@@ -28,20 +28,12 @@ public class UserDAOSQL extends SQLShared{
             """
     };
 
-
-
     private String hashPassword(String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String hashedPassword = encoder.encode(password);
         return hashedPassword;
     }
 
-    public boolean verifyUser(String username, String providedClearTextPassword) throws DataAccessException, ResponseException{
-        // read the previously hashed password from the database
-        var hashedPassword = getUser(username).password();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(providedClearTextPassword, hashedPassword);
-    }
 
     public UserData createUser(String username, String password, String email) throws DataAccessException, ResponseException{
         return new UserData(username, password, email);
@@ -54,23 +46,6 @@ public class UserDAOSQL extends SQLShared{
         return false;
     }
 
-//    public boolean isEmpty() throws DataAccessException, ResponseException{
-//        String sql = "SELECT COUNT(*) FROM user";
-//        try(var conn = DatabaseManager.getConnection()){
-//            try(PreparedStatement statement = conn.prepareStatement(sql)){
-//                ResultSet rs = statement.executeQuery();
-//                if(rs.next()){
-//                    int count = rs.getInt(1);
-//                    return count == 0;
-//                }
-//                return true; //does empty set mean empty table
-//            }
-//        }
-//        catch (SQLException e) {
-//            throw new ResponseException(500, String.format("unable to getUser: %s, %s", sql, e.getMessage()));
-//        }
-//
-//    }
 
     //a user CANNOT have more than one
     public UserData getUser(String username) throws DataAccessException, ResponseException{

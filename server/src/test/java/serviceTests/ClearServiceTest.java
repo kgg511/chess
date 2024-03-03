@@ -15,6 +15,7 @@ public class ClearServiceTest {
     public void testclearDB() throws DataAccessException {
         try{
             ClearService c = new ClearService();
+            c.clearDB();
 
             c.getAuthDB().insertAuth(new AuthData("asdfjksgs", "kgg9"));
             c.getUserDB().insertUser(new UserData("kgg9", "1234", "k@email"));
