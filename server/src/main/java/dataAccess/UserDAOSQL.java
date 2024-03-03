@@ -28,6 +28,8 @@ public class UserDAOSQL extends SQLShared{
             """
     };
 
+
+
     private String hashPassword(String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String hashedPassword = encoder.encode(password);

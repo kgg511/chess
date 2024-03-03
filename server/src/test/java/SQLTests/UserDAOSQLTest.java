@@ -21,7 +21,6 @@ public class UserDAOSQLTest {
     //verifyUser(String username, String providedClearTextPassword)
     @Test
     public void testVerifyUser(){
-
         try{
             UserDAOSQL db = new UserDAOSQL();
             UserData data = db.createUser(user, pass, email);
@@ -35,7 +34,6 @@ public class UserDAOSQLTest {
 
 
     }
-
 
     //UserData createUser(String username, String password, String email)
     @Test
@@ -68,7 +66,6 @@ public class UserDAOSQLTest {
             db.clearDB("user");
             u = db.getUser(user);
             assertNull(u);
-
         }
         catch (Exception e){
             System.out.println("user db could not be cleared: " + e.toString());
@@ -124,7 +121,6 @@ public class UserDAOSQLTest {
 
     //isEmpty()
 
-    //getUser(String username)
 
 
 
