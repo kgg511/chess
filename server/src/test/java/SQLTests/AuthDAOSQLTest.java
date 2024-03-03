@@ -34,8 +34,6 @@ public class AuthDAOSQLTest {
         catch (Exception e){
             System.out.println("Auth not inserted into DB properly: " + e.toString());
         }
-
-
     }
     @Test
     public void testInsertAuth(){
@@ -56,10 +54,10 @@ public class AuthDAOSQLTest {
     public void testIsEmpty(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
-            assertEquals(db.isEmpty(), true);
+            assertEquals(db.isEmpty("auth"), true);
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            System.out.println("auth isEmpty failed: " + e.toString());
         }
 
     }
@@ -69,18 +67,18 @@ public class AuthDAOSQLTest {
     public void testClearAuth(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
-            db.clearAuth();
+            db.clearDB("auth");
             db.insertAuth(new AuthData(token, user)); //add user
             AuthData data = db.getAuthByToken(token);
             assertNotNull(data); //user should be there
 
-            db.clearAuth();
+            db.clearDB("auth");
             data = db.getAuthByToken(token);
             assertNull(data); //no one should be in database
 
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            System.out.println("auth not cleared properly" + e.toString());
         }
     }
 
@@ -100,7 +98,7 @@ public class AuthDAOSQLTest {
             assertNull(data); //should be removed
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            System.out.println("deleteByToken failed: " + e.toString());
         }
     }
 
@@ -120,7 +118,7 @@ public class AuthDAOSQLTest {
             assertEquals(auths.get(1).username(), user);
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            System.out.println("GetAuth failed: " + e.toString());
         }
     }
 
@@ -136,7 +134,7 @@ public class AuthDAOSQLTest {
             assertEquals(auth.authToken(), token);
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            System.out.println("GetAuthByToken failed: " + e.toString());
         }
     }
 
