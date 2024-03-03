@@ -5,7 +5,7 @@ import dataAccess.*;
 import Response.RegisterResponse;
 public class RegisterService extends BaseService{
 
-    public RegisterService() {
+    public RegisterService() throws ResponseException, DataAccessException {
         super();
     }
 
@@ -20,7 +20,7 @@ public class RegisterService extends BaseService{
         return new RegisterResponse(username, authToken);
 
     }
-    private void createUser(String username, String password, String email) throws ResponseException{
+    private void createUser(String username, String password, String email) throws ResponseException, DataAccessException{
         if(username == null || password == null || email == null){throw new ResponseException(400, "Error: bad request");}
         if(username.isEmpty() || password.isEmpty() || email.isEmpty()){
             throw new ResponseException(400, "Error: bad request");

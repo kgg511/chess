@@ -5,7 +5,7 @@ import model.*;
 import Response.ListGamesResponse;
 
 public class ListGamesService extends BaseService{
-    public ListGamesService(){
+    public ListGamesService() throws ResponseException, DataAccessException{
         super();
     }
     public ListGamesResponse listGames(String authToken) throws DataAccessException, ResponseException {

@@ -126,6 +126,9 @@ public class Handler {
             res.status(200);
             return "{}";
         }
+        catch (ResponseException e){
+            return new Gson().toJson(exceptionHandler(e, req, res));
+        }
         catch (DataAccessException e) {
             return new Gson().toJson(exceptionHandler(new ResponseException(500, "Error: description"), req, res));
         }

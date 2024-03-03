@@ -1,34 +1,31 @@
 package service;
 
-import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 import java.util.UUID;
 public class BaseService {
-    private final AuthDAO authDB;
-    private final GameDAO gameDB;
-    private final UserDAO userDB;
+    private final AuthDAOSQL authDB;
+    private final GameDAOSQL gameDB;
+    private final UserDAOSQL userDB;
 
-    public BaseService(){
-        this.authDB = AuthDAO.getInstance();
-        this.gameDB = GameDAO.getInstance();
-        this.userDB = UserDAO.getInstance();
+    public BaseService() throws ResponseException, DataAccessException{
+        this.authDB = new AuthDAOSQL();
+        this.gameDB = new GameDAOSQL();
+        this.userDB = new UserDAOSQL();
     }
-    public AuthDAO getAuthDB() {
+    public AuthDAOSQL getAuthDB() {
         return authDB;
     }
-    public GameDAO getGameDB() {
+    public GameDAOSQL getGameDB() {
         return gameDB;
     }
-    public UserDAO getUserDB() {return userDB;}
-    protected UserData getUser(String username) throws DataAccessException{
+    public UserDAOSQL getUserDB() {return userDB;}
+    protected UserData getUser(String username) throws DataAccessException, ResponseException{
         return this.userDB.getUser(username);
     }
-    protected String createAuth(String username){
+    protected String createAuth(String username) throws DataAccessException, ResponseException{
         UUID uuid = UUID.randomUUID();
         String authToken = uuid.toString();
         AuthData a = new AuthData(authToken, username);

@@ -4,24 +4,25 @@ import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
+import exception.ResponseException;
 
 public class ClearService extends BaseService{
-    public ClearService() {
+    public ClearService() throws ResponseException, DataAccessException {
         super();
     }
-    public void clearDB() throws DataAccessException{
+    public void clearDB() throws ResponseException, DataAccessException{
         this.clearAuth();
         this.clearGame();
         this.clearUser();
     }
-    private void clearAuth() throws DataAccessException {
-        this.getAuthDB().clearAuth();
+    private void clearAuth() throws ResponseException, DataAccessException {
+        this.getAuthDB().clearDB("auth");
     }
-    private void clearUser() throws DataAccessException{
-        this.getUserDB().clearUser();
+    private void clearUser() throws ResponseException, DataAccessException{
+        this.getUserDB().clearDB("user");
     }
-    private void clearGame() throws DataAccessException{
-        this.getGameDB().clearGame();
+    private void clearGame() throws ResponseException, DataAccessException{
+        this.getGameDB().clearDB("auth");
         System.out.println("game has been cleared");
     }
 }

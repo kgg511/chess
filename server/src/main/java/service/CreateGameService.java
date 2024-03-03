@@ -7,7 +7,7 @@ import model.*;
 
 public class CreateGameService extends BaseService{
 
-    public CreateGameService(){
+    public CreateGameService() throws DataAccessException, ResponseException{
         super();
     }
     public CreateGameResponse createGame(String authToken, String gameName) throws DataAccessException, ResponseException {

@@ -4,7 +4,7 @@ import exception.ResponseException;
 import model.*;
 import dataAccess.*;
 public class LoginService extends BaseService{
-    public LoginService() {
+    public LoginService() throws ResponseException, DataAccessException {
         super();
     }
     public LoginResponse login(String username, String password) throws ResponseException, DataAccessException {

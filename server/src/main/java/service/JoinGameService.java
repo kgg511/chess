@@ -7,7 +7,7 @@ import exception.ResponseException;
 import model.*;
 
 public class JoinGameService extends BaseService{
-    public JoinGameService(){
+    public JoinGameService() throws ResponseException, DataAccessException{
         super();
     }
     public JoinGameResponse joinGame(String authToken, String clientColor,
@@ -22,7 +22,7 @@ public class JoinGameService extends BaseService{
         }
         return new JoinGameResponse();
     }
-    private GameData getGame(int gameid) throws DataAccessException{
+    private GameData getGame(int gameid) throws ResponseException, DataAccessException{
         return this.getGameDB().getGameById(gameid);
     }
     private GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{

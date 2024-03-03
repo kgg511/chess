@@ -89,10 +89,12 @@ public class AuthDAOSQL extends SQLShared{
 //            throw new ResponseException(500, String.format("unable to getUser: %s, %s", sql, e.getMessage()));
 //        }
 //    }
-    public void deleteByToken(String authToken) throws DataAccessException, ResponseException{
+    public boolean deleteByToken(String authToken) throws DataAccessException, ResponseException{
         var statement = "DELETE from auth where authToken = ?";
         int result = executeUpdate(statement, authToken); //fill statement
         System.out.println("delete by token is" + result);
+        return result > 0;
+
     }
     public ArrayList<AuthData> getAuth(String username) throws DataAccessException, ResponseException{
         ArrayList<AuthData> auths = null;

@@ -8,7 +8,7 @@ import javax.xml.crypto.Data;
 
 public class LogoutService extends BaseService{
 
-    public LogoutService() {
+    public LogoutService() throws ResponseException, DataAccessException {
         super();
     }
     public LogoutResponse logout(String authToken) throws DataAccessException, ResponseException{
@@ -18,7 +18,7 @@ public class LogoutService extends BaseService{
         return new LogoutResponse();
     }
 
-    private boolean deleteAuth(String authToken) throws DataAccessException{
+    private boolean deleteAuth(String authToken) throws DataAccessException, ResponseException{
         return this.getAuthDB().deleteByToken(authToken);
     }
 

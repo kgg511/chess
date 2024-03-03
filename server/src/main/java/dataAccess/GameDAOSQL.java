@@ -39,13 +39,48 @@ public class GameDAOSQL extends SQLShared{
     }
 
     public int insertGame(GameData game) throws ResponseException, DataAccessException{
+        //var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, gameObj) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(game.game());
-        int id = executeUpdate(statement, java.sql.Types.VARCHAR,
-                java.sql.Types.VARCHAR, game.gameName(), json);
-        ///i think it returns the new id
+        int id = executeUpdate(statement, game.whiteUsername(),
+                game.blackUsername(), game.gameName(), json);
         return id;
     }
+
+    public ArrayList<GameData> getGames() throws ResponseException, DataAccessException{
+        ArrayList<GameData> games = null;
+        String sql = "SELECT * FROM game";
+        try(var conn = DatabaseManager.getConnection()){
+            try(PreparedStatement statement = conn.prepareStatement(sql)){
+                ResultSet rs = statement.executeQuery();
+                games = new ArrayList<>();
+                while(rs.next()){
+                    int gameId = rs.getInt("gameId");
+                    String wUsername = rs.getString("whiteUsername");
+                    String bUsername = rs.getString("blackUsername");
+                    String gameName = rs.getString("gameName");
+                    var json = rs.getString("gameObj");
+                    chess.ChessGame game = new Gson().fromJson(json, chess.ChessGame.class);
+
+                    games.add(new GameData(gameId, wUsername, bUsername, gameName, game));
+                }
+                return games;
+            }
+        } //a username can have multiple authTokens, but one authToken should only have one username
+        catch (SQLException e) {
+            throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
+        }
+    }
+
+//    CREATE TABLE IF NOT EXISTS game (
+//               `gameId` integer auto_increment,
+//              `whiteUsername` varchar(256),
+//              `blackUsername` varchar(256),
+//              `gameName` varchar(256) NOT NULL,
+//              `gameObj` TEXT NOT NULL,
+//    PRIMARY KEY (`gameId`)
+//            )
+//                    """
 
 //    public boolean isEmpty() throws ResponseException, DataAccessException{
 //        String sql = "SELECT COUNT(*) FROM game";
@@ -109,25 +144,13 @@ public class GameDAOSQL extends SQLShared{
         }
     }
     public boolean updateGame(GameData game) throws DataAccessException, ResponseException{
-        //pull it out of the datab
+        //cannot change id or gamename
         int id = game.gameID(); //to locate
         var json = new Gson().toJson(game.game()); //updated game to insert
-        String sql = "UPDATE game SET gameObj = ? WHERE gameId = ?";
-        id = executeUpdate(sql, json, id);
+        String sql = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameObj = ? WHERE gameId = ?";
+        id = executeUpdate(sql, game.whiteUsername(), game.blackUsername(), json, id);
         return true; //we don't know how to verify it was done correctly.
     }
-
-//    public void clearGame() throws DataAccessException, ResponseException{
-//        var statement = "TRUNCATE TABLE game;";
-//        try (var conn = DatabaseManager.getConnection()) {
-//            try (var ps = conn.prepareStatement(statement)) {
-//                int rowsChanged = ps.executeUpdate();
-//                if(rowsChanged == 0){System.out.println("game drop successful");}
-//            }
-//        } catch (SQLException e) {
-//            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-//        }
-//    }
 
     public int numGames() throws DataAccessException, ResponseException{
         String sql = "SELECT COUNT(*) FROM game";
@@ -147,39 +170,5 @@ public class GameDAOSQL extends SQLShared{
     }
 
 
-//    private void configureDatabase() throws ResponseException, DataAccessException { //from petshop
-//        DatabaseManager.createDatabase();
-//        try (var conn = DatabaseManager.getConnection()) {
-//            for (var statement : createStatements) {
-//                try (var preparedStatement = conn.prepareStatement(statement)) {
-//                    preparedStatement.executeUpdate();
-//                }
-//            }
-//        } catch (SQLException ex) {
-//            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-//        }
-//    }
-
-//    private int executeUpdate(String statement, Object... params) throws ResponseException, DataAccessException {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-//                for (var i = 0; i < params.length; i++) {
-//                    var param = params[i];
-//                    if (param instanceof String p) ps.setString(i + 1, p);
-//                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param == null) ps.setNull(i + 1, NULL);
-//                }
-//                ps.executeUpdate();
 //
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-//
-//                return 0;
-//            }
-//        } catch (SQLException e) {
-//            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-//        }
-//    }
 }
