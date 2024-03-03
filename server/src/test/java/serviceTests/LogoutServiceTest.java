@@ -27,9 +27,16 @@ public class LogoutServiceTest {
     @Test
     public void testLogoutNegative() throws DataAccessException{
         //try to logout but not currently logged in
-        LogoutService s = new LogoutService();
-        assertThrows(ResponseException.class, () -> {
-            LogoutResponse r = s.logout("ajskdfhjkadf");
-        });
+        try{
+            LogoutService s = new LogoutService();
+            assertThrows(ResponseException.class, () -> {
+                LogoutResponse r = s.logout("ajskdfhjkadf");
+            });
+        }
+        catch (ResponseException e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+
     }
 }

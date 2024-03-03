@@ -27,11 +27,18 @@ public class JoinGameTest {
     @Test
     public void testJoinGameNegative() throws DataAccessException{
         //tried to join a game but place taken
-        JoinGameService s = new JoinGameService();
-        s.getAuthDB().insertAuth(new AuthData("1234", "kgg9"));
-        s.getGameDB().insertGame(new GameData(3, null, "bob", "cheetos", null));
-        assertThrows(ResponseException.class, () -> {
-            JoinGameResponse r = s.joinGame("1234", "BLACK", 3);
-        });
+        try{
+            JoinGameService s = new JoinGameService();
+            s.getAuthDB().insertAuth(new AuthData("1234", "kgg9"));
+            s.getGameDB().insertGame(new GameData(3, null, "bob", "cheetos", null));
+            assertThrows(ResponseException.class, () -> {
+                JoinGameResponse r = s.joinGame("1234", "BLACK", 3);
+            });
+        }
+        catch (Exception e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+
     }
 }

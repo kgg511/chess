@@ -25,7 +25,6 @@ public class AuthDAOSQLTest {
     public static String user = "kgg9";
     public static String token = "sfdh";
 
-
     public static void setUp(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();

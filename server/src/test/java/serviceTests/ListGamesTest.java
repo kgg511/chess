@@ -27,12 +27,21 @@ public class ListGamesTest {
     }
 
     @Test
-    public void testListGamesNegative(){
+    public void testListGamesNegative() throws DataAccessException{
         //list games but not authorized
-        ListGamesService s = new ListGamesService();
-        assertThrows(ResponseException.class, () -> {
-            s.listGames("1");
-        });
+        try{
+            ListGamesService s = new ListGamesService();
+            assertThrows(ResponseException.class, () -> {
+                s.listGames("1");
+            });
+        }
+        catch (Exception e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+
+
+
 
     }
 
