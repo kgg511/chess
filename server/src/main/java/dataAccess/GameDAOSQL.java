@@ -72,32 +72,6 @@ public class GameDAOSQL extends SQLShared{
         }
     }
 
-//    CREATE TABLE IF NOT EXISTS game (
-//               `gameId` integer auto_increment,
-//              `whiteUsername` varchar(256),
-//              `blackUsername` varchar(256),
-//              `gameName` varchar(256) NOT NULL,
-//              `gameObj` TEXT NOT NULL,
-//    PRIMARY KEY (`gameId`)
-//            )
-//                    """
-
-//    public boolean isEmpty() throws ResponseException, DataAccessException{
-//        String sql = "SELECT COUNT(*) FROM game";
-//        try(var conn = DatabaseManager.getConnection()){
-//            try(PreparedStatement statement = conn.prepareStatement(sql)){
-//                ResultSet rs = statement.executeQuery();
-//                if(rs.next()){
-//                    int count = rs.getInt(1);
-//                    return count == 0;
-//                }
-//                return true; //does empty set mean empty table
-//            }
-//        }
-//        catch (SQLException e) {
-//            throw new ResponseException(500, String.format("unable to getUser: %s, %s", sql, e.getMessage()));
-//        }
-//    }
     public GameData getGameById(int id) throws DataAccessException, ResponseException{
         String sql = "SELECT * FROM game WHERE gameId = ?";
         try(var conn = DatabaseManager.getConnection()){
@@ -169,6 +143,4 @@ public class GameDAOSQL extends SQLShared{
         }
     }
 
-
-//
 }
