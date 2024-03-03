@@ -12,10 +12,6 @@ import static java.sql.Types.NULL;
 public class SQLShared {
 
     protected void configureDatabase(String[] createStatements) throws ResponseException, DataAccessException { //from petshop
-        System.out.println("creating the database");
-        for(String s: createStatements){
-            System.out.println(s);
-        }
 
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {

@@ -16,6 +16,27 @@ public class UserDAOSQLTest {
     public static String user = "kgg9";
     public static String pass = "1234";
     public static String email = "k@email.com";
+
+
+    //verifyUser(String username, String providedClearTextPassword)
+    @Test
+    public void testVerifyUser(){
+
+        try{
+            UserDAOSQL db = new UserDAOSQL();
+            UserData data = db.createUser(user, pass, email);
+            db.insertUser(data);
+            boolean verified = db.verifyUser(data.username(), "1234");
+            assertEquals(verified, true);
+        }
+        catch (Exception e) {
+            System.out.println("verifyUser not working: " + e.toString());
+        }
+
+
+    }
+
+
     //UserData createUser(String username, String password, String email)
     @Test
     public void testCreateUser() {
@@ -34,6 +55,7 @@ public class UserDAOSQLTest {
 
 
     @Test
+    @BeforeEach
     public void testClearUser(){
         try{
             UserDAOSQL db = new UserDAOSQL();
@@ -43,9 +65,9 @@ public class UserDAOSQLTest {
             UserData u = db.getUser(user);
             assertNotNull(u);
 
-            //db.clearDB("user");
-            //u = db.getUser(user);
-            //assertNull(u);
+            db.clearDB("user");
+            u = db.getUser(user);
+            assertNull(u);
 
         }
         catch (Exception e){
@@ -58,7 +80,7 @@ public class UserDAOSQLTest {
     public void testInsertUser(){
         try{
             UserDAOSQL db = new UserDAOSQL();
-            //db.clearDB("user");
+            db.clearDB("user");
             UserData u = db.getUser(user);
             assertNull(u);
 
@@ -68,10 +90,33 @@ public class UserDAOSQLTest {
             assertNotNull(u);
             assertEquals(u.username(), user);
 
-
         }
         catch (Exception e){
             System.out.println("Could not insert user into database: " + e.toString());
+        }
+
+
+    }
+    //getUser(String username)
+    @Test
+    public void testGetUser(){
+        try{
+            UserDAOSQL db = new UserDAOSQL();
+            db.clearDB("user");
+            UserData u = db.getUser(user);
+            assertNull(u);
+            db.insertUser(new UserData(user, pass, email));
+            db.insertUser(new UserData("hippo", pass, "35"));
+
+            u = db.getUser(user);
+            assertNotNull(u);
+            assertEquals(u.username(), user);
+
+            u = db.getUser("hi");
+            assertNull(u);
+        }
+        catch (Exception e){
+            System.out.println("Could not getUser: " + e.toString());
         }
 
 
