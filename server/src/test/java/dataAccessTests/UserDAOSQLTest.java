@@ -14,23 +14,6 @@ public class UserDAOSQLTest {
     public static String pass = "1234";
     public static String email = "k@email.com";
 
-    //UserData createUser(String username, String password, String email)
-//    @Test
-//    public void testCreateUserPositive() {
-//        try {
-//            UserDAOSQL db = new UserDAOSQL();
-//            UserData data = db.createUser(user, pass, email);
-//
-//            assertNotNull(data, "createUser returned null");
-//            assertEquals(data.email(), email, "email does not match passed in value");
-//        } catch (Exception e) {
-//            System.out.println("user not created properly: " + e.toString());
-//        }
-//    }
-//
-
-
-    //boolean insertUser(UserData user)
     @Test
     public void testInsertUserPositive(){
         try{
@@ -65,11 +48,8 @@ public class UserDAOSQLTest {
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
-
     }
 
-
-    //getUser(String username)
     @Test
     public void testGetUserPositive(){
         try{
@@ -93,12 +73,15 @@ public class UserDAOSQLTest {
     }
     @Test
     public void testGetUserNegative(){
-        try{}
+        //try to get user but they aren't in the database
+        try{
+            UserDAOSQL db = new UserDAOSQL();
+            db.clearDB("user");
+            UserData u = db.getUser(user);
+            assertNull(u);
+        }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
-
     }
-
-
 }

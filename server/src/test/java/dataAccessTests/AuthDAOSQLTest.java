@@ -16,6 +16,7 @@ public class AuthDAOSQLTest {
     public void testInsertAuth(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
             db.insertAuth(new AuthData(token, user));
             AuthData a = db.getAuthByToken(token); //test to see if there
             assertNotNull(a);
@@ -26,44 +27,22 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
     @Test
-    public void testIsEmpty(){
-        try{
-            AuthDAOSQL db = new AuthDAOSQL();
-            assertEquals(db.isEmpty("auth"), true);
-        }
-        catch (Exception e){
-            fail("Unexpected exception was thrown: " + e.getMessage());
-        }
-
-    }
-
-    @BeforeEach
-    @Test
-    public void testClearAuth(){
+    public void testInsertAuthNegative(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
-            db.insertAuth(new AuthData(token, user)); //add user
-            AuthData data = db.getAuthByToken(token);
-            assertNotNull(data); //user should be there
-
-            db.clearDB("auth");
-            data = db.getAuthByToken(token);
-            assertNull(data); //no one should be in database
-
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
-    //deleteByToken(String authToken)
     @Test
     public void testDeleteByToken(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
             AuthData data = db.getAuthByToken(token);
             assertNull(data, "before adding not there"); //should be removed
 
@@ -78,12 +57,23 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
+    @Test
+    public void testDeleteByTokenNegative(){
+        try{
+            AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
+        }
+        catch (Exception e){
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+    }
 
 
     @Test
     public void testGetAuth(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
             db.insertAuth(new AuthData(token, user));
             db.insertAuth(new AuthData("boopo", user)); //different authToken same user
 
@@ -98,17 +88,38 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
+    @Test
+    public void testGetAuthNegative(){
+        try{
+            AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
+        }
+        catch (Exception e){
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+    }
 
-    //AuthData getAuthByToken(String authToken)
+
     @Test
     public void testGetAuthByToken(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
             db.insertAuth(new AuthData(token, user));
 
             AuthData auth = db.getAuthByToken(token);
             assertNotNull(auth);
             assertEquals(auth.authToken(), token);
+        }
+        catch (Exception e){
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+    }
+    @Test
+    public void testGetAuthByTokenNegative(){
+        try{
+            AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());

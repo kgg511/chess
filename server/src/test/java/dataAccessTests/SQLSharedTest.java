@@ -31,11 +31,23 @@ public class SQLSharedTest {
     }
 
     @Test
-    public void testIsEmpty(){
+    public void testIsEmptyPositive(){
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
             assertTrue(db.isEmpty("auth"));
+            db.insertAuth(new AuthData("abc", "kgg9"));
+            assertFalse(db.isEmpty("auth"));
+        }
+        catch (Exception e) {
+            fail("Unexpected exception was thrown: " + e.getMessage());
+        }
+    }
+    @Test
+    public void testIsEmptyNegative(){ //check if db is empty but it's not (what other negative case is possible?)
+        try{
+            AuthDAOSQL db = new AuthDAOSQL();
+            db.clearDB("auth");
             db.insertAuth(new AuthData("abc", "kgg9"));
             assertFalse(db.isEmpty("auth"));
         }
