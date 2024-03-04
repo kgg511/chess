@@ -5,10 +5,7 @@ import model.*;
 
 import java.util.ArrayList;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AuthDAOSQLTest {
@@ -26,7 +23,7 @@ public class AuthDAOSQLTest {
             assertEquals(a.username(), user);
         }
         catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -37,7 +34,7 @@ public class AuthDAOSQLTest {
             assertEquals(db.isEmpty("auth"), true);
         }
         catch (Exception e){
-            System.out.println("auth isEmpty failed: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
 
     }
@@ -58,7 +55,7 @@ public class AuthDAOSQLTest {
 
         }
         catch (Exception e){
-            System.out.println("auth not cleared properly" + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -78,7 +75,7 @@ public class AuthDAOSQLTest {
             assertNull(data); //should be removed
         }
         catch (Exception e){
-            System.out.println("deleteByToken failed: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -98,7 +95,7 @@ public class AuthDAOSQLTest {
             assertEquals(auths.get(1).username(), user);
         }
         catch (Exception e){
-            System.out.println("GetAuth failed: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -114,7 +111,7 @@ public class AuthDAOSQLTest {
             assertEquals(auth.authToken(), token);
         }
         catch (Exception e){
-            System.out.println("GetAuthByToken failed: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 

@@ -26,7 +26,7 @@ public class SQLSharedTest {
 
         }
         catch (Exception e) {
-            System.out.println("ClearDB not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class SQLSharedTest {
             assertFalse(db.isEmpty("auth"));
         }
         catch (Exception e) {
-            System.out.println("isEmpty not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 

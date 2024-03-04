@@ -6,9 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class GameDAOSQLTest {
     String name = "bestGame";
 
@@ -23,7 +22,7 @@ public class GameDAOSQLTest {
             assertEquals(game.gameName(), name);
         }
         catch (Exception e) {
-            System.out.println("createGame not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -41,7 +40,7 @@ public class GameDAOSQLTest {
             assertEquals(name, newGame.gameName());
         }
         catch (Exception e) {
-            System.out.println("insertGame not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -65,7 +64,7 @@ public class GameDAOSQLTest {
             assertEquals("betterGame", newGame2.gameName());
         }
         catch (Exception e) {
-            System.out.println("getGameById not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -85,7 +84,7 @@ public class GameDAOSQLTest {
             assertEquals("betterGame", newGame2.gameName());
         }
         catch (Exception e) {
-            System.out.println("getGameByName not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -108,7 +107,7 @@ public class GameDAOSQLTest {
             assertEquals(newGame.blackUsername(), "john");
         }
         catch (Exception e) {
-            System.out.println("UpdateGame not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 
@@ -133,7 +132,7 @@ public class GameDAOSQLTest {
 
         }
         catch (Exception e) {
-            System.out.println("numGames not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
     //ArrayList<GameData> getGames()
@@ -156,7 +155,7 @@ public class GameDAOSQLTest {
 
         }
         catch (Exception e) {
-            System.out.println("GetGames not working: " + e.toString());
+            fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
 

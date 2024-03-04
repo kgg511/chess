@@ -23,8 +23,7 @@ public class AuthDAOSQL extends SQLShared {
             CREATE TABLE IF NOT EXISTS auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(256) NOT NULL,
-              PRIMARY KEY (`authToken`),
-              foreign key(username) references user(username)
+              PRIMARY KEY (`authToken`)
             )
             """
     };

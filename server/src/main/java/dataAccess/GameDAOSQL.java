@@ -31,7 +31,6 @@ public class GameDAOSQL extends SQLShared{
             )
             """
     };
-    //var json = new Gson().toJson(pet);
 
     public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
                                ChessGame game){
@@ -39,7 +38,6 @@ public class GameDAOSQL extends SQLShared{
     }
 
     public int insertGame(GameData game) throws ResponseException, DataAccessException{
-        //var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, gameObj) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(game.game());
         int id = executeUpdate(statement, true, game.whiteUsername(),

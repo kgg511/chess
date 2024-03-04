@@ -62,7 +62,6 @@ public class SQLShared {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 int rowsChanged = ps.executeUpdate();
-                if(rowsChanged == 0){System.out.println(DBName + " drop successful");}
             }
         } catch (SQLException e) {
             throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));

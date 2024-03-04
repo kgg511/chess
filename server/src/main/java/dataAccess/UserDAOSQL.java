@@ -34,9 +34,9 @@ public class UserDAOSQL extends SQLShared{
         return hashedPassword;
     }
 
-    public UserData createUser(String username, String password, String email) throws DataAccessException, ResponseException{
-        return new UserData(username, password, email);
-    }
+//    public UserData createUser(String username, String password, String email) throws DataAccessException, ResponseException{
+//        return new UserData(username, password, email);
+//    }
     public boolean insertUser(UserData user) throws DataAccessException, ResponseException{
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         String hashedPassword = hashPassword(user.password());
