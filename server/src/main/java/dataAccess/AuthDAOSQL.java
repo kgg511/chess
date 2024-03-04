@@ -13,11 +13,9 @@ import static java.sql.Types.NULL;
 import java.sql.ResultSet;
 
 public class AuthDAOSQL extends SQLShared {
-    ///AuthData(String authToken, String username)
     public AuthDAOSQL() throws ResponseException, DataAccessException {
         configureDatabase(createStatements); //create the database
     }
-
     protected String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS auth (
@@ -27,23 +25,17 @@ public class AuthDAOSQL extends SQLShared {
             )
             """
     };
-    //foreign key(username) references user(username)
-
-    public boolean insertAuth(AuthData auth) throws exception.ResponseException, dataAccess.DataAccessException { //should we store the actual auth object
-        //insert auth into the datab
+    public boolean insertAuth(AuthData auth) throws exception.ResponseException, dataAccess.DataAccessException {
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
         executeUpdate(statement, true, auth.authToken(), auth.username()); //fill statement
         return true; //return true if it works successfully?
     }
-
     public boolean deleteByToken(String authToken) throws DataAccessException, ResponseException {
         var statement = "DELETE from auth where authToken = ?";
         int result = executeUpdate(statement, false, authToken); //fill statement
         System.out.println("delete by token is" + result);
         return result > 0;
-        //ARG how shall I confirm it was deleted
     }
-
     public ArrayList<AuthData> getAuth(String username) throws DataAccessException, ResponseException {
         ArrayList<AuthData> auths = null;
         String sql = "SELECT authToken, username FROM auth WHERE username = ?";
@@ -64,7 +56,6 @@ public class AuthDAOSQL extends SQLShared {
             throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
         }
     }
-
     public AuthData getAuthByToken(String authToken) throws DataAccessException, ResponseException {
         ArrayList<AuthData> auths = null;
         String sql = "SELECT authToken, username FROM auth WHERE authToken = ?";

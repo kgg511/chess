@@ -1,47 +1,19 @@
 package dataAccessTests;
 
-import dataAccess.AuthDAOSQL;
 import dataAccess.GameDAOSQL;
 import model.GameData;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameDAOSQLTest {
     String name = "bestGame";
-
-    @Test
-    public void testCreateGame(){
-        try{
-            GameDAOSQL db = new GameDAOSQL();
-            db.clearDB("game");
-            GameData game = db.createGame(-1, "", "", name, null);
-            assertNotNull(game);
-            assertEquals(game.gameName(), name);
-        }
-        catch (Exception e) {
-            fail("Unexpected exception was thrown: " + e.getMessage());
-        }
-    }
-    @Test
-    public void testCreateGameNegative(){
-        try{
-            GameDAOSQL db = new GameDAOSQL();
-            db.clearDB("game");
-        }
-        catch (Exception e){
-            fail("Unexpected exception was thrown: " + e.getMessage());
-        }
-    }
-
     @Test
     public void testInsertGame(){
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(-1, "", "", name, null);
+            GameData game = new GameData(-1, "", "", name, null);
             int id = db.insertGame(game);
             GameData newGame = db.getGameById(id);
 
@@ -62,20 +34,17 @@ public class GameDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
     @Test
     public void testGetGameById(){
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(6, "asdfg", "", name, null);
-            GameData game2 = db.createGame(-1, "", "whoop", "betterGame", null);
+            GameData game = new GameData(6, "asdfg", "", name, null);
+            GameData game2 = new GameData(-1, "", "whoop", "betterGame", null);
             int id = db.insertGame(game);
             int id2 = db.insertGame(game2);
             GameData newGame = db.getGameById(id);
             GameData newGame2 = db.getGameById(id2);
-
-
             assertNotNull(id);
             assertNotNull(id2);
             assertEquals(name, newGame.gameName());
@@ -86,24 +55,26 @@ public class GameDAOSQLTest {
         }
     }
     @Test
-    public void testGetGameByIdNegative(){
+    public void testGetGameByIdNegative(){ //getting game but doesn't exist
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
+            GameData game = new GameData(6, "asdfg", "", name, null);
+            int id = db.insertGame(game);
+            GameData newGame = db.getGameById(99);
+            assertNull(newGame);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
-    //GameData getGameByName(String gameName)
     @Test
     public void testGetGameByName(){
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(-1, "asdfg", "", name, null);
-            GameData game2 = db.createGame(-1, "", "whoop", "betterGame", null);
+            GameData game = new GameData(-1, "asdfg", "", name, null);
+            GameData game2 = new GameData(-1, "", "whoop", "betterGame", null);
             int id = db.insertGame(game);
             int id2 = db.insertGame(game2);
             GameData newGame = db.getGameByName(game.gameName());
@@ -120,22 +91,25 @@ public class GameDAOSQLTest {
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
+            GameData game = new GameData(6, "asdfg", "", name, null);
+            int id = db.insertGame(game);
+            GameData newGame = db.getGameByName("flavor fiesta");
+            assertNull(newGame);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
     @Test
     public void testUpdateGame(){
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(-1, "asdfg", "", name, null);
+            GameData game = new GameData(-1, "asdfg", "", name, null);
             int id = db.insertGame(game);
 
             GameData newGame = db.getGameById(id);
-            GameData updatedGame =  db.createGame(newGame.gameID(), "asdfg", "john", name, null);
+            GameData updatedGame =  new GameData(newGame.gameID(), "asdfg", "john", name, null);
 
             db.updateGame(updatedGame);
 
@@ -148,10 +122,14 @@ public class GameDAOSQLTest {
         }
     }
     @Test
-    public void testUpdateGameNegative(){
+    public void testUpdateGameNegative(){ //try to update a game but that game isn't in the database!
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
+            GameData game = new GameData(-1, "asdfg", "", name, null);
+            int id = db.insertGame(game);
+            GameData updatedGame =  new GameData(5, "", "john", name, null);
+            assertFalse(db.updateGame(updatedGame)); //return false if 0 rows affected
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
@@ -163,16 +141,16 @@ public class GameDAOSQLTest {
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(-1, "asdfg", "", name, null);
-            GameData game2 = db.createGame(-1, "", "", "JoyAgain", null);
-            GameData game3 = db.createGame(-1, "hippo", "", "betterGame", null);
+            GameData game = new GameData(-1, "asdfg", "", name, null);
+            GameData game2 = new GameData(-1, "", "", "JoyAgain", null);
+            GameData game3 = new GameData(-1, "hippo", "", "betterGame", null);
             int id = db.insertGame(game);
             db.insertGame(game2);
             db.insertGame(game3);
 
             assertEquals(db.numGames(), 3);
 
-            GameData game4 = db.createGame(-1, "whip", "", "lymph", null);
+            GameData game4 = new GameData(-1, "whip", "", "lymph", null);
             db.insertGame(game4);
             assertEquals(db.numGames(), 4);
 
@@ -182,10 +160,11 @@ public class GameDAOSQLTest {
         }
     }
     @Test
-    public void testNumGamesNegative(){
+    public void testNumGamesNegative(){ //get num games but no games
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
+            assertEquals(db.numGames(), 0);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
@@ -196,9 +175,9 @@ public class GameDAOSQLTest {
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
-            GameData game = db.createGame(-1, "asdfg", "", name, null);
-            GameData game2 = db.createGame(-1, "", "", "JoyAgain", null);
-            GameData game3 = db.createGame(-1, "hippo", "", "betterGame", null);
+            GameData game = new GameData(-1, "asdfg", "", name, null);
+            GameData game2 = new GameData(-1, "", "", "JoyAgain", null);
+            GameData game3 = new GameData(-1, "hippo", "", "betterGame", null);
             int id = db.insertGame(game);
             db.insertGame(game2);
             db.insertGame(game3);
@@ -214,10 +193,13 @@ public class GameDAOSQLTest {
         }
     }
     @Test
-    public void testGetGamesNegative(){
+    public void testGetGamesNegative(){ //getGames but no games to get
         try{
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
+            ArrayList<GameData> g = db.getGames();
+            assertNotNull(g); //returns empty array
+            assertEquals(g.size(), 0);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());

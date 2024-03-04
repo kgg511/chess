@@ -14,11 +14,9 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 import java.sql.ResultSet;
 public class GameDAOSQL extends SQLShared{
-
     public GameDAOSQL() throws ResponseException, DataAccessException{
         configureDatabase(createStatements); //create the database
     }
-
     private final String[] createStatements = { //the game is json string
             """
             CREATE TABLE IF NOT EXISTS game (
@@ -31,12 +29,6 @@ public class GameDAOSQL extends SQLShared{
             )
             """
     };
-
-    public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
-                               ChessGame game){
-        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
-    }
-
     public int insertGame(GameData game) throws ResponseException, DataAccessException{
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, gameObj) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(game.game());
@@ -44,7 +36,6 @@ public class GameDAOSQL extends SQLShared{
                 game.blackUsername(), game.gameName(), json);
         return id;
     }
-
     public ArrayList<GameData> getGames() throws ResponseException, DataAccessException{
         ArrayList<GameData> games = null;
         String sql = "SELECT * FROM game";
@@ -69,7 +60,6 @@ public class GameDAOSQL extends SQLShared{
             throw new ResponseException(500, String.format("unable to getAuth: %s, %s", sql, e.getMessage()));
         }
     }
-
     public GameData getGameById(int id) throws DataAccessException, ResponseException{
         String sql = "SELECT * FROM game WHERE gameId = ?";
         try(var conn = DatabaseManager.getConnection()){
@@ -91,7 +81,6 @@ public class GameDAOSQL extends SQLShared{
         catch (SQLException e) {
             throw new ResponseException(500, String.format("unable to getGameById: %s, %s", sql, e.getMessage()));
         }
-
     }
     public GameData getGameByName(String gameName) throws DataAccessException, ResponseException{
         String sql = "SELECT * FROM game WHERE gameName = ?";
@@ -116,14 +105,13 @@ public class GameDAOSQL extends SQLShared{
         }
     }
     public boolean updateGame(GameData game) throws DataAccessException, ResponseException{
-        //cannot change id or gamename
+        //cannot change id or game name
         int id = game.gameID(); //to locate
         var json = new Gson().toJson(game.game()); //updated game to insert
         String sql = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameObj = ? WHERE gameId = ?";
-        id = executeUpdate(sql, false, game.whiteUsername(), game.blackUsername(), json, id);
-        return true; //we don't know how to verify it was done correctly.
+        int rowsAffected = executeUpdate(sql, false, game.whiteUsername(), game.blackUsername(), json, id);
+        return rowsAffected == 1; //we don't know how to verify it was done correctly.
     }
-
     public int numGames() throws DataAccessException, ResponseException{
         String sql = "SELECT COUNT(*) FROM game";
         int count = -1;

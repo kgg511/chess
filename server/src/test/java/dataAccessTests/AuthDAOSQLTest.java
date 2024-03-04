@@ -73,8 +73,6 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
-
     @Test
     public void testGetAuth(){
         try{
@@ -107,8 +105,6 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
-
     @Test
     public void testGetAuthByToken(){
         try{
@@ -137,5 +133,4 @@ public class AuthDAOSQLTest {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
 }

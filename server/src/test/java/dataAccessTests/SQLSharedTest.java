@@ -16,20 +16,18 @@ public class SQLSharedTest {
             GameDAOSQL db = new GameDAOSQL();
             db.clearDB("game");
             assertEquals(db.numGames(), 0);
-            GameData game = db.createGame(-1, "asdfg", "", name, null);
-            GameData game2 = db.createGame(-1, "", "", "JoyAgain", null);
-            GameData game3 = db.createGame(-1, "hippo", "", "betterGame", null);
+            GameData game = new GameData(-1, "asdfg", "", name, null);
+            GameData game2 = new GameData(-1, "", "", "JoyAgain", null);
+            GameData game3 = new GameData(-1, "hippo", "", "betterGame", null);
             int id = db.insertGame(game);
             db.insertGame(game2);
             db.insertGame(game3);
             assertEquals(db.numGames(), 3);
-
         }
         catch (Exception e) {
             fail("Unexpected exception was thrown: " + e.getMessage());
         }
     }
-
     @Test
     public void testIsEmptyPositive(){
         try{
