@@ -7,16 +7,33 @@ import service.*;
 import model.*;
 import Response.*;
 
+import java.util.ArrayList;
+
 
 public class LogoutServiceTest {
+
+    @BeforeEach
+    public void clearAll(){
+        try{
+            ClearService c = new ClearService();
+            c.clearDB();
+        }
+        catch (Exception e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown while clearing: " + e.getMessage());
+        }
+    }
     @Test
     public void testLogoutPositive() throws DataAccessException{
         try{
             LogoutService s = new LogoutService();
             s.getAuthDB().insertAuth(new AuthData("ajskdfhjkadf", "beepo"));
+            assertNotNull(s.getAuthDB().getAuthByToken("ajskdfhjkadf"), "auth not added");
+
             LogoutResponse r = s.logout("ajskdfhjkadf");
-            assert s.getAuthDB().getAuth("beepo") == null;
-            assert r != null;
+            assertEquals(s.getAuthDB().getAuth("beepo"), new ArrayList<AuthData>(), "auth wasn't null as expected");
+            assertNotNull(r, "LogoutResponse was null");
+
         }
         catch (Exception e) {
             // If an exception is caught, fail the test

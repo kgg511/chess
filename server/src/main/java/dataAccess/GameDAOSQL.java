@@ -42,7 +42,7 @@ public class GameDAOSQL extends SQLShared{
         //var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, gameObj) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(game.game());
-        int id = executeUpdate(statement, game.whiteUsername(),
+        int id = executeUpdate(statement, true, game.whiteUsername(),
                 game.blackUsername(), game.gameName(), json);
         return id;
     }
@@ -122,7 +122,7 @@ public class GameDAOSQL extends SQLShared{
         int id = game.gameID(); //to locate
         var json = new Gson().toJson(game.game()); //updated game to insert
         String sql = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameObj = ? WHERE gameId = ?";
-        id = executeUpdate(sql, game.whiteUsername(), game.blackUsername(), json, id);
+        id = executeUpdate(sql, false, game.whiteUsername(), game.blackUsername(), json, id);
         return true; //we don't know how to verify it was done correctly.
     }
 

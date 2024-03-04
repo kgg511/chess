@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Statement.NO_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SQLShared {
@@ -25,20 +26,28 @@ public class SQLShared {
         }
     }
 
-    protected int executeUpdate(String statement, Object... params) throws ResponseException, DataAccessException {
+    //insert: TRUE
+    //delete, update: FALSE
+    protected int executeUpdate(String statement, boolean returnGeneratedKeys, Object... params) throws ResponseException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+            int generatedKeysFlag = returnGeneratedKeys ? RETURN_GENERATED_KEYS : NO_GENERATED_KEYS;
+            try (var ps = conn.prepareStatement(statement, generatedKeysFlag)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
-                ps.executeUpdate();
+                int rowsAffected = ps.executeUpdate();
 
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
+                if(returnGeneratedKeys){
+                    var rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+                else{
+                    return rowsAffected; //update/delete how many rows affected
                 }
 
                 return 0;

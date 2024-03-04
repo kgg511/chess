@@ -7,6 +7,18 @@ import service.*;
 import model.*;
 import Response.*;
 public class ListGamesTest {
+
+    @BeforeEach
+    public void clearAll(){
+        try{
+            ClearService c = new ClearService();
+            c.clearDB();
+        }
+        catch (Exception e) {
+            // If an exception is caught, fail the test
+            fail("Unexpected exception was thrown while clearing: " + e.getMessage());
+        }
+    }
     @Test
     public void testListGamesPositive() throws DataAccessException{
         try{
