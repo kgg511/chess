@@ -15,15 +15,6 @@ public class AuthDAOSQLTest {
     public static String user = "kgg9";
     public static String token = "sfdh";
 
-    public static void setUp(){
-        try{
-            AuthDAOSQL db = new AuthDAOSQL();
-            db.insertAuth(new AuthData(token, user));
-        }
-        catch (Exception e){
-            System.out.println("Auth not inserted into DB properly: " + e.toString());
-        }
-    }
     @Test
     public void testInsertAuth(){
         try{

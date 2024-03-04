@@ -25,7 +25,7 @@ public class RegisterService extends BaseService{
         if(username.isEmpty() || password.isEmpty() || email.isEmpty()){
             throw new ResponseException(400, "Error: bad request");
         }
-        UserData user = this.getUserDB().createUser(username, password, email);
+        UserData user = new UserData(username, password, email);
         this.getUserDB().insertUser(user);
     }
 }
