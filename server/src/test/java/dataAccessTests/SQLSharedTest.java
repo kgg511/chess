@@ -1,4 +1,4 @@
-package SQLTests;
+package dataAccessTests;
 
 import dataAccess.AuthDAOSQL;
 import dataAccess.GameDAOSQL;

@@ -1,13 +1,9 @@
-package SQLTests;
+package dataAccessTests;
 
 import org.junit.jupiter.api.*;
-import service.*;
 import model.*;
 
 
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
