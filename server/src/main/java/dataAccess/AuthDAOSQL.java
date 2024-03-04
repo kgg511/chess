@@ -42,7 +42,6 @@ public class AuthDAOSQL extends SQLShared {
         System.out.println("delete by token is" + result);
         return result > 0;
         //ARG how shall I confirm it was deleted
-
     }
 
     public ArrayList<AuthData> getAuth(String username) throws DataAccessException, ResponseException {

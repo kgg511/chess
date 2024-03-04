@@ -1,5 +1,6 @@
 package dataAccessTests;
 import dataAccess.AuthDAOSQL;
+import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import model.*;
 
@@ -28,10 +29,14 @@ public class AuthDAOSQLTest {
         }
     }
     @Test
-    public void testInsertAuthNegative(){
+    public void testInsertAuthNegative(){ //try to insert auth but the authToken is already in database
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
+            db.insertAuth(new AuthData("abc", "kgg9"));
+            assertThrows(ResponseException.class, () -> {
+                db.insertAuth(new AuthData("abc", "bob"));
+            });
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
@@ -58,10 +63,11 @@ public class AuthDAOSQLTest {
         }
     }
     @Test
-    public void testDeleteByTokenNegative(){
+    public void testDeleteByTokenNegative(){ //try to delete but not in the database
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
+            assertFalse(db.deleteByToken("abc"));
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
@@ -89,10 +95,13 @@ public class AuthDAOSQLTest {
         }
     }
     @Test
-    public void testGetAuthNegative(){
+    public void testGetAuthNegative(){ //try to get info for user but not in db
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
+            db.insertAuth(new AuthData(token, user));
+            ArrayList<AuthData> a = db.getAuth("boopity");
+            assertEquals(a.size(), 0);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
@@ -116,10 +125,13 @@ public class AuthDAOSQLTest {
         }
     }
     @Test
-    public void testGetAuthByTokenNegative(){
+    public void testGetAuthByTokenNegative(){ //try to get info for user but not in db
         try{
             AuthDAOSQL db = new AuthDAOSQL();
             db.clearDB("auth");
+            db.insertAuth(new AuthData(token, user));
+            AuthData a = db.getAuthByToken("hippo");
+            assertNull(a);
         }
         catch (Exception e){
             fail("Unexpected exception was thrown: " + e.getMessage());
