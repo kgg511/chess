@@ -1,5 +1,6 @@
 package dataAccess;
 
+import dataAccess.interfaces.SharedInterface;
 import exception.ResponseException;
 
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Statement.NO_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-public class SQLShared {
+public class SQLShared implements SharedInterface {
 
     protected void configureDatabase(String[] createStatements) throws ResponseException, DataAccessException { //from petshop
 

@@ -1,17 +1,16 @@
 package dataAccess;
 
+import dataAccess.interfaces.UserDAOInterface;
 import exception.ResponseException;
-import model.AuthData;
 import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import java.sql.ResultSet;
 
-public class UserDAOSQL extends SQLShared{
+public class UserDAOSQL extends SQLShared implements UserDAOInterface {
 
     public UserDAOSQL() throws ResponseException, DataAccessException{
         configureDatabase(createStatements); //create the database
@@ -34,9 +33,6 @@ public class UserDAOSQL extends SQLShared{
         return hashedPassword;
     }
 
-//    public UserData createUser(String username, String password, String email) throws DataAccessException, ResponseException{
-//        return new UserData(username, password, email);
-//    }
     public boolean insertUser(UserData user) throws DataAccessException, ResponseException{
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         String hashedPassword = hashPassword(user.password());
@@ -66,8 +62,5 @@ public class UserDAOSQL extends SQLShared{
             throw new ResponseException(500, String.format("unable to getUser: %s, %s", sql, e.getMessage()));
         }
     }
-
-
-
 
 }

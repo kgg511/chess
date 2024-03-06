@@ -1,11 +1,11 @@
 package dataAccess;
+import dataAccess.interfaces.UserDAOInterface;
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
-public class UserDAO {
+public class UserDAO implements UserDAOInterface {
     private static UserDAO instance = null;
-    private ArrayList<UserData> userDB = new ArrayList<UserData>();
+    public ArrayList<UserData> userDB = new ArrayList<UserData>();
 
     public static synchronized UserDAO getInstance() {
         if (instance == null) {
@@ -13,16 +13,10 @@ public class UserDAO {
         }
         return instance;
     }
-    public UserData createUser(String username, String password, String email){
-        return new UserData(username, password, email);
-    }
 
     public boolean insertUser(UserData user){
         this.userDB.add(user);
         return true;
-    }
-    public boolean isEmpty(){
-        return this.userDB.size() == 0;
     }
     public UserData getUser(String username) throws DataAccessException{
         for(UserData u: userDB){
@@ -31,8 +25,5 @@ public class UserDAO {
             }
         }
         return null;
-    }
-    public void clearUser() throws DataAccessException{
-        userDB.clear();
     }
 }

@@ -1,14 +1,14 @@
 package dataAccess;
 
+import dataAccess.interfaces.AuthDAOInterface;
 import model.AuthData;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 /**fetches from Auth DB*/
-public class AuthDAO {
+public class AuthDAO implements AuthDAOInterface {
     private static AuthDAO instance = null;
-    private ArrayList<AuthData> authDB = new ArrayList<AuthData>();
+    public ArrayList<AuthData> authDB = new ArrayList<AuthData>();
     //singleton
     public static synchronized AuthDAO getInstance() {
         if (instance == null) {
@@ -20,9 +20,6 @@ public class AuthDAO {
         this.authDB.add(auth);
         return true;
     }
-    public boolean isEmpty(){
-        return this.authDB.size() == 0;
-    }
     public boolean deleteByToken(String authToken) throws DataAccessException{
         for(AuthData a: authDB){
             if(a.authToken().equals(authToken)){
@@ -33,13 +30,15 @@ public class AuthDAO {
         }
         return false;
     }
-    public AuthData getAuth(String username) throws DataAccessException{
+    public ArrayList<AuthData> getAuth(String username) throws DataAccessException{
+        ArrayList<AuthData> auths = new ArrayList<>();
         for(AuthData a: authDB){
             if(a.username().equals(username)){
-                return a;
+                auths.add(a);
             }
         }
-        return null; //do i have to manually throw the exception
+        return auths;
+        //return null; //do i have to manually throw the exception
     }
     public AuthData getAuthByToken(String authToken) throws DataAccessException{
         for(AuthData a: authDB){
@@ -48,8 +47,5 @@ public class AuthDAO {
             }
         }
         return null;
-    }
-    public void clearAuth() throws DataAccessException {
-        authDB.clear();
     }
 }

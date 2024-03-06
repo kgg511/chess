@@ -1,19 +1,15 @@
 package dataAccess;
-import chess.ChessGame;
 import com.google.gson.Gson;
+import dataAccess.interfaces.GameDAOInterface;
 import exception.ResponseException;
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 import java.sql.ResultSet;
-public class GameDAOSQL extends SQLShared{
+public class GameDAOSQL extends SQLShared implements GameDAOInterface {
     public GameDAOSQL() throws ResponseException, DataAccessException{
         configureDatabase(createStatements); //create the database
     }

@@ -1,6 +1,6 @@
 package dataAccess;
 
-import com.google.gson.Gson;
+import dataAccess.interfaces.AuthDAOInterface;
 import exception.ResponseException;
 import model.AuthData;
 
@@ -8,11 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 import java.sql.ResultSet;
 
-public class AuthDAOSQL extends SQLShared {
+public class AuthDAOSQL extends SQLShared implements AuthDAOInterface {
     public AuthDAOSQL() throws ResponseException, DataAccessException {
         configureDatabase(createStatements); //create the database
     }

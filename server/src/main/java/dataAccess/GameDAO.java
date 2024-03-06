@@ -1,16 +1,14 @@
 package dataAccess;
 
-import chess.ChessGame;
+import dataAccess.interfaces.GameDAOInterface;
 import model.GameData;
 
-import javax.xml.crypto.Data;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //talks to the Game DB
-public class GameDAO {
-    private static GameDAO instance;
-    private static ArrayList<GameData> gameDB = new ArrayList<GameData>();
+public class GameDAO implements GameDAOInterface {
+    private static GameDAO instance = null;
+    public static ArrayList<GameData> gameDB = new ArrayList<GameData>();
 
     public static synchronized GameDAO getInstance() {
         if (instance == null) {
@@ -18,17 +16,11 @@ public class GameDAO {
         }
         return instance;
     }
-    public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName,
-                        chess.ChessGame game){
-        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
-    }
     public int insertGame(GameData game) throws DataAccessException{
         this.gameDB.add(game);
         return game.gameID();
     }
-    public boolean isEmpty(){
-        return this.gameDB.size() == 0;
-    }
+
     public ArrayList<GameData> getGames() throws DataAccessException{
         return this.gameDB;
     }
@@ -52,9 +44,6 @@ public class GameDAO {
             return true;
         }
         return false; //game not in database
-    }
-    public void clearGame() throws DataAccessException {
-        gameDB.clear();
     }
     public int numGames() throws DataAccessException{
         return gameDB.size();
