@@ -3,7 +3,6 @@ package dataAccess;
 import dataAccess.interfaces.UserDAOInterface;
 import exception.ResponseException;
 import model.UserData;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

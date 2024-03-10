@@ -3,6 +3,7 @@ import dataAccess.DataAccessException;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import service.*;
 import model.*;
 import Response.*;
@@ -17,7 +18,9 @@ public class LoginServiceTest {
             LoginService s = new LoginService();
             ClearService c = new ClearService();
             c.clearDB();
-            s.getUserDB().insertUser(new UserData("kgg9", "1234", "k@email"));
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String hashedPassword = encoder.encode("1234");
+            s.getUserDB().insertUser(new UserData("kgg9", hashedPassword, "k@email"));
             LoginResponse l = s.login("kgg9", "1234");
             assert s.getAuthDB().getAuth("kgg9") != null;
         }
