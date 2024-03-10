@@ -3,6 +3,8 @@ import exception.ResponseException;
 import model.*;
 import dataAccess.*;
 import Response.RegisterResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class RegisterService extends BaseService{
 
     public RegisterService() throws ResponseException, DataAccessException {
@@ -25,7 +27,14 @@ public class RegisterService extends BaseService{
         if(username.isEmpty() || password.isEmpty() || email.isEmpty()){
             throw new ResponseException(400, "Error: bad request");
         }
-        UserData user = new UserData(username, password, email);
+
+        UserData user = new UserData(username, hashPassword(password), email);
         this.getUserDB().insertUser(user);
+    }
+
+    private String hashPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashedPassword = encoder.encode(password);
+        return hashedPassword;
     }
 }

@@ -27,16 +27,9 @@ public class UserDAOSQL extends SQLShared implements UserDAOInterface {
             """
     };
 
-    private String hashPassword(String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode(password);
-        return hashedPassword;
-    }
-
     public boolean insertUser(UserData user) throws DataAccessException, ResponseException{
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-        String hashedPassword = hashPassword(user.password());
-        int result = executeUpdate(statement, true, user.username(), hashedPassword, user.email());
+        int result = executeUpdate(statement, true, user.username(), user.password(), user.email());
         if(result == 1){return true;} //should have impacted one row
         return false;
     }
