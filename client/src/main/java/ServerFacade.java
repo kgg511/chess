@@ -18,6 +18,7 @@ public class ServerFacade {
     //How do I know the authToken?
 
     private final String serverURL;
+    private String authToken = "";
 
     public ServerFacade(String url) {
         serverURL = url;
@@ -29,6 +30,7 @@ public class ServerFacade {
         String path = "/user";
         UserData user = new UserData(username, password, email);
         RegisterResponse r = this.makeRequest("POST", path, "", user, RegisterResponse.class);
+        authToken = r.authToken();
         return r;
     }
 
@@ -43,7 +45,7 @@ public class ServerFacade {
     //logout, authToken header
     public LogoutResponse logout() throws ResponseException{
         String path = "/session";
-        LogoutResponse r = this.makeRequest("DELETE", path, "1234", null, LogoutResponse.class);
+        LogoutResponse r = this.makeRequest("DELETE", path, authToken, null, LogoutResponse.class);
         return r;
     }
 
@@ -51,7 +53,7 @@ public class ServerFacade {
     public JoinGameResponse joinGame(String playerColor, int gameID) throws ResponseException{
         String path = "/game";
         JoinGameRequest request = new JoinGameRequest(playerColor, gameID);
-        JoinGameResponse r = this.makeRequest("PUT", path, "1234", request, JoinGameResponse.class);
+        JoinGameResponse r = this.makeRequest("PUT", path, authToken, request, JoinGameResponse.class);
         return r;
     }
 
@@ -59,16 +61,19 @@ public class ServerFacade {
     public CreateGameResponse createGame(String gameName) throws ResponseException{
         String path = "/game";
         GameData game = new GameData(-1, "", "", gameName, null);
-        CreateGameResponse r = this.makeRequest("POST", path, "1234", game, CreateGameResponse.class);
+        CreateGameResponse r = this.makeRequest("POST", path, authToken, game, CreateGameResponse.class);
         return r;
     }
 
     //list games
     public ArrayList<GameData> listGames() throws ResponseException {
         String path = "/game";
-        var response = this.makeRequest("GET", path, "1234", null, ListGamesResponse.class);
+        var response = this.makeRequest("GET", path, authToken, null, ListGamesResponse.class);
         return response.games();
     }
+
+    //
+
 
     //header is ALWAYS an authToken if there are headers
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
@@ -114,6 +119,7 @@ public class ServerFacade {
         }
     }
 
+    //this alters the error..matter?
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (status != 200) {

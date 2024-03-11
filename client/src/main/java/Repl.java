@@ -8,7 +8,7 @@ public class Repl {
 
 
     public Repl(String serverUrl) {
-        client = new ChessClient();
+        client = new ChessClient(serverUrl);
     }
     //serverUrl, this
 
@@ -29,6 +29,8 @@ public class Repl {
         }
         System.out.println();
     }
+
+
 
     private void printPrompt() {
         System.out.print("\n" + "[" + state + "]" + ">>> ");

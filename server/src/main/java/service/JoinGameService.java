@@ -38,4 +38,5 @@ public class JoinGameService extends BaseService{
             throw new ResponseException(400, "400 Error: That's not a valid join option");
         }
     }
+
 }

@@ -2,6 +2,7 @@ import exception.ResponseException;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import model.*;
 public class ChessClient {
 
     //functions to take input and call stuff from the serverFacade
@@ -10,6 +11,8 @@ public class ChessClient {
 
     private State state = State.SIGNEDOUT;
 
+    //domain name , port number
+    //localhost:80
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
@@ -73,17 +76,69 @@ public class ChessClient {
                 """;
     }
 
-    public String login(String... params ) throws ResponseException{
-        try{
-            Response.LoginResponse response = server.login(params[0], params[1]);
-            state = State.SIGNEDIN; //hmmm
+    //register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+    public String register(String... params) throws ResponseException{
+        if(params.length >= 4){ //cmd, username, password, email
+            Response.RegisterResponse response = server.register(params[1], params[2], params[3]);
+            state = state.SIGNEDIN;
+            return String.format("You registered as %s.", response.username());
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+    }
+
+    public String login(String... params) throws ResponseException{
+        if(params.length >= 3){ //cmd, username, password
+            Response.LoginResponse response = server.login(params[1], params[2]);
+            state = state.SIGNEDIN; //hmmm
             return String.format("You signed in as %s.", response.username());
         }
-        catch (ResponseException){ //Facade throws exception when status != 200
-            return "Login failed";
-        }
-
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
     }
+
+    public String logout(String... params) throws ResponseException{
+        if(state == state.SIGNEDOUT){throw new ResponseException(400, "you are already signed out");}
+        Response.LogoutResponse response = server.logout();
+        state = State.SIGNEDOUT; //hmmm
+        return "User signed out";
+    }
+
+    public String createGame(String... params) throws ResponseException{
+        //create <NAME> - a game
+        if(params.length >= 2){ //create, name
+            Response.CreateGameResponse response = server.createGame(params[1]);
+            return String.format("Game, %s, created", params[1]);
+        }
+        throw new ResponseException(400, "Expected: <NAME>");
+    }
+
+    //list - games
+    public String listGames(String... params) throws ResponseException{
+        if(params.length >= 1){
+            ArrayList<GameData> games = server.listGames();
+            return games.toString(); //TODO: reformat??
+        }
+        throw new ResponseException(400, "um");
+    }
+
+    //join <ID> [WHITE|BLACK|<empty>] - a game
+    public String joinGame(String... params) throws ResponseException{
+        if(params.length >= 3){
+            Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
+            return "Successfully joined game";
+        }
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
+    }
+
+    //observe <ID> - a game
+    public String observeGame(String... params) throws ResponseException{
+        if(params.length >= 2){
+            //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
+            return "Successfully joined game as an observer";
+        }
+        throw new ResponseException(400, "Expected: <ID>");
+    }
+
+
 
 
 }
