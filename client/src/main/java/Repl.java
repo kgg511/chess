@@ -4,7 +4,7 @@ public class Repl {
 
     //actual console stuff
     private final ChessClient client;
-    private State state = State.SIGNEDOUT;
+
 
 
     public Repl(String serverUrl) {
