@@ -37,6 +37,7 @@ public class ChessClient {
             else if(state == state.SIGNEDIN){
                 return switch (cmd) {
                     case "help" -> help();
+                    case "quit" -> "quit";
                     case "logout" -> logout();
                     case "create" -> createGame(params);
                     case "list" -> listGames();
@@ -49,5 +50,40 @@ public class ChessClient {
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+        return "what did you do";
     }
+
+    public String help() {
+        if (state == State.SIGNEDOUT) {
+            return """
+                    register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+                    login <USERNAME> <PASSWORD> - to play chess
+                    quit - exit
+                    help - with possible commands
+                    """;
+        }
+        return """
+                create <NAME> - a game
+                list - games
+                join <ID> [WHITE|BLACK|<empty>] - a game
+                observe <ID> - a game
+                logout - when you are done
+                quit - quit playing chess
+                help - see possible commands
+                """;
+    }
+
+    public String login(String... params ) throws ResponseException{
+        try{
+            Response.LoginResponse response = server.login(params[0], params[1]);
+            state = State.SIGNEDIN; //hmmm
+            return String.format("You signed in as %s.", response.username());
+        }
+        catch (ResponseException){ //Facade throws exception when status != 200
+            return "Login failed";
+        }
+
+    }
+
+
 }
