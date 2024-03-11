@@ -1,8 +1,6 @@
 package serviceTests;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
-import server.Server;
-import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import service.*;
 import model.*;

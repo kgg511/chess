@@ -9,7 +9,6 @@ import dataAccess.*;
 import Response.*;
 import exception.ResponseException;
 import Request.*;
-import java.util.List;
 
 public class Handler {
     //handlers convert JSON -> Java and Java -> JSON

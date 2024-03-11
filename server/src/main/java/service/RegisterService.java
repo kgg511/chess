@@ -4,7 +4,7 @@ import model.*;
 import dataAccess.*;
 import Response.RegisterResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class RegisterService extends BaseService{
 
     public RegisterService() throws ResponseException, DataAccessException {

@@ -1,7 +1,6 @@
 package service;
 
 import Response.JoinGameResponse;
-import chess.ChessGame;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
 import model.*;

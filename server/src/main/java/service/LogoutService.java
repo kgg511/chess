@@ -1,10 +1,7 @@
 package service;
 import Response.LogoutResponse;
 import exception.ResponseException;
-import model.*;
 import dataAccess.*;
-import Response.LogoutResponse;
-import javax.xml.crypto.Data;
 
 public class LogoutService extends BaseService{
 

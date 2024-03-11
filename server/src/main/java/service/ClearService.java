@@ -1,9 +1,6 @@
 package service;
 
-import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
 import exception.ResponseException;
 
 public class ClearService extends BaseService{

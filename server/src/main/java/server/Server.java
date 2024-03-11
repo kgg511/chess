@@ -3,7 +3,7 @@ package server;
 import spark.*;
 
 import Handler.Handler;
-import exception.ResponseException;
+
 public class Server {
 
     public int run(int desiredPort) {
