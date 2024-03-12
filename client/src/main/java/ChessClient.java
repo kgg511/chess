@@ -140,7 +140,7 @@ public class ChessClient {
             //fetch the game
             var b = new ChessBoard();
             b.resetBoard();
-            drawBoard(true, b);
+            drawer.drawBoards(b, out);
             return "Successfully joined game";
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
@@ -156,10 +156,7 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <ID>");
     }
 
-    public void drawBoard(boolean regular, ChessBoard board){
-        drawer.drawBoardRegular(board, out);
 
-    }
 
 
 
