@@ -14,7 +14,7 @@ import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_CHARS = 8;
+    private static final int SQUARE_SIZE_IN_CHARS = 2;
     //chess.ChessBoard board;
 
     //If you use the chess piece characters:
@@ -63,11 +63,12 @@ public class DrawChessBoard {
         //boardCol is the square we are on
         boolean black = isBlack;
 
-        for (int squareRow = 0; squareRow < 3; squareRow++) {
+        for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
             for (int boardCol = 0; boardCol < 8; boardCol++) {
                 setColor(out, black);
                 black = !black; //flip color for next round
-                if (squareRow == SQUARE_SIZE_IN_CHARS / 2) { //halfway down put it
+                //squareRow == SQUARE_SIZE_IN_CHARS / 2
+                if (3==4) { //halfway down put it
                     int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                     int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
                     out.print(EMPTY.repeat(prefixLength));
@@ -80,6 +81,8 @@ public class DrawChessBoard {
                 else {
                     out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
                 }
+                out.print(RESET_BG_COLOR);
+
             }
             out.println();
         }
@@ -134,10 +137,11 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);
     }
-
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_WHITE);
     }
+
+
 
 }
