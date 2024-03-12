@@ -11,7 +11,7 @@ public class ChessClient {
 
     private State state = State.SIGNEDOUT;
 
-    //domain name , port number
+    //domain name , port number, will come in via cmdline?
     //localhost:80
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -124,6 +124,7 @@ public class ChessClient {
     public String joinGame(String... params) throws ResponseException{
         if(params.length >= 3){
             Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
+            //draw game
             return "Successfully joined game";
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
@@ -134,9 +135,12 @@ public class ChessClient {
         if(params.length >= 2){
             //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
             return "Successfully joined game as an observer";
+            //currently does nothign nice
         }
         throw new ResponseException(400, "Expected: <ID>");
     }
+
+
 
 
 

@@ -4,6 +4,7 @@ import Response.JoinGameResponse;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
 import model.*;
+import spark.Response;
 
 public class JoinGameService extends BaseService{
     public JoinGameService() throws ResponseException, DataAccessException{
@@ -25,7 +26,7 @@ public class JoinGameService extends BaseService{
         return this.getGameDB().getGameById(gameid);
     }
     private GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
-        if(clientColor == null || clientColor.equals("empty") || clientColor.equals("")){return game;} //add as spectator. Maybe phase 6?
+        if(clientColor == null || clientColor.equals("")){return game;} //add as spectator. Maybe phase 6?
         else if(clientColor.equals("WHITE")){
             if(game.whiteUsername() != null){throw new ResponseException(403, "Error: already taken");}
             return new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
@@ -38,5 +39,6 @@ public class JoinGameService extends BaseService{
             throw new ResponseException(400, "400 Error: That's not a valid join option");
         }
     }
+
 
 }
