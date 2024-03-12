@@ -124,9 +124,11 @@ public class ChessClient {
     public String listGames(String... params) throws ResponseException{
         String resultString = "";
         ArrayList<GameData> games = server.listGames();
+        int number = 1;
         for(GameData game: games){
-            resultString += game.toString();
+            resultString += game.noIDToString(number);
             resultString += "\n";
+            number++;
         }
 
         return resultString; //TODO: reformat??
@@ -135,9 +137,11 @@ public class ChessClient {
     //join <ID> [WHITE|BLACK|<empty>] - a game
     public String joinGame(String... params) throws ResponseException{
         if(params.length >= 2){
-            //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[0]));
-            //draw game
-            //fetch the game
+            //translate game number to gameID
+            ArrayList<GameData> games = server.listGames();
+            GameData game = games.get(Integer.parseInt(params[0]) - 1); //convert to 0 indexing
+            int id = game.gameID();
+            Response.JoinGameResponse response = server.joinGame(params[1], id);
             var b = new ChessBoard();
             b.resetBoard();
             drawer.drawBoards(b, out);

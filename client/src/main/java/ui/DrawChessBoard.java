@@ -12,11 +12,9 @@ import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-
-
     private static final int SQUARE_SIZE_IN_CHARS = 2;
-    private String[] headerLetters = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    private String[] headerLettersF = {"h", "g", "f", "e", "d", "c", "b", "a"};
+    private String[] headerLetters = {"h", "g", "f", "e", "d", "c", "b", "a"};
+    private String[] headerLettersF = {"a", "b", "c", "d", "e", "f", "g", "h"};
     private String[] headerNumbers = {"1", "2", "3", "4", "5", "6", "7", "8"};
     private String[] headerNumbersF = {"8", "7", "6","5", "4", "3", "2", "1"};
     private static final int LINE_WIDTH_IN_CHARS = 1;
@@ -42,22 +40,20 @@ public class DrawChessBoard {
         out.println();
         drawBoardFlipped(b, out);
     }
-
     public void drawBoardRegular(ChessBoard b, PrintStream out){
         boolean black = false;
         drawHeaders(out, headerLetters);
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
             drawRow(false, b, out, black, i, headerNumbers);
             black = !black;
         }
         drawHeaders(out, headerLetters);
     }
-
     public void drawBoardFlipped(ChessBoard b, PrintStream out){
         boolean black = false;
         drawHeaders(out, headerLettersF);
-        for(int i = 0; i < 8; i++){
-            drawRow(true, b, out, black, i, headerNumbersF);
+        for(int i = BOARD_SIZE_IN_SQUARES - 1; i >= 0; i--){
+            drawRow(true, b, out, black, i, headerNumbers);
             black = !black;
         }
         drawHeaders(out, headerLettersF);
@@ -73,7 +69,6 @@ public class DrawChessBoard {
         }
         out.println();
     }
-
     private static void drawHeader(PrintStream out, String headerText) {
         int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
         int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
@@ -87,12 +82,11 @@ public class DrawChessBoard {
         out.print(headerText);
     }
 
-//indexes; 0,1,3
     private void drawRow(boolean flipped, ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header){
         boolean black = isBlack;
         if(!flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
-                for (int boardCol = 0; boardCol < 10; boardCol++) { //add two for headers}
+                for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; boardCol++) { //add two for headers}
                     doSquare(board, out, black, row, header, squareRow, boardCol);
                     black = !black;
                 }
@@ -101,7 +95,7 @@ public class DrawChessBoard {
         }
         else if(flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
-                for (int boardCol = 9; boardCol >= 0; boardCol--) { //add two for headers}
+                for (int boardCol = BOARD_SIZE_IN_SQUARES + 1; boardCol >= 0; boardCol--) { //add two for headers}
                     doSquare(board, out, black, row, header, squareRow, boardCol);
                     black = !black;
                 }
@@ -111,10 +105,8 @@ public class DrawChessBoard {
     }
 
     private void doSquare(ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header, int squareRow, int boardCol) {
-        //squareRow represents thickness of the square
-        //boardCol is the square we are on
         boolean black = isBlack;
-        if((boardCol == 0 || boardCol == 9)){
+        if((boardCol == 0 || boardCol == BOARD_SIZE_IN_SQUARES + 1)){
             if((squareRow == SQUARE_SIZE_IN_CHARS / 2)){
                 drawHeader(out, header[row]);
             }
@@ -140,9 +132,6 @@ public class DrawChessBoard {
         }
 
     }
-
-
-
     private static void printPlayer(PrintStream out, ChessPiece piece) {
         ChessPiece.PieceType type = piece.getPieceType();
         String unicode = "";
@@ -172,16 +161,10 @@ public class DrawChessBoard {
         }
         out.print(unicode);
     }
-
-
-
     private static void setColor(PrintStream out, boolean black){
         if(black){setGrey(out);}
         else if(!black){setMagenta(out);}
     }
     private static void setGrey(PrintStream out) {out.print(SET_BG_COLOR_LIGHT_GREY);}
     private static void setMagenta(PrintStream out) {out.print(SET_BG_COLOR_MAGENTA);}
-
-
-
 }
