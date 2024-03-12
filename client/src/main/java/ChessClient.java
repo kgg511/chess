@@ -122,7 +122,7 @@ public class ChessClient {
     //join <ID> [WHITE|BLACK|<empty>] - a game
     public String joinGame(String... params) throws ResponseException{
         if(params.length >= 2){
-            Response.JoinGameResponse response = server.joinGame(params[0], Integer.parseInt(params[1]));
+            Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[0]));
             //draw game
             return "Successfully joined game";
         }

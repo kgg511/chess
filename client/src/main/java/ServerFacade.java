@@ -40,6 +40,7 @@ public class ServerFacade {
         String path = "/session";
         UserData user = new UserData(username, password, "");
         LoginResponse r = this.makeRequest("POST", path, "", user, LoginResponse.class);
+        authToken = r.authToken();
         return r;
     }
 
@@ -47,6 +48,7 @@ public class ServerFacade {
     public LogoutResponse logout() throws ResponseException{
         String path = "/session";
         LogoutResponse r = this.makeRequest("DELETE", path, authToken, null, LogoutResponse.class);
+        authToken = "";
         return r;
     }
 

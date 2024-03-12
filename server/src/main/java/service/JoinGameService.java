@@ -27,11 +27,11 @@ public class JoinGameService extends BaseService{
     }
     private GameData addUserToGame(String username, String clientColor, GameData game) throws ResponseException{
         if(clientColor == null || clientColor.equals("")){return game;} //add as spectator. Maybe phase 6?
-        else if(clientColor.equals("WHITE")){
+        else if(clientColor.equals("WHITE") || clientColor.equals("white")){
             if(game.whiteUsername() != null){throw new ResponseException(403, "Error: already taken");}
             return new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
         }
-        else if(clientColor.equals("BLACK")){
+        else if(clientColor.equals("BLACK") || clientColor.equals("black")){
             if(game.blackUsername() != null){throw new ResponseException(403, "Error: already taken");}
             return new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
         }
