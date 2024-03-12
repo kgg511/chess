@@ -1,13 +1,21 @@
+import chess.ChessBoard;
 import exception.ResponseException;
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.ArrayList;
 import model.*;
+import ui.DrawChessBoard;
+
 public class ChessClient {
 
     //functions to take input and call stuff from the serverFacade
     private final ServerFacade server;
     private final String serverUrl;
+
+    private final DrawChessBoard drawer = new DrawChessBoard();
+    private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
     private State state = State.SIGNEDOUT;
 
@@ -127,8 +135,12 @@ public class ChessClient {
     //join <ID> [WHITE|BLACK|<empty>] - a game
     public String joinGame(String... params) throws ResponseException{
         if(params.length >= 2){
-            Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[0]));
+            //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[0]));
             //draw game
+            //fetch the game
+            var b = new ChessBoard();
+            b.resetBoard();
+            drawBoard(true, b);
             return "Successfully joined game";
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
@@ -142,6 +154,11 @@ public class ChessClient {
             //currently does nothign nice
         }
         throw new ResponseException(400, "Expected: <ID>");
+    }
+
+    public void drawBoard(boolean regular, ChessBoard board){
+        drawer.drawBoardRegular(board, out);
+
     }
 
 

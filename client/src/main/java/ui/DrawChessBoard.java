@@ -15,25 +15,22 @@ import static ui.EscapeSequences.*;
 public class DrawChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 8;
-    private final chess.ChessBoard board;
+    //chess.ChessBoard board;
 
     //If you use the chess piece characters:
     //Set your terminal font in IntelliJ to ‘Monospace’
     //File -> Settings -> Editor -> Color Scheme -> Console Font
     //The “Em Space” Unicode character \u2003 is the same width as the chess piece characters (same for the “Em Quad” character \u2001)
     //Use a combination of regular spaces and \u2003 (or \u2001) to make things align properly
+//ChessBoard board
 
-    public DrawChessBoard(ChessBoard board){
-        this.board = board;
-    }
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         var b = new ChessBoard();
         b.resetBoard();
-        var draw = new DrawChessBoard(b);
+        var draw = new DrawChessBoard();
         out.print(ERASE_SCREEN);
-        draw.drawBoardRegular(out);
-
+        draw.drawBoardRegular(b, out);
     }
 
 //    private static void drawHeaders(PrintStream out) {
@@ -53,18 +50,20 @@ public class DrawChessBoard {
 
 //indexes; 0,1,3
 
-    public void drawBoardRegular(PrintStream out){
+    public void drawBoardRegular(ChessBoard b, PrintStream out){
+        boolean black = false;
         for(int i = 0; i < 8; i++){
-            drawRow(out, false, i);
+            drawRow(b, out, black, i);
+            black = !black;
         }
 
     }
-    private void drawRow(PrintStream out, boolean isBlack, int row) {
+    private void drawRow(ChessBoard board, PrintStream out, boolean isBlack, int row) {
         //squareRow represents thickness of the square
         //boardCol is the square we are on
         boolean black = isBlack;
 
-        for (int squareRow = 0; squareRow < 8; squareRow++) {
+        for (int squareRow = 0; squareRow < 3; squareRow++) {
             for (int boardCol = 0; boardCol < 8; boardCol++) {
                 setColor(out, black);
                 black = !black; //flip color for next round
@@ -74,7 +73,7 @@ public class DrawChessBoard {
                     out.print(EMPTY.repeat(prefixLength));
 
                     ChessPosition p = new ChessPosition(row, boardCol);
-                    ChessPiece piece = this.board.getPiece(p);
+                    ChessPiece piece = board.getPiece(p);
                     if(piece != null){printPlayer(out, piece);}
                     out.print(EMPTY.repeat(suffixLength));
                 }
