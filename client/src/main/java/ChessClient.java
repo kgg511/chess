@@ -114,9 +114,14 @@ public class ChessClient {
 
     //list - games
     public String listGames(String... params) throws ResponseException{
-
+        String resultString = "";
         ArrayList<GameData> games = server.listGames();
-        return games.toString(); //TODO: reformat??
+        for(GameData game: games){
+            resultString += game.toString();
+            resultString += "\n";
+        }
+
+        return resultString; //TODO: reformat??
     }
 
     //join <ID> [WHITE|BLACK|<empty>] - a game
