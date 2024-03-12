@@ -5,8 +5,6 @@ public class Repl {
     //actual console stuff
     private final ChessClient client;
 
-
-
     public Repl(String serverUrl) {
         client = new ChessClient(serverUrl);
     }
@@ -33,6 +31,6 @@ public class Repl {
 
 
     private void printPrompt() {
-        System.out.print("\n" + "[" + state + "]" + ">>> ");
+        System.out.print("\n" + "[" + client.getState() + "]" + ">>> ");
     }
 }

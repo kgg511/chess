@@ -29,6 +29,7 @@ public class ServerFacade {
     public RegisterResponse register(String username, String password, String email) throws ResponseException{
         String path = "/user";
         UserData user = new UserData(username, password, email);
+        System.out.println("about to make post register request");
         RegisterResponse r = this.makeRequest("POST", path, "", user, RegisterResponse.class);
         authToken = r.authToken();
         return r;
@@ -78,8 +79,11 @@ public class ServerFacade {
     //header is ALWAYS an authToken if there are headers
     private <T> T makeRequest(String method, String path, String header, Object request, Class<T> responseClass) throws ResponseException {
         try {
-            URL url = (new URI(serverURL + path)).toURL();
+
+            URL url = (new URI(serverURL + path)).toURL(); // + path
+            System.out.println(url + " whoop");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
+
             if(header != ""){
                 http.setRequestProperty("authorization", header);
             }

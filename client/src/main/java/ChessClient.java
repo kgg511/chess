@@ -20,6 +20,7 @@ public class ChessClient {
     //String serverUrl, NotificationHandler notificationHandler
     //call the functions that then create the request
 
+    public State getState(){ return this.state;}
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
@@ -78,8 +79,8 @@ public class ChessClient {
 
     //register <USERNAME> <PASSWORD> <EMAIL> - to create an account
     public String register(String... params) throws ResponseException{
-        if(params.length >= 4){ //cmd, username, password, email
-            Response.RegisterResponse response = server.register(params[1], params[2], params[3]);
+        if(params.length >= 3){ //cmd, username, password, email
+            Response.RegisterResponse response = server.register(params[0], params[1], params[2]);
             state = state.SIGNEDIN;
             return String.format("You registered as %s.", response.username());
         }
@@ -87,8 +88,8 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException{
-        if(params.length >= 3){ //cmd, username, password
-            Response.LoginResponse response = server.login(params[1], params[2]);
+        if(params.length >= 2){ //cmd, username, password
+            Response.LoginResponse response = server.login(params[0], params[1]);
             state = state.SIGNEDIN; //hmmm
             return String.format("You signed in as %s.", response.username());
         }
@@ -104,26 +105,24 @@ public class ChessClient {
 
     public String createGame(String... params) throws ResponseException{
         //create <NAME> - a game
-        if(params.length >= 2){ //create, name
-            Response.CreateGameResponse response = server.createGame(params[1]);
-            return String.format("Game, %s, created", params[1]);
+        if(params.length >= 1){ //create, name
+            Response.CreateGameResponse response = server.createGame(params[0]);
+            return String.format("Game, %s, created", params[0]);
         }
         throw new ResponseException(400, "Expected: <NAME>");
     }
 
     //list - games
     public String listGames(String... params) throws ResponseException{
-        if(params.length >= 1){
-            ArrayList<GameData> games = server.listGames();
-            return games.toString(); //TODO: reformat??
-        }
-        throw new ResponseException(400, "um");
+
+        ArrayList<GameData> games = server.listGames();
+        return games.toString(); //TODO: reformat??
     }
 
     //join <ID> [WHITE|BLACK|<empty>] - a game
     public String joinGame(String... params) throws ResponseException{
-        if(params.length >= 3){
-            Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
+        if(params.length >= 2){
+            Response.JoinGameResponse response = server.joinGame(params[0], Integer.parseInt(params[1]));
             //draw game
             return "Successfully joined game";
         }
@@ -132,7 +131,7 @@ public class ChessClient {
 
     //observe <ID> - a game
     public String observeGame(String... params) throws ResponseException{
-        if(params.length >= 2){
+        if(params.length >= 1){
             //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
             return "Successfully joined game as an observer";
             //currently does nothign nice

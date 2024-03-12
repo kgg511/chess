@@ -26,4 +26,17 @@ public class ServerFacadeTests {
         Assertions.assertTrue(true);
     }
 
+    @Test
+    public void testRegisterPositive(){
+
+
+    }
+    //RegisterResponse registerPositive(String username, String password, String email){
+
+    //LoginResponse login(String username, String password)
+    //LogoutResponse logout()
+    //JoinGameResponse joinGame(String playerColor, int gameID)
+    //CreateGameResponse createGame(String gameName)
+    //ArrayList<GameData> listGames()
+
 }
