@@ -1,3 +1,5 @@
+package clientStuff;
+
 import chess.ChessBoard;
 import exception.ResponseException;
 
@@ -21,9 +23,10 @@ public class ChessClient {
 
     //domain name , port number, will come in via cmdline?
     //localhost:80
-    public ChessClient(String serverUrl) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
+    public ChessClient(int port, String host) {
+        this.serverUrl = host + ":" + port;
+        server = new ServerFacade(port, host);
+
     }
     //String serverUrl, NotificationHandler notificationHandler
     //call the functions that then create the request
@@ -77,7 +80,7 @@ public class ChessClient {
         return """
                 create <NAME> - a game
                 list - games
-                join <ID> [WHITE|BLACK|<empty>] - a game
+                join <ID> [WHITE|BLACK] - a game
                 observe <ID> - a game
                 logout - when you are done
                 quit - quit playing chess
@@ -153,7 +156,13 @@ public class ChessClient {
     //observe <ID> - a game
     public String observeGame(String... params) throws ResponseException{
         if(params.length >= 1){
-            //Response.JoinGameResponse response = server.joinGame(params[1], Integer.parseInt(params[2]));
+            ArrayList<GameData> games = server.listGames();
+            GameData game = games.get(Integer.parseInt(params[0]) - 1); //convert to 0 indexing
+            int id = game.gameID();
+            Response.JoinGameResponse response = server.joinGame("", id);
+            var b = new ChessBoard();
+            b.resetBoard();
+            drawer.drawBoards(b, out);
             return "Successfully joined game as an observer";
             //currently does nothign nice
         }

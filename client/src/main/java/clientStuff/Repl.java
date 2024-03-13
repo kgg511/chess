@@ -1,3 +1,7 @@
+package clientStuff;
+
+import clientStuff.ChessClient;
+
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 public class Repl {
@@ -5,8 +9,8 @@ public class Repl {
     //actual console stuff
     private final ChessClient client;
 
-    public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl);
+    public Repl(int port, String host) {
+        client = new ChessClient(port, host);
     }
     //serverUrl, this
 
