@@ -11,18 +11,20 @@ import ui.DrawChessBoard;
 import static ui.EscapeSequences.*;
 
 public class ChessClientLoggedIn implements ChessClientInterface{
-    private final ServerFacade server;
+    public final ServerFacade server;
     private final String serverUrl;
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
     private State state = State.SIGNEDIN;
 
-    public ChessClientLoggedIn(int port, String host) {
+    public ChessClientLoggedIn(int port, String host, ServerFacade f) {
         this.serverUrl = host + ":" + port;
-        server = new ServerFacade(port, host);
+        if(f != null){server = f;}
+        else{server = new ServerFacade(port, host);}
     }
     public State getState(){ return this.state;}
+    public ServerFacade getFacade(){return this.server;}
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
@@ -114,11 +116,9 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             b.resetBoard();
             drawer.drawBoards(b, out);
             return "Successfully joined game as an observer";
-            //currently does nothign nice
         }
         throw new ResponseException(400, "Expected: <ID>");
     }
-
     public void setColor(){
         System.out.print(SET_TEXT_COLOR_WHITE);
     }

@@ -11,7 +11,7 @@ public class Repl {
     public Repl(int port, String host) {
         this.port = port;
         this.host = host;
-        client = new ChessClientLoggedOut(port, host);
+        client = new ChessClientLoggedOut(port, host, null);
     }
 
     public void run(){
@@ -27,11 +27,12 @@ public class Repl {
                 client.setColor();
 
                 if(client.getState() == State.SIGNEDOUT && client.getClass() != ChessClientLoggedOut.class){
-                    client = new ChessClientLoggedOut(port, host);
+                    client = new ChessClientLoggedOut(port, host, client.getFacade());
                     client.setColor();
                 }
                 else if(client.getState() == State.SIGNEDIN && client.getClass() != ChessClientLoggedIn.class){
-                    client = new ChessClientLoggedIn(port, host);
+                    client = new ChessClientLoggedIn(port, host, client.getFacade());
+                    //int port, String host, ServerFacade f
                     client.setColor();
                 }
 
