@@ -1,8 +1,6 @@
 package clientStuff;
-
 import chess.ChessBoard;
 import exception.ResponseException;
-
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -10,101 +8,52 @@ import java.util.ArrayList;
 import model.*;
 import ui.DrawChessBoard;
 
-public class ChessClient {
+import static ui.EscapeSequences.*;
 
-    //functions to take input and call stuff from the serverFacade
+public class ChessClientLoggedIn implements ChessClientInterface{
     private final ServerFacade server;
     private final String serverUrl;
-
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-    private State state = State.SIGNEDOUT;
+    private State state = State.SIGNEDIN;
 
-    //domain name , port number, will come in via cmdline?
-    //localhost:80
-    public ChessClient(int port, String host) {
+    public ChessClientLoggedIn(int port, String host) {
         this.serverUrl = host + ":" + port;
         server = new ServerFacade(port, host);
-
     }
-    //String serverUrl, NotificationHandler notificationHandler
-    //call the functions that then create the request
-
     public State getState(){ return this.state;}
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-
-            //if not logged in: help, quit, login, register
-            if(state == state.SIGNEDOUT){
-                return switch (cmd) {
-                    case "help" -> help();
-                    case "quit" -> "quit";
-                    case "register" -> register(params);
-                    case "login" -> login(params);
-                    default -> help();
-                };
-            }
-            //if logged in: help, logout, create game, list games, join game, join observer
-            else if(state == state.SIGNEDIN){
-                return switch (cmd) {
-                    case "help" -> help();
-                    case "quit" -> "quit";
-                    case "logout" -> logout();
-                    case "create" -> createGame(params);
-                    case "list" -> listGames();
-                    case "join" -> joinGame(params);
-                    case "observe" -> observeGame(params);
-                    default -> help();
-                };
-            }
-
+            return switch (cmd) {
+                case "help"-> help();
+                case "quit" -> "quit";
+                case "logout" -> logout();
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
+                default -> help();
+            };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
-        return "what did you do";
     }
 
     public String help() {
-        if (state == State.SIGNEDOUT) {
-            return """
-                    register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-                    login <USERNAME> <PASSWORD> - to play chess
-                    quit - exit
-                    help - with possible commands
-                    """;
-        }
+        System.out.println(SET_TEXT_COLOR_BLUE);
         return """
-                create <NAME> - a game
-                list - games
-                join <ID> [WHITE|BLACK] - a game
-                observe <ID> - a game
-                logout - when you are done
-                quit - quit playing chess
-                help - see possible commands
-                """;
-    }
-
-    //register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-    public String register(String... params) throws ResponseException{
-        if(params.length >= 3){ //cmd, username, password, email
-            Response.RegisterResponse response = server.register(params[0], params[1], params[2]);
-            state = state.SIGNEDIN;
-            return String.format("You registered as %s.", response.username());
-        }
-        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
-    }
-
-    public String login(String... params) throws ResponseException{
-        if(params.length >= 2){ //cmd, username, password
-            Response.LoginResponse response = server.login(params[0], params[1]);
-            state = state.SIGNEDIN; //hmmm
-            return String.format("You signed in as %s.", response.username());
-        }
-        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
+            create <NAME> - a game
+            list - games
+            join <ID> [WHITE|BLACK] - a game
+            observe <ID> - a game
+            logout - when you are done
+            quit - quit playing chess
+            help - see possible commands
+            """;
     }
 
     public String logout(String... params) throws ResponseException{
@@ -133,6 +82,7 @@ public class ChessClient {
             resultString += "\n";
             number++;
         }
+        resultString = resultString.substring(0, resultString.length()-1);
 
         return resultString; //TODO: reformat??
     }
@@ -169,11 +119,8 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <ID>");
     }
 
-
-
-
-
-
-
-
+    public void setColor(){
+        System.out.print(SET_TEXT_COLOR_WHITE);
+    }
 }
+

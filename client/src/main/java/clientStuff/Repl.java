@@ -1,22 +1,21 @@
 package clientStuff;
 
-import clientStuff.ChessClient;
-
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 public class Repl {
 
     //actual console stuff
-    private final ChessClient client;
-
+    private ChessClientInterface client;
+    private final int port;
+    private final String host;
     public Repl(int port, String host) {
-        client = new ChessClient(port, host);
+        this.port = port;
+        this.host = host;
+        client = new ChessClientLoggedOut(port, host);
     }
-    //serverUrl, this
 
     public void run(){
-        System.out.println("Welcome to 240 chess. Type Help to get started.");
-
+        System.out.println(SET_TEXT_COLOR_LIGHT_GREY + "Welcome to 240 chess. Type Help to get started.");
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
@@ -24,7 +23,18 @@ public class Repl {
             String line = scanner.nextLine(); //get line
             try {
                 result = client.eval(line); //evalute
-                System.out.print(SET_TEXT_COLOR_BLUE + result);
+                System.out.print(result);
+                client.setColor();
+
+                if(client.getState() == State.SIGNEDOUT && client.getClass() != ChessClientLoggedOut.class){
+                    client = new ChessClientLoggedOut(port, host);
+                    client.setColor();
+                }
+                else if(client.getState() == State.SIGNEDIN && client.getClass() != ChessClientLoggedIn.class){
+                    client = new ChessClientLoggedIn(port, host);
+                    client.setColor();
+                }
+
             } catch (Throwable e) {
                 System.out.print(e.getMessage());
             }
