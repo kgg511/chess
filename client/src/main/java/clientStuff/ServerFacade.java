@@ -20,7 +20,6 @@ public class ServerFacade {
 
     public ServerFacade(int port, String url) {
         serverURL = url + ":" + port;
-        System.out.println("the url is:" + serverURL);
     }
     //register: returns username and authToken as responseObject
     public RegisterResponse register(String username, String password, String email) throws ResponseException{

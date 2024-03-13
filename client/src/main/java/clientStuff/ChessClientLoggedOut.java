@@ -15,10 +15,6 @@ import static ui.EscapeSequences.*;
 public class ChessClientLoggedOut implements ChessClientInterface{
     public final ServerFacade server;
     private final String serverUrl;
-
-//    private final DrawChessBoard drawer = new DrawChessBoard();
-//    private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
     private State state = State.SIGNEDOUT;
     public ChessClientLoggedOut(int port, String host, ServerFacade f) {
         this.serverUrl = host + ":" + port;

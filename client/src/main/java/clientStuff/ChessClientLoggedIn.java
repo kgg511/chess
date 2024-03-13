@@ -85,11 +85,10 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             number++;
         }
         resultString = resultString.substring(0, resultString.length()-1);
-
-        return resultString; //TODO: reformat??
+        return resultString;
     }
 
-    //join <ID> [WHITE|BLACK|<empty>] - a game
+    //join <ID> [WHITE|BLACK] - a game
     public String joinGame(String... params) throws ResponseException{
         if(params.length >= 2){
             //translate game number to gameID
@@ -102,7 +101,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             drawer.drawBoards(b, out);
             return "Successfully joined game";
         }
-        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
     }
 
     //observe <ID> - a game

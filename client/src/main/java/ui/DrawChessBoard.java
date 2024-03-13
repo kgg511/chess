@@ -16,13 +16,6 @@ public class DrawChessBoard {
     private String[] headerNumbersF = {"8", "7", "6","5", "4", "3", "2", "1"};
     private static final int LINE_WIDTH_IN_CHARS = 1;
 
-    //If you use the chess piece characters:
-    //Set your terminal font in IntelliJ to ‘Monospace’
-    //File -> Settings -> Editor -> Color Scheme -> Console Font
-    //The “Em Space” Unicode character \u2003 is the same width as the chess piece characters (same for the “Em Quad” character \u2001)
-    //Use a combination of regular spaces and \u2003 (or \u2001) to make things align properly
-//ChessBoard board
-
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         var b = new ChessBoard();
@@ -38,6 +31,7 @@ public class DrawChessBoard {
         drawBoardFlipped(b, out);
     }
     public void drawBoardRegular(ChessBoard b, PrintStream out){
+        //out.println(SET_BG)
         boolean black = false;
         drawHeaders(out, headerLetters);
         for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
@@ -57,7 +51,7 @@ public class DrawChessBoard {
     }
 
     private static void drawHeaders(PrintStream out, String[] headers) {
-        out.print(SET_BG_COLOR_BLACK);
+        //out.print(SET_BG_COLOR_BLACK);
         out.print("  ");
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; boardCol++) {
             out.print(" ");
@@ -74,7 +68,7 @@ public class DrawChessBoard {
         out.print(EMPTY.repeat(suffixLength));
     }
     private static void printHeaderText(PrintStream out, String headerText) {
-        out.print(SET_BG_COLOR_BLACK);
+        //out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
         out.print(headerText);
     }
@@ -125,7 +119,7 @@ public class DrawChessBoard {
             else {
                 out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
             }
-            out.print(RESET_BG_COLOR);
+            out.print("\u001B[49m");
         }
 
     }
