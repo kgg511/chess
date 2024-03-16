@@ -9,5 +9,4 @@ public interface ChessClientInterface {
     public void setColor();
     public ServerFacade getFacade();
 
-
 }
