@@ -62,7 +62,9 @@ public class ChessClientGame implements ChessClientInterface{
 
     private String makeMove(String... params){} //TODO: is this chessmove object?
 
-    private String resignGame(){}
+    private String resignGame(){
+        
+    }
 
     private String highlightLegal(String... params){}
 
