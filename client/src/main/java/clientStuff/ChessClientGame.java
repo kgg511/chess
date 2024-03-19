@@ -32,7 +32,7 @@ public class ChessClientGame implements ChessClientInterface{
             return switch (cmd) {
                 case "help"-> help();
                 case "quit" -> "quit";
-                case "redraw" -> redrawBoard();
+                case "redraw" -> redrawBoard(3);
                 case "leave" -> leaveGame();
                 case "move" -> makeMove(params);
                 case "resign" -> resignGame();
@@ -56,17 +56,30 @@ public class ChessClientGame implements ChessClientInterface{
             """;
     }
 
-    private String redrawBoard(){}
+    private String redrawBoard(int a) throws ResponseException{
 
-    private String leaveGame(){}
+        if(a == 3){
+            throw new ResponseException(111, "quiet");
+        }
 
-    private String makeMove(String... params){} //TODO: is this chessmove object?
-
-    private String resignGame(){
-        
+        return "";
     }
 
-    private String highlightLegal(String... params){}
+    private String leaveGame(){
+        return "";
+    }
+
+    private String makeMove(String... params){
+        return "";
+    } //TODO: is this chessmove object?
+
+    private String resignGame(){
+        return "";
+    }
+
+    private String highlightLegal(String... params){
+        return "";
+    }
 
 }
 

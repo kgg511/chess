@@ -78,6 +78,8 @@ public class ChessClientLoggedIn implements ChessClientInterface{
     public String listGames(String... params) throws ResponseException{
         String resultString = "";
         ArrayList<GameData> games = server.listGames();
+
+        if(games.size() == 0){return "No games to display";}
         int number = 1;
         for(GameData game: games){
             resultString += game.noIDToString(number);
