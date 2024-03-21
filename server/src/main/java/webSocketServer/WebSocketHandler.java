@@ -39,19 +39,20 @@ public class WebSocketHandler {
     }
 
     //we receive ACTIONS from the client, and then we call methods which broadcast notifications
-    private void joinPlayer(int gid, String playerName, Session session) throws IOException{
-        //session is our sender, playerName for uI?
+    private void joinPlayer(int gid, String authToken, String playerName, Session session) throws IOException{
+        //Server sends a LOAD_GAME message back to the root client.
+        // Server sends a Notification message to all other clients in that game informing them what color
+        //the root client is joining as.
+        //they'll just send the authToken using their request
         //Integer gameID, ChessGame.TeamColor playerColor
-        connections.addConnection(gid, session); //add the players websocket connection
+        connections.addConnection(gid, authToken, session); //add the players websocket connection
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME); //for sender
 
-        Server
-        connections.broadcast(gid, session, message); //load_game
-        //(int gid, Session senderSession, Notification notification)
+        ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
-//        Server sends a LOAD_GAME message back to the root client.
-//        Server sends a Notification message to all other clients in that game informing them what color
-//        the root client is joining as.
+        connections.sendToSession(session, message); //send load game back to client
+        connections.broadcast(gid, session, message); //send notification back to everyone else
+
     }
     private void joinObserver() throws IOException{
         //Integer gameID

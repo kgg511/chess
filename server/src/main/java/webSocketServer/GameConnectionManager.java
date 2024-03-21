@@ -6,47 +6,59 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 public class GameConnectionManager {
-    public final ConcurrentHashMap<Integer, ArrayList<GameConnection>> connections = new ConcurrentHashMap<>();
-
-    public void addConnection(int gid, Session session){
+    public final ConcurrentHashMap<Integer, Map<String, Session>> connections = new ConcurrentHashMap<>();
+    //each game has a dictionary of authToken: Session connection
+    public void addConnection(int gid, String authToken, Session session){
         assert session != null;
-        GameConnection connection = new GameConnection(gid, session);
-        ArrayList<GameConnection> gameConnections = connections.get(gid); //may return null if gid not in hashmap
-        if(gameConnections == null){ //initialize to empty list
-            gameConnections = new ArrayList<GameConnection>();
+        GameConnection connection = new GameConnection(gid, authToken, session);
+        Map<String, Session> map = null;
+        if(!connections.containsKey(gid)){
+            Map<String, Session> map = new HashMap<>();
+            map.put(authToken, session);
         }
-        gameConnections.add(connection); //add connection
-        //connections.put(gid, gameConnections); //update gid to updated gameConnections array
+        else{
+            map = connections.get(gid);
+            if(map.containsKey(authToken)){System.out.println("NO YOU ARE ALREADY IN THE GAME");}
+            map.put(authToken, session);
+        }
+    }
+    public void removeConnection(int gid, String authToken){ //game completes
+        Map<String, Session> map = connections.get(gid);
+        if(map != null){
+            map.remove(authToken);
+        }
     }
 
-    public void removeConnection(int gid, Session session){ //game completes
-        ArrayList<GameConnection> gameConnections = connections.get(gid); //may return null if gid not in hashmap
-        gameConnections.remove(session); //reference
-    }
-
-    public ArrayList<GameConnection> getConnectionsForGame(int gid){
+    public Map<String, Session> getConnectionsForGame(int gid){
         return connections.get(gid);
     }
-
     public void broadcast(int gid, Session senderSession, ServerMessage notification) throws IOException {
-        var removeList = new ArrayList<GameConnection>(); //person closed their computer
-        ArrayList<GameConnection> gameConnections = connections.get(gid);
+        var removeList = new ArrayList<String>(); //person closed their computer
+        Map<String, Session> gameConnections = connections.get(gid);
         //get game, go through its connections, remove dead ones else broadcast if not sender...
-        for (GameConnection c: gameConnections) {
-            if (c.session.isOpen()) {
-                if (!c.session.equals(senderSession)) {
-                    c.send(notification.toString());
+        for (String token: gameConnections.keySet()) {
+            Session c = gameConnections.get(token);
+            if (c.isOpen()) {
+                if (!c.equals(senderSession)) {
+                    c.getRemote().sendString(notification.toString());
                 }
             } else {
-                removeList.add(c);
+                removeList.add(token);
             }
         }
-
         // Clean up any connections that were left open.
-        for (GameConnection c : removeList) {
-            gameConnections.remove(c); //reference to arraylist in hashmap
+        for (String c : removeList) {
+            gameConnections.remove(c); //remove key for authToken c
         }
+    }
+
+    public void sendToSession(Session Session, ServerMessage notification){
+        //send notification to only the specified session
+
     }
 
 
