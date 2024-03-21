@@ -13,6 +13,7 @@ import webSocketMessages.Notification;
 import java.io.IOException;
 import java.util.Timer;
 
+import webSocketMessages.serverMessages.MessageNotification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketServer.*; //whyd i have to impor this
 import webSocketMessages.userCommands.*;
@@ -48,7 +49,7 @@ public class WebSocketHandler {
         connections.addConnection(gid, authToken, session); //add the players websocket connection
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME); //for sender
 
-        ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        ServerMessage notification = new MessageNotification("Player has joined");
 
         connections.sendToSession(session, message); //send load game back to client
         connections.broadcast(gid, session, message); //send notification back to everyone else
