@@ -1,5 +1,6 @@
 package clientStuff;
 import chess.ChessBoard;
+import clientStuff.webSocketClient.WebSocketFacade;
 import exception.ResponseException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +16,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
     private final String serverUrl;
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
+    private WebSocketFacade ws;
     private State state = State.SIGNEDIN;
 
     public ChessClientLoggedIn(int port, String host, ServerFacade f) {
@@ -98,6 +99,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             GameData game = games.get(Integer.parseInt(params[0]) - 1); //convert to 0 indexing
             int id = game.gameID();
             Response.JoinGameResponse response = server.joinGame(params[1], id);
+            state = State.GAME;
             var b = new ChessBoard();
             b.resetBoard();
             drawer.drawBoards(b, out);
@@ -113,6 +115,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             GameData game = games.get(Integer.parseInt(params[0]) - 1); //convert to 0 indexing
             int id = game.gameID();
             Response.JoinGameResponse response = server.joinGame("", id);
+            state = State.GAME;
             var b = new ChessBoard();
             b.resetBoard();
             drawer.drawBoards(b, out);

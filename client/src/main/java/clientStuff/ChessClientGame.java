@@ -71,16 +71,16 @@ public class ChessClientGame implements ChessClientInterface{
         state = State.SIGNEDIN; //transition to logged in UI
         //game id
         //remove from session
-        ws = new WebSocketFacade(serverUrl);
+        ws = null;
 
 
         return "You have left the game";
 
-        if(params.length >= 1){ //create, name
-            Response.CreateGameResponse response = server.createGame(params[0]);
-            return String.format("Game, %s, created", params[0]);
-        }
-        throw new ResponseException(400, "Expected: <NAME>");
+//        if(params.length >= 1){ //create, name
+//            Response.CreateGameResponse response = server.createGame(params[0]);
+//            return String.format("Game, %s, created", params[0]);
+//        }
+//        throw new ResponseException(400, "Expected: <NAME>");
     }
 
     private String makeMove(String... params){

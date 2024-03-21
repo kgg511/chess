@@ -3,8 +3,6 @@ package clientStuff;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 public class Repl {
-
-    //actual console stuff
     private ChessClientInterface client;
     private final int port;
     private final String host;
