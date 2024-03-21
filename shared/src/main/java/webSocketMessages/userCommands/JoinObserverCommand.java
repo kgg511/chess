@@ -1,4 +1,2 @@
 package webSocketMessages.userCommands;
-
-public class JoinObserverCommand {
-}
+public record JoinObserverCommand(int gameID) {}

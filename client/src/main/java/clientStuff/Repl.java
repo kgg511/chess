@@ -32,7 +32,10 @@ public class Repl {
                 }
                 else if(client.getState() == State.SIGNEDIN && client.getClass() != ChessClientLoggedIn.class){
                     client = new ChessClientLoggedIn(port, host, client.getFacade());
-                    //int port, String host, ServerFacade f
+                    client.setColor();
+                }
+                else if(client.getState() == State.GAME && client.getClass() != ChessClientGame.class){
+                    client = new ChessClientGame(port, host, client.getFacade());
                     client.setColor();
                 }
 
@@ -42,8 +45,6 @@ public class Repl {
         }
         System.out.println();
     }
-
-
 
     private void printPrompt() {
         System.out.print("\n" + "[" + client.getState() + "]" + ">>> ");

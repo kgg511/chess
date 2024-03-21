@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
+import clientStuff.webSocketClient.WebSocketFacade;
 
 public class ChessClientGame implements ChessClientInterface{
     public final ServerFacade server;
@@ -15,6 +16,9 @@ public class ChessClientGame implements ChessClientInterface{
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private State state = State.GAME;
+
+    private WebSocketFacade ws;
+    //private final NotificationHandler notificationHandler;
 
     public ChessClientGame(int port, String host, ServerFacade f){
         this.serverUrl = host + ":" + port;
@@ -57,16 +61,26 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private String redrawBoard(int a) throws ResponseException{
-
         if(a == 3){
             throw new ResponseException(111, "quiet");
         }
-
         return "";
     }
 
-    private String leaveGame(){
-        return "";
+    private String leaveGame(String... params) throws ResponseException{
+        state = State.SIGNEDIN; //transition to logged in UI
+        //game id
+        //remove from session
+        ws = new WebSocketFacade(serverUrl);
+
+
+        return "You have left the game";
+
+        if(params.length >= 1){ //create, name
+            Response.CreateGameResponse response = server.createGame(params[0]);
+            return String.format("Game, %s, created", params[0]);
+        }
+        throw new ResponseException(400, "Expected: <NAME>");
     }
 
     private String makeMove(String... params){
