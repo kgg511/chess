@@ -14,10 +14,9 @@ public class GameConnectionManager {
     //each game has a dictionary of authToken: Session connection
     public void addConnection(int gid, String authToken, Session session){
         assert session != null;
-        GameConnection connection = new GameConnection(gid, authToken, session);
         Map<String, Session> map = null;
         if(!connections.containsKey(gid)){
-            Map<String, Session> map = new HashMap<>();
+            map = new HashMap<>();
             map.put(authToken, session);
         }
         else{
