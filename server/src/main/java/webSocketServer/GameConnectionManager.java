@@ -1,5 +1,6 @@
 package webSocketServer;
 import org.eclipse.jetty.websocket.api.Session;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -19,12 +20,16 @@ public class GameConnectionManager {
         //connections.put(gid, gameConnections); //update gid to updated gameConnections array
     }
 
-    public void removeConnection(int gid, Session session){
+    public void removeConnection(int gid, Session session){ //game completes
         ArrayList<GameConnection> gameConnections = connections.get(gid); //may return null if gid not in hashmap
         gameConnections.remove(session); //reference
     }
 
-    public void broadcast(int gid, Session senderSession, Notification notification) throws IOException {
+    public ArrayList<GameConnection> getConnectionsForGame(int gid){
+        return connections.get(gid);
+    }
+
+    public void broadcast(int gid, Session senderSession, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<GameConnection>(); //person closed their computer
         ArrayList<GameConnection> gameConnections = connections.get(gid);
         //get game, go through its connections, remove dead ones else broadcast if not sender...
