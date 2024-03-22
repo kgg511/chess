@@ -19,25 +19,27 @@ import static chess.ChessGame.TeamColor.WHITE;
 public class GameService extends BaseService {
     private final GameConnectionManager connections;
     private Session session;
+    private String authToken = "";
+    private String username = "";
 
-    public GameService(GameConnectionManager connections, Session sender) throws DataAccessException, ResponseException {
+    public GameService(GameConnectionManager connections, Session sender, String authToken) throws DataAccessException, ResponseException {
         super();
         this.connections = connections;
         this.session = sender;
+        this.authToken = authToken;
+        this.username = tokenToUsername(authToken);
     }
-    public String tokenToUsername(String authToken) throws DataAccessException, ResponseException{
+    public String tokenToUsername() throws DataAccessException, ResponseException{
         AuthData data = getAuthDB().getAuthByToken(authToken);
         if(data == null){throw new ResponseException(400, "AuthToken doesn't exist");}
         return data.username();
     }
-    public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException{
+    public void joinPlayer(int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException{
         //String authToken, Integer gameID, ChessGame.TeamColor playerColor
         //figure out username
         //you have to put in player Username
         //find the game in the database, put the player in there
         //
-
-
         GameData g = getGameDB().getGameById(gameID);
         GameData updated = null;
         if(color == WHITE){ //updating white
@@ -92,12 +94,11 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, msg);
     }
     //ERROR HANDLING????
-    public void makeMove(String authToken, int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException{
+    public void makeMove(int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException{
         try{
             ChessMove pMove = convertMoveToCoords(move);
             GameData data = getGameDB().getGameById(gameID);
             ChessGame game = data.game();
-            String username = tokenToUsername(authToken);
             ChessGame.TeamColor colorOpposing;
 
             if(data.whiteUsername().equals(username)){colorOpposing = BLACK;}
@@ -111,13 +112,13 @@ public class GameService extends BaseService {
             getGameDB().updateGame(updated);
 
             //load game to all (including client)
-            ServerMessage message = new LoadGameNotification(game);
+            LoadGameNotification message = new LoadGameNotification(game);
             connections.sendToSession(session, message);
             connections.broadcast(gameID, session, message);
 
             //Notification to all but the client that move has been made
             String moveMessage = username + " made the move " + move;
-            ServerMessage notification = new MessageNotification(moveMessage);
+            MessageNotification notification = new MessageNotification(moveMessage);
             connections.broadcast(gameID, session, notification);
 
             doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
@@ -131,16 +132,14 @@ public class GameService extends BaseService {
         }
     }
 
-    public void leaveGame(String authToken, int gameID){
-
+    public void leaveGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
         connections.removeConnection(gameID, authToken); //remove WS connection
+        boolean success = getGameDB().deleteByGameID(gameID); //remove from database
+        if(!success){throw new ResponseException(400, "IDK but leaveGame not working?");}
 
-        getGameDB().
-
-
-        //A player left the game. The notification message should include the player’s name.
-
-
+        //A player left the game. The notification message should include the player’s name
+         MessageNotification message = new MessageNotification(username + " has left the game");
+         connections.broadcast(gameID, session, message); //tell other users
     }
 
     public void resignGame(){}
