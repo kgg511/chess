@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
-import clientStuff.webSocketClient.WebSocketFacade;
+import clientStuff.webSocketClient.WebSocketCommunicator;
 
 public class ChessClientGame implements ChessClientInterface{
     public final ServerFacade server;
@@ -17,7 +17,7 @@ public class ChessClientGame implements ChessClientInterface{
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private State state = State.GAME;
 
-    private WebSocketFacade ws;
+    private WebSocketCommunicator ws;
     //private final NotificationHandler notificationHandler;
 
     public ChessClientGame(int port, String host, ServerFacade f){

@@ -2,20 +2,18 @@ package clientStuff.webSocketClient;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
-import webSocketMessages.serverMessages.*;
 import webSocketMessages.userCommands.*;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import webSocketMessages.userCommands.*;
 
 //only send messages to the server
-public class WebSocketFacade extends Endpoint implements MessageHandler.Whole<String>{
+public class WebSocketCommunicator extends Endpoint implements MessageHandler.Whole<String>{
     Session session;
     //TODO: put each function in a try except so we always throw REPSONSEEXCEPTIONS
     //NotificationHandler notificationHandler;//notification handler is just to print ws output differently
-    public WebSocketFacade(String url) throws ResponseException {
+    public WebSocketCommunicator(String url) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");

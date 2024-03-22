@@ -10,8 +10,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.Server;
 import service.JoinGameService;
-import webSocketMessages.Action;
-import webSocketMessages.Notification;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -26,11 +24,13 @@ import webSocketMessages.userCommands.*;
 @WebSocket
 public class WebSocketHandler {
     private final GameConnectionManager connections = new GameConnectionManager();
+    private Session session = null;
     //Actions typically refer to messages or events sent from the client to the server.
     //this should send ACTIONS, aka usergame commands
     //Notifications, on the other hand, usually describe messages or events sent from the server to the client.
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
+        session = session;
         UserGameCommand cmd = new Gson().fromJson(message, UserGameCommand.class); //joinPlayerCommand, etc
         if(cmd ==null){ System.out.println("what");}
         UserGameCommand.CommandType commandType = cmd.getCommandType();

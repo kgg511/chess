@@ -1,6 +1,6 @@
 package clientStuff;
 import chess.ChessBoard;
-import clientStuff.webSocketClient.WebSocketFacade;
+import clientStuff.webSocketClient.WebSocketCommunicator;
 import exception.ResponseException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +16,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
     private final String serverUrl;
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-    private WebSocketFacade ws;
+    private WebSocketCommunicator ws;
     private State state = State.SIGNEDIN;
 
     public ChessClientLoggedIn(int port, String host, ServerFacade f) {

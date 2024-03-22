@@ -4,8 +4,12 @@ import Response.CreateGameResponse;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
 import model.*;
+import webSocketServer.GameConnectionManager;
 
 public class CreateGameService extends BaseService{
+
+    private GameConnectionManager connections;
+
 
     public CreateGameService() throws DataAccessException, ResponseException{
         super();
