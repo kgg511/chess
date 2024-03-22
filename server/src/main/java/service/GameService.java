@@ -11,7 +11,7 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketServer.GameConnectionManager;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -27,36 +27,29 @@ public class GameService extends BaseService {
         this.connections = connections;
         this.session = sender;
         this.authToken = authToken;
-        this.username = tokenToUsername(authToken);
+        this.username = tokenToUsername();
     }
     public String tokenToUsername() throws DataAccessException, ResponseException{
         AuthData data = getAuthDB().getAuthByToken(authToken);
         if(data == null){throw new ResponseException(400, "AuthToken doesn't exist");}
         return data.username();
     }
-    public void joinPlayer(int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException{
-        //String authToken, Integer gameID, ChessGame.TeamColor playerColor
-        //figure out username
-        //you have to put in player Username
-        //find the game in the database, put the player in there
-        //
-        GameData g = getGameDB().getGameById(gameID);
-        GameData updated = null;
-        if(color == WHITE){ //updating white
-            updated = new GameData(g.gameID(), username, g.blackUsername(), g.gameName(), g.game());
-        }
-        else{updated = new GameData(g.gameID(), g.whiteUsername(), username, g.gameName(), g.game());}
+    public void joinPlayer(int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException, java.io.IOException{
+        //Server sends a LOAD_GAME message back to the root client.
+        // Server sends a Notification message to all other clients about what color they joined as
+        connections.addConnection(gameID, authToken, session); //add the players websocket connection
+        ChessGame game = getGameDB().getGameById(gameID).game(); //we assume HTTPS added us to db
+        LoadGameNotification message = new LoadGameNotification(game); //for sender
+        connections.sendToSession(session, message); //send load game back to client
 
-        boolean changed = getGameDB().updateGame(updated);
-
-        //game service is going to return just what I need?
-        //WAIT, this is ALREADY a service????
-        //
-
+        MessageNotification notification = new MessageNotification(username + " has joined as" + color);
+        connections.broadcast(gameID, session, notification); //send notification back to everyone else
     }
-    public void joinObserver(){
-
-
+    public void joinObserver(int gameID) throws ResponseException, DataAccessException{
+        connections.addConnection(gameID, authToken, session); //add the players websocket connection
+        ChessGame game = getGameDB().getGameById(gameID).game();
+        LoadGameNotification message = new LoadGameNotification(game); //for sender
+        connections.sendToSession(session, message); //send load game back to client
     }
 
     private ChessMove convertMoveToCoords(String move){ //e6
@@ -94,42 +87,33 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, msg);
     }
     //ERROR HANDLING????
-    public void makeMove(int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException{
-        try{
-            ChessMove pMove = convertMoveToCoords(move);
-            GameData data = getGameDB().getGameById(gameID);
-            ChessGame game = data.game();
-            ChessGame.TeamColor colorOpposing;
+    public void makeMove(int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException, InvalidMoveException, IOException {
+        ChessMove pMove = convertMoveToCoords(move);
+        GameData data = getGameDB().getGameById(gameID);
+        ChessGame game = data.game();
+        ChessGame.TeamColor colorOpposing;
 
-            if(data.whiteUsername().equals(username)){colorOpposing = BLACK;}
-            else if(data.blackUsername().equals(username)){colorOpposing = WHITE;}
-            else{throw new ResponseException(400, "you are not a player how did you get here");}
+        if(data.whiteUsername().equals(username)){colorOpposing = BLACK;}
+        else if(data.blackUsername().equals(username)){colorOpposing = WHITE;}
+        else{throw new ResponseException(400, "you are not a player how did you get here");}
 
-            //verify move
-            if(game.getBoard().getPiece(pMove.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
-            game.makeMove(pMove);
-            GameData updated = new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game);
-            getGameDB().updateGame(updated);
+        //verify move
+        if(game.getBoard().getPiece(pMove.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
+        game.makeMove(pMove);
+        GameData updated = new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game);
+        getGameDB().updateGame(updated);
 
-            //load game to all (including client)
-            LoadGameNotification message = new LoadGameNotification(game);
-            connections.sendToSession(session, message);
-            connections.broadcast(gameID, session, message);
+        //load game to all (including client)
+        LoadGameNotification message = new LoadGameNotification(game);
+        connections.sendToSession(session, message);
+        connections.broadcast(gameID, session, message);
 
-            //Notification to all but the client that move has been made
-            String moveMessage = username + " made the move " + move;
-            MessageNotification notification = new MessageNotification(moveMessage);
-            connections.broadcast(gameID, session, notification);
+        //Notification to all but the client that move has been made
+        String moveMessage = username + " made the move " + move;
+        MessageNotification notification = new MessageNotification(moveMessage);
+        connections.broadcast(gameID, session, notification);
 
-            doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
-
-        }
-        catch(InvalidMoveException e){
-            throw new ResponseException(400, "Not a valid chess move:" + e.toString());
-        }
-        catch(java.io.IOException e){
-            throw new ResponseException(400, "Websocket error:" + e.toString());
-        }
+        doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
     }
 
     public void leaveGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
@@ -140,12 +124,16 @@ public class GameService extends BaseService {
         //A player left the game. The notification message should include the player’s name
          MessageNotification message = new MessageNotification(username + " has left the game");
          connections.broadcast(gameID, session, message); //tell other users
+
+        //wut we hear when observers leave too wack
     }
 
-    public void resignGame(){}
+    public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
+        //just like leave game except the game is over??
+        //also it sends the resign message to the sender ALSO
+        //TODO: shouldn't take long
+        leaveGame(gameID);
 
-
-
-
-
+    }
+    //how does ending a game work? Does it force them out of the game? Or, just their only option is to laeve
 }

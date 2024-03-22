@@ -49,7 +49,6 @@ public class WebSocketHandler {
         //Server sends a LOAD_GAME message back to the root client.
         // Server sends a Notification message to all other clients in that game informing them what color
         //the root client is joining as.
-        //they'll just send the authToken using their request
 
         connections.addConnection(gid, authToken, session); //add the players websocket connection
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME); //for sender
@@ -81,6 +80,13 @@ public class WebSocketHandler {
 
         //yeah so it needs to update the UI for the other player hmpgh
 
+
+        //        catch(InvalidMoveException e){
+//            throw new ResponseException(400, "Not a valid chess move:" + e.toString());
+//        }
+//        catch(java.io.IOException e){
+//            throw new ResponseException(400, "Websocket error:" + e.toString());
+//        }
     }
     private void leave(int gid) throws IOException{
 
