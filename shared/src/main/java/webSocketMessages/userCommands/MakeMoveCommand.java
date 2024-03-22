@@ -10,8 +10,8 @@ public class MakeMoveCommand extends UserGameCommand {
         this.gameID = gameID;
         this.move = move;
     }
-    private int getGameID() {
+    public int getGameID() {
         return gameID;
     }
-    private String getMove(){return move;}
+    public String getMove(){return move;}
 }
