@@ -10,10 +10,11 @@ import webSocketMessages.serverMessages.MessageNotification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketServer.GameConnectionManager;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.util.ArrayList;
+
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService extends BaseService {
     private final GameConnectionManager connections;
@@ -24,7 +25,11 @@ public class GameService extends BaseService {
         this.connections = connections;
         this.session = sender;
     }
-
+    public String tokenToUsername(String authToken) throws DataAccessException, ResponseException{
+        AuthData data = getAuthDB().getAuthByToken(authToken);
+        if(data == null){throw new ResponseException(400, "AuthToken doesn't exist");}
+        return data.username();
+    }
     public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException{
         //String authToken, Integer gameID, ChessGame.TeamColor playerColor
         //figure out username
@@ -36,7 +41,7 @@ public class GameService extends BaseService {
 
         GameData g = getGameDB().getGameById(gameID);
         GameData updated = null;
-        if(color == ChessGame.TeamColor.WHITE){ //updating white
+        if(color == WHITE){ //updating white
             updated = new GameData(g.gameID(), username, g.blackUsername(), g.gameName(), g.game());
         }
         else{updated = new GameData(g.gameID(), g.whiteUsername(), username, g.gameName(), g.game());}
@@ -69,7 +74,23 @@ public class GameService extends BaseService {
         ChessPosition p2 = new ChessPosition(row2, col2);
 
         return new ChessMove(p1,p2,null);
+    }
 
+    private void doneCases(int gameID, ChessGame game, ChessGame.TeamColor colorOpposing) throws java.io.IOException{
+        //after each move check if either side is in stalemate
+        //you can't move yourself into check/checkmate so check opposing after move
+        MessageNotification msg = null;
+        if(game.checkStale(WHITE) || game.checkStale(ChessGame.TeamColor.BLACK)){
+            msg = new MessageNotification("stalemate");
+        }
+        else if(game.isInCheck(colorOpposing)){
+            msg = new MessageNotification(colorOpposing + " is in check!");
+        }
+        else if(game.isInCheckmate(colorOpposing)){
+            msg = new MessageNotification(colorOpposing + " is in checkmate!");
+        }
+        connections.sendToSession(session, msg);
+        connections.broadcast(gameID, session, msg);
     }
     //ERROR HANDLING????
     public void makeMove(String authToken, int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException{
@@ -77,8 +98,15 @@ public class GameService extends BaseService {
             ChessMove pMove = convertMoveToCoords(move);
             GameData data = getGameDB().getGameById(gameID);
             ChessGame game = data.game();
+            String username = tokenToUsername(authToken);
+            ChessGame.TeamColor colorOpposing;
 
-            //verify & make move, update game in database
+            if(data.whiteUsername().equals(username)){colorOpposing = BLACK;}
+            else if(data.blackUsername().equals(username)){colorOpposing = WHITE;}
+            else{throw new ResponseException(400, "you are not a player how did you get here");}
+
+            //verify move
+            if(game.getBoard().getPiece(pMove.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
             game.makeMove(pMove);
             GameData updated = new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game);
             getGameDB().updateGame(updated);
@@ -89,9 +117,11 @@ public class GameService extends BaseService {
             connections.broadcast(gameID, session, message);
 
             //Notification to all but the client that move has been made
-            String moveMessage = authToken + " made the move " + move;
+            String moveMessage = username + " made the move " + move;
             ServerMessage notification = new MessageNotification(moveMessage);
             connections.broadcast(gameID, session, notification);
+
+            doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
 
         }
         catch(InvalidMoveException e){
@@ -103,7 +133,14 @@ public class GameService extends BaseService {
 
     }
 
-    public void leaveGame(){}
+    public void leaveGame(String authToken, int gameID){
+
+        //remove client from game
+
+        //remove websocket connection
+
+
+    }
 
     public void resignGame(){}
 
