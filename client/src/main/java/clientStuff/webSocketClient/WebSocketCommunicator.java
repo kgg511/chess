@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+
+
 //only send messages to the server
-public class WebSocketCommunicator extends Endpoint implements MessageHandler.Whole<String>{
+public class WebSocketCommunicator extends Endpoint{
+    //implements MessageHandler.Whole<String>
     Session session;
-    MessageHandler msgHandler = new MessageHandler();
+    DoMessage doMessage = new DoMessage();
     //TODO: put each function in a try except so we always throw REPSONSEEXCEPTIONS
     //NotificationHandler notificationHandler;//notification handler is just to print ws output differently
     public WebSocketCommunicator(String url) throws ResponseException {
@@ -21,9 +24,7 @@ public class WebSocketCommunicator extends Endpoint implements MessageHandler.Wh
             URI socketURI = new URI(url + "/connect");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer(); //create websocket
             this.session = container.connectToServer(this, socketURI); //connect to websocket
-            //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-                //function called when the client sends a message
                 @Override
                 public void onMessage(String message) {
                     //when I receive message from websocket
@@ -33,33 +34,23 @@ public class WebSocketCommunicator extends Endpoint implements MessageHandler.Wh
                         case LOAD_GAME:
                             //convert to load game, use the game
                             LoadGameNotification load = (LoadGameNotification) msg;
-                            msgHandler.drawGame(load.getMessage());
-
+                            doMessage.drawGame(load.getMessage());
                         case NOTIFICATION:
                             MessageNotification notification = (MessageNotification) msg;
-                            msgHandler.messageUser(notification.getMessage());
+                            doMessage.messageUser(notification.getMessage());
                         case ERROR:
                             //IDK unpack the error and print it to the console I guess
-                            //
                             ErrorNotification error = (ErrorNotification) msg;
-
-                            //print
-                            System.out.println(error.getMessage());
+                            doMessage.giveError(error.getMessage());
                     }
-
-                    //
-                    //notificationHandler.notify(notification);
                 }
             });
-        } catch (DeploymentException | IOException | URISyntaxException ex) {
+        }
+        catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
     }
 
-    @Override
-    public void onMessage(String s) {
-
-    }
 
     @Override
     public void onClose(Session session, CloseReason closeReason) {

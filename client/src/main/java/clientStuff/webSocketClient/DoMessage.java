@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
-public class MessageHandler {
+public class DoMessage {
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private final DrawChessBoard drawer = new DrawChessBoard();
 
@@ -26,4 +26,5 @@ public class MessageHandler {
     public void drawGame(ChessGame game){
         drawer.drawBoards(game.getBoard(), out);
     }
+
 }
