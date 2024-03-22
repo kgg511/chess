@@ -2,6 +2,7 @@ package clientStuff.webSocketClient;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import webSocketMessages.serverMessages.*;
 import webSocketMessages.userCommands.*;
 import javax.websocket.*;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.net.URISyntaxException;
 //only send messages to the server
 public class WebSocketCommunicator extends Endpoint implements MessageHandler.Whole<String>{
     Session session;
+    MessageHandler msgHandler = new MessageHandler();
     //TODO: put each function in a try except so we always throw REPSONSEEXCEPTIONS
     //NotificationHandler notificationHandler;//notification handler is just to print ws output differently
     public WebSocketCommunicator(String url) throws ResponseException {
@@ -23,10 +25,30 @@ public class WebSocketCommunicator extends Endpoint implements MessageHandler.Wh
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 //function called when the client sends a message
                 @Override
-                public void onMessage(String message) { //
-                    Notification notification = new Gson().fromJson(message, Notification.class);
-                    //notify
-                    notificationHandler.notify(notification);
+                public void onMessage(String message) {
+                    //when I receive message from websocket
+                    //I should print it on screen??
+                    ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
+                    switch (msg.getServerMessageType()) {
+                        case LOAD_GAME:
+                            //convert to load game, use the game
+                            LoadGameNotification load = (LoadGameNotification) msg;
+                            msgHandler.drawGame(load.getMessage());
+
+                        case NOTIFICATION:
+                            MessageNotification notification = (MessageNotification) msg;
+                            msgHandler.messageUser(notification.getMessage());
+                        case ERROR:
+                            //IDK unpack the error and print it to the console I guess
+                            //
+                            ErrorNotification error = (ErrorNotification) msg;
+
+                            //print
+                            System.out.println(error.getMessage());
+                    }
+
+                    //
+                    //notificationHandler.notify(notification);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

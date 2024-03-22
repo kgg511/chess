@@ -32,6 +32,7 @@ public class WebSocketHandler {
     private final GameConnectionManager connections = new GameConnectionManager();
     private Session session = null;
     private GameService service = null;
+    private ServerMessage msg = null; //used for error handling
             //new GameService(GameConnectionManager connections, sender, authToken);
     //Actions typically refer to messages or events sent from the client to the server.
     //this should send ACTIONS, aka usergame commands
@@ -61,12 +62,12 @@ public class WebSocketHandler {
 
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String authToken, String message) throws ResponseException, IOException {
+    public void onMessage(Session session, String authToken, String message) throws IOException {
         try{
             session = session;
             service = new GameService(connections, session, authToken);
             UserGameCommand cmd = new Gson().fromJson(message, UserGameCommand.class); //joinPlayerCommand, etc
-            if(cmd ==null){ System.out.println("what");}
+            if(cmd ==null){ System.out.println("what..you didn't pass in a command");}
             UserGameCommand.CommandType commandType = cmd.getCommandType();
             switch (commandType) {
                 case UserGameCommand.CommandType.JOIN_PLAYER:
@@ -91,66 +92,79 @@ public class WebSocketHandler {
                     break;
             }
         }
-
-        catch (DataAccessException e){
-
+        catch(DataAccessException e){
+            msg = new ErrorNotification("500 server onMessage DB exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
+        catch(ResponseException e){
+            msg = new ErrorNotification(e.statusCode() + " server onMessage exception:" + e.toString());
+            connections.sendToSession(session, msg);
         }
     }
 
-    private void convertAndCall(UserGameCommand cmd, object type, ){
-
-    }
-
-
     //we receive ACTIONS from the client, and then we call methods which broadcast notifications
     //Integer gameID, ChessGame.TeamColor playerColor
-    private void joinPlayer(int gid, String authToken, chess.ChessGame.TeamColor playerColor, Session session) throws ResponseException, java.io.IOException {
+    private void joinPlayer(int gid, String authToken, chess.ChessGame.TeamColor playerColor, Session session) throws java.io.IOException {
         //Server sends a LOAD_GAME message back to the root client.
         // Server sends a Notification message to all other clients in that game informing them what color
         //the root client is joining as.
-        ServerMessage msg = null;
         try{
             service.joinPlayer(gid, playerColor);
         }
         catch(DataAccessException e){
-            msg = new ErrorNotification("joinPlayer 500 DB exception:" + e.toString());
+            msg = new ErrorNotification("500 joinPlayer DB exception:" + e.toString());
             connections.sendToSession(session, msg);
-            connections.broadcast(gid, session, msg);
         }
-
-
-
+        catch(ResponseException e){
+            msg = new ErrorNotification(e.statusCode() + " joinPlayer exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
     }
 
     private void joinObserver(int gid, String authToken, Session session) throws IOException{
         try{
             service.joinObserver(gid);
         }
+        catch(DataAccessException e){
+            msg = new ErrorNotification("500 joinPlayer DB exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
+        catch(ResponseException e){
+            msg = new ErrorNotification(e.statusCode() + " joinObserver exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
 
     }
-    private void makeMove(int gid, String move) throws IOException, ResponseException{
+    private void makeMove(int gid, String move) throws IOException{
         ServerMessage msg = null;
         try{service.makeMove(gid, move);}
         catch(InvalidMoveException e){
             msg = new ErrorNotification("Not a valid chess move:" + e.toString());
             connections.sendToSession(session, msg); //only tell user
         }
+        catch(DataAccessException e){
+            msg = new ErrorNotification("500 makeMove DB exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
         catch(ResponseException e){
-
+            msg = new ErrorNotification(e.statusCode() + " makeMove exception:" + e.toString());
+            connections.sendToSession(session, msg);
         }
 
     }
 
-    private void sendError(String message) throws IOException {
-        String msg = new ErrorNotification(message);
-        connections.sendToSession(session, msg); //only tell user
-
-
-    }
-
-
-    private void leave(int gid){
-        service.leaveGame(gid);
+    private void leave(int gid) throws IOException{
+        try{
+            service.leaveGame(gid);
+        }
+        catch(DataAccessException e){
+            msg = new ErrorNotification("500 leave DB exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
+        catch(ResponseException e){
+            msg = new ErrorNotification(e.statusCode() + " leave exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
 
     }
     private void resign(int gid){
