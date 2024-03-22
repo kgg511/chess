@@ -35,9 +35,8 @@ public class GameService extends BaseService {
         //figure out username
         //you have to put in player Username
         //find the game in the database, put the player in there
-        ArrayList<AuthData> data = getAuthDB().getAuthByToken(authToken);
-        if(data.size() == 0){return;} //you can't
-        String username = data.get(0).username();
+        //
+
 
         GameData g = getGameDB().getGameById(gameID);
         GameData updated = null;
@@ -130,14 +129,16 @@ public class GameService extends BaseService {
         catch(java.io.IOException e){
             throw new ResponseException(400, "Websocket error:" + e.toString());
         }
-
     }
 
     public void leaveGame(String authToken, int gameID){
 
-        //remove client from game
+        connections.removeConnection(gameID, authToken); //remove WS connection
 
-        //remove websocket connection
+        getGameDB().
+
+
+        //A player left the game. The notification message should include the player’s name.
 
 
     }

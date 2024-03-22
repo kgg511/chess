@@ -32,6 +32,13 @@ public class GameDAOSQL extends SQLShared implements GameDAOInterface {
                 game.blackUsername(), game.gameName(), json);
         return id;
     }
+
+    public boolean deleteByGameID(int gameID) throws DataAccessException, ResponseException {
+        var statement = "DELETE from game where gameId = ?";
+        int result = executeUpdate(statement, false, gameID); //fill statement
+        System.out.println("delete by gameID is" + result);
+        return result > 0;
+    }
     public ArrayList<GameData> getGames() throws ResponseException, DataAccessException{
         ArrayList<GameData> games = null;
         String sql = "SELECT * FROM game";
