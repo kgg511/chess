@@ -9,15 +9,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
-
-//only send messages to the server
 public class WebSocketCommunicator extends Endpoint{
-    //implements MessageHandler.Whole<String>
     Session session;
     DoMessage doMessage = new DoMessage();
-    //TODO: put each function in a try except so we always throw REPSONSEEXCEPTIONS
-    //NotificationHandler notificationHandler;//notification handler is just to print ws output differently
+    //we don't return strings, we send the messages to websocket then when we hear a response back
+    //the repsonse is the output
     public WebSocketCommunicator(String url) throws ResponseException {
         try {
             url = url.replace("http", "ws");
@@ -27,8 +23,6 @@ public class WebSocketCommunicator extends Endpoint{
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    //when I receive message from websocket
-                    //I should print it on screen??
                     ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
                     switch (msg.getServerMessageType()) {
                         case LOAD_GAME:
@@ -50,8 +44,6 @@ public class WebSocketCommunicator extends Endpoint{
             throw new ResponseException(500, ex.getMessage());
         }
     }
-
-
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         // Implement your logic when the WebSocket connection is closed
@@ -61,60 +53,56 @@ public class WebSocketCommunicator extends Endpoint{
     //Endpoint requires this method, but you don't have to do anything
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+        System.out.println("WebSocket connection opened.");
     }
 
-    public void leaveGame(String authToken) throws java.io.IOException{
-
-        this.session.getBasicRemote().sendText(authToken + " left the game.");
-        //sends WS stuff
-        //the server will
-
+    public void leaveGame(String authToken, int gameID) throws ResponseException{
+        try{
+            LeaveCommand cmd = new LeaveCommand(authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
-
-    public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor playerColor) throws java.io.IOException{ //this sends the message to the websocket
+    public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor playerColor) throws ResponseException{ //this sends the message to the websocket
         //yes this is in loggedinclient but it uses WS so it goes here
-        JoinPlayerCommand cmd = new JoinPlayerCommand(authToken, gameID, playerColor); //send JOIN_PLAYER
-        this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        try{
+            JoinPlayerCommand cmd = new JoinPlayerCommand(authToken, gameID, playerColor); //send JOIN_PLAYER
+            this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
 
-    public void joinObserver(String authToken, int gameID) throws java.io.IOException{ //this sends the message to the websocket
+    public void joinObserver(String authToken, int gameID) throws ResponseException{ //this sends the message to the websocket
         //yes this is in loggedinclient but it uses WS so it goes here
-        JoinObserverCommand cmd = new JoinObserverCommand(authToken, gameID);
-        this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        try{
+            JoinObserverCommand cmd = new JoinObserverCommand(authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
-
-    private String makeMove(String authToken, int gameID, String move) throws java.io.IOException{ //actually send to websocket
-        MakeMoveCommand cmd = new MakeMoveCommand(authToken, gameID, move);
-        this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
-        return authToken + " made the move " + move;
-
-    } //TODO: is this chessmove object?
-
-    private String resignGame(String authToken, int gameID) throws java.io.IOException{
-        ResignCommand cmd = new ResignCommand(authToken, gameID);
-        this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
-        return authToken + " left the game";
+    private void makeMove(String authToken, int gameID, String move) throws ResponseException{ //actually send to websocket
+        try{
+            MakeMoveCommand cmd = new MakeMoveCommand(authToken, gameID, move);
+            this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+    private void resignGame(String authToken, int gameID) throws ResponseException{
+        try{
+            ResignCommand cmd = new ResignCommand(authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
+        }
+        catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
 
     }
-
-//    public void enterPetShop(String visitorName) throws ResponseException {
-//        try {
-//            var action = new Action(Action.Type.ENTER, visitorName);
-//            this.session.getBasicRemote().sendText(new Gson().toJson(action));
-//        } catch (IOException ex) {
-//            throw new ResponseException(500, ex.getMessage());
-//        }
-//    }
-
-//    public void leavePetShop(String visitorName) throws ResponseException {
-//        try {
-//            var action = new Action(Action.Type.EXIT, visitorName);
-//            this.session.getBasicRemote().sendText(new Gson().toJson(action));
-//            this.session.close();
-//        } catch (IOException ex) {
-//            throw new ResponseException(500, ex.getMessage());
-//        }
-//    }
-
-
 }
