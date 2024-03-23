@@ -20,8 +20,8 @@ public class Repl {
             printPrompt();
             String line = scanner.nextLine(); //get line
             try {
-                result = client.eval(line); //evalute
-                System.out.print(result);
+                result = client.eval(line); //evaluate
+                if(result != ""){System.out.print(result);}
                 client.setColor();
 
                 if(client.getState() == State.SIGNEDOUT && client.getClass() != ChessClientLoggedOut.class){

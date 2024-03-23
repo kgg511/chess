@@ -9,16 +9,14 @@ import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
 import clientStuff.webSocketClient.WebSocketCommunicator;
-
+//stuff using websocket does not need to return a string that is done by doMessage
 public class ChessClientGame implements ChessClientInterface{
     public final ServerFacade server;
     private final String serverUrl;
     private final DrawChessBoard drawer = new DrawChessBoard();
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private State state = State.GAME;
-
     private WebSocketCommunicator ws;
-
     private int gameID; //this is GAMEID, just remember that the user typed in game number
 
     public ChessClientGame(int port, String host, ServerFacade f, int gameID){
@@ -32,7 +30,6 @@ public class ChessClientGame implements ChessClientInterface{
     public int getGameID() {
         return gameID;
     }
-
     public void setColor(){System.out.print(SET_TEXT_COLOR_GREEN);}
     public ServerFacade getFacade(){return this.server;}
     public State getState(){return this.state;}
@@ -41,16 +38,33 @@ public class ChessClientGame implements ChessClientInterface{
             String[] tokens = input.toLowerCase().split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                case "help"-> help();
-                case "quit" -> "quit";
-                case "redraw" -> redrawBoard(3);
-                case "leave" -> leaveGame();
-                case "move" -> makeMove(params);
-                case "resign" -> resignGame();
-                case "legal" -> highlightLegal(params);
-                default -> help();
+            String returnValue = "";
+            switch (cmd) {
+                case "help":
+                    returnValue = help();
+                    break;
+                case "quit":
+                    returnValue = "quit";
+                    break;
+                case "redraw":
+                    redrawBoard(params);
+                    break;
+                case "leave":
+                    leaveGame();
+                    break;
+                case "move":
+                    makeMove(params);
+                case "resign":
+                    resignGame();
+                    break;
+                case "legal":
+                    highlightLegal(params);
+                    break;
+                default:
+                    returnValue = help();
+                    break;
             };
+            return returnValue;
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
@@ -60,7 +74,7 @@ public class ChessClientGame implements ChessClientInterface{
         return """
             redraw - Redraw the chessboard
             leave - Exit game
-            move <start position> <end position> - move piece at start position to end position
+            move <chessmove> - move piece at start position to end position 'EX: b4c4'
             resign - forfeit game
             legal <position> - highlight the legal moves for the selected piece
             quit - quit playing chess
@@ -68,44 +82,48 @@ public class ChessClientGame implements ChessClientInterface{
             """;
     }
 
-    private String redrawBoard(int a) throws ResponseException{
-        if(a == 3){
+    private void redrawBoard(String... params) throws ResponseException{
+        //server
+        if(params.length == 1){
             throw new ResponseException(111, "quiet");
         }
-        return "";
+
     }
 
-    private String leaveGame(String... params) throws ResponseException{
-        //should autofill in
-
-
+    private void leaveGame() throws ResponseException{
         state = State.SIGNEDIN; //transition to logged in UI
-        //game id
-        //remove from session
-        ws = null;
-        ws.leaveGame(); //authToken and gameid
-        //hmmmmmmmm serverfacade has authToken...when register
-        //a client has a authToken...maybe they have a gameid in the game...
-        //YES
-        return "You have left the game";
-
-//        if(params.length >= 1){ //create, name
-//            Response.CreateGameResponse response = server.createGame(params[0]);
-//            return String.format("Game, %s, created", params[0]);
-//        }
-//        throw new ResponseException(400, "Expected: <NAME>");
+        ws.leaveGame(server.getAuthToken(), gameID); //edits DB & removes connection on serverside
+        ws = null; //no more websocket for you
     }
 
-    private String makeMove(String... params){
-        return "";
-    } //TODO: is this chessmove object?
+    private void makeMove(String... params) throws ResponseException{
+        if(params.length >= 2){
+            //TODO: verify move on front end
+            //TODO: observers can't make moves!
+            //TODO: ask about upgrade piece!
 
-    private String resignGame(){
-        return "";
+            ws.makeMove(server.getAuthToken(), gameID, params[0]);
+        }
+        else{
+            throw new ResponseException(400, "Expected: <chessmove> 'EX: b4c4'");
+        }
     }
 
-    private String highlightLegal(String... params){
-        return "";
+    private void resignGame() throws ResponseException{
+        ws.resignGame(server.getAuthToken(), gameID);
+    }
+
+    private void highlightLegal(String... params) throws ResponseException{ //https
+        //we need to gameboard
+        //we need a function to draw the board but highlight the certain squares
+        //
+        if(params.length >= 1){
+
+        }
+        else{
+            throw new ResponseException(400, "Expected: <position>");
+        }
+
     }
 
 }

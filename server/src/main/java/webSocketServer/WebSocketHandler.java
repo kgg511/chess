@@ -156,6 +156,7 @@ public class WebSocketHandler {
     private void leave(int gid) throws IOException{
         try{
             service.leaveGame(gid);
+            //remove the session stuff
         }
         catch(DataAccessException e){
             msg = new ErrorNotification("500 leave DB exception:" + e.toString());

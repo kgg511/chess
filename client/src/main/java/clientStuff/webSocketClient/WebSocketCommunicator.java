@@ -86,7 +86,7 @@ public class WebSocketCommunicator extends Endpoint{
             throw new ResponseException(500, ex.getMessage());
         }
     }
-    private void makeMove(String authToken, int gameID, String move) throws ResponseException{ //actually send to websocket
+    public void makeMove(String authToken, int gameID, String move) throws ResponseException{ //actually send to websocket
         try{
             MakeMoveCommand cmd = new MakeMoveCommand(authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
@@ -95,7 +95,7 @@ public class WebSocketCommunicator extends Endpoint{
             throw new ResponseException(500, ex.getMessage());
         }
     }
-    private void resignGame(String authToken, int gameID) throws ResponseException{
+    public void resignGame(String authToken, int gameID) throws ResponseException{
         try{
             ResignCommand cmd = new ResignCommand(authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
