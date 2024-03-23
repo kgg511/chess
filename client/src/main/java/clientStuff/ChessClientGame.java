@@ -1,10 +1,12 @@
 package clientStuff;
 
 import exception.ResponseException;
+import model.GameData;
 import ui.DrawChessBoard;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
@@ -47,7 +49,7 @@ public class ChessClientGame implements ChessClientInterface{
                     returnValue = "quit";
                     break;
                 case "redraw":
-                    redrawBoard(params);
+                    redrawBoard();
                     break;
                 case "leave":
                     leaveGame();
@@ -82,12 +84,15 @@ public class ChessClientGame implements ChessClientInterface{
             """;
     }
 
-    private void redrawBoard(String... params) throws ResponseException{
-        //server
-        if(params.length == 1){
-            throw new ResponseException(111, "quiet");
-        }
-
+    private void redrawBoard() throws ResponseException {
+        drawer.drawBoards(getChessGame().getBoard(), out);
+    }
+    private chess.ChessGame getChessGame() throws ResponseException{
+        ArrayList<GameData> games = server.listGames();
+        GameData game = null;
+        for(GameData g: games){if(g.gameID() == gameID){game=g;}}
+        if(game == null){throw new ResponseException(400, "game associated with user does not exist");}
+        return game.game();
     }
 
     private void leaveGame() throws ResponseException{
