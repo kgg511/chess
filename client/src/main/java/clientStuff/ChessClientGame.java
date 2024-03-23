@@ -120,6 +120,8 @@ public class ChessClientGame implements ChessClientInterface{
 
     private void resignGame() throws ResponseException{
         ws.resignGame(server.getAuthToken(), gameID);
+        ws = null;
+        //state not changed, players must leave command
     }
 
     private void highlightLegal(String... params) throws ResponseException{ //https
@@ -127,7 +129,7 @@ public class ChessClientGame implements ChessClientInterface{
             chess.ChessGame game = getChessGame();
             String position = params[0];
             int col = position.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
-            int row = (int) position.charAt(1);
+            int row = position.charAt(1);
             chess.ChessPosition p = new chess.ChessPosition(row, col);
             Collection<ChessMove> moves = game.validMoves(p);
             if(moves == null){throw new ResponseException(400, "No possible moves from this position");}
@@ -136,7 +138,6 @@ public class ChessClientGame implements ChessClientInterface{
         else{
             throw new ResponseException(400, "Expected: <position>");
         }
-
     }
 
 }

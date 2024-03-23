@@ -32,6 +32,11 @@ public class GameConnectionManager {
         }
     }
 
+    public void removeGameConnections(int gid){
+        Map<String, Session> map = connections.get(gid);
+        map = new HashMap<>();
+    }
+
     public Map<String, Session> getConnectionsForGame(int gid){
         return connections.get(gid);
     }

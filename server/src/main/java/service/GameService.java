@@ -118,22 +118,32 @@ public class GameService extends BaseService {
 
     public void leaveGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
         connections.removeConnection(gameID, authToken); //remove WS connection
-        boolean success = getGameDB().deleteByGameID(gameID); //remove from database
+        GameData old = getGameDB().getGameById(gameID);
+        if(old == null){throw new ResponseException(400,"GameID not associated with a game");}
+
+        //remove user from db
+        GameData updated = null;
+        boolean success = true;
+        if(old.whiteUsername().equals(username)){
+            success = getGameDB().updateGame(new GameData(old.gameID(), null, old.blackUsername(), old.gameName(), old.game()));}
+        else if(old.blackUsername().equals(username)){
+            success = getGameDB().updateGame(new GameData(old.gameID(), old.whiteUsername(), null, old.gameName(), old.game()));}
         if(!success){throw new ResponseException(400, "IDK but leaveGame not working?");}
 
         //A player left the game. The notification message should include the player’s name
          MessageNotification message = new MessageNotification(username + " has left the game");
          connections.broadcast(gameID, session, message); //tell other users
 
-        //wut we hear when observers leave too wack
     }
 
     public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
-        //just like leave game except the game is over??
-        //also it sends the resign message to the sender ALSO
-        //TODO: shouldn't take long
-        leaveGame(gameID);
+        MessageNotification message = new MessageNotification(username + " has resigned and the game is over");
+        connections.broadcast(gameID, session, message); //tell ALL
+        connections.sendToSession(session, message);
 
+        boolean success = getGameDB().deleteByGameID(gameID); //remove from database
+        connections.removeGameConnections(gameID); //remove all their connections
+
+        //TODO: how can we exit players from the game? I guess they could leave
     }
-    //how does ending a game work? Does it force them out of the game? Or, just their only option is to laeve
 }
