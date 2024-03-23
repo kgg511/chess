@@ -1,10 +1,10 @@
 package ui;
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+
 import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {
@@ -22,29 +22,29 @@ public class DrawChessBoard {
         b.resetBoard();
         var draw = new DrawChessBoard();
         out.print(ERASE_SCREEN);
-        draw.drawBoardRegular(b, out);
+        draw.drawBoardRegular(b, out, false, null);
     }
 
-    public void drawBoards(ChessBoard b, PrintStream out){
-        drawBoardRegular(b, out);
+    public void drawBoards(ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){
+        drawBoardRegular(b, out, highlight, moves);
         out.println();
-        drawBoardFlipped(b, out);
+        drawBoardFlipped(b, out, highlight, moves);
     }
-    public void drawBoardRegular(ChessBoard b, PrintStream out){
-        //out.println(SET_BG)
+
+    public void drawBoardRegular(ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){
         boolean black = false;
         drawHeaders(out, headerLetters);
         for(int i = 0; i < BOARD_SIZE_IN_SQUARES; i++){
-            drawRow(false, b, out, black, i, headerNumbers);
+            drawRow(false, b, out, black, i, headerNumbers, highlight, moves);
             black = !black;
         }
         drawHeaders(out, headerLetters);
     }
-    public void drawBoardFlipped(ChessBoard b, PrintStream out){
+    public void drawBoardFlipped(ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){
         boolean black = false;
         drawHeaders(out, headerLettersF);
         for(int i = BOARD_SIZE_IN_SQUARES - 1; i >= 0; i--){
-            drawRow(true, b, out, black, i, headerNumbers);
+            drawRow(true, b, out, black, i, headerNumbers, highlight, moves);
             black = !black;
         }
         drawHeaders(out, headerLettersF);
@@ -73,12 +73,15 @@ public class DrawChessBoard {
         out.print(headerText);
     }
 
-    private void drawRow(boolean flipped, ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header){
+    private void drawRow(boolean flipped, ChessBoard board, PrintStream out, boolean isBlack, int row,
+                         String[] header, boolean highlight, Collection<ChessMove> moves){
         boolean black = isBlack;
+        boolean doHighlight = false;
         if(!flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; boardCol++) { //add two for headers}
-                    doSquare(board, out, black, row, header, squareRow, boardCol);
+                    doHighlight = yesHighlight(squareRow, boardCol, moves, highlight);
+                    doSquare(board, out, black, row, header, squareRow, boardCol, doHighlight);
                     black = !black;
                 }
                 out.println();
@@ -87,7 +90,8 @@ public class DrawChessBoard {
         else if(flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = BOARD_SIZE_IN_SQUARES + 1; boardCol >= 0; boardCol--) { //add two for headers}
-                    doSquare(board, out, black, row, header, squareRow, boardCol);
+                    doHighlight = yesHighlight(squareRow, boardCol, moves, highlight);
+                    doSquare(board, out, black, row, header, squareRow, boardCol, doHighlight);
                     black = !black;
                 }
                 out.println();
@@ -95,7 +99,19 @@ public class DrawChessBoard {
         }
     }
 
-    private void doSquare(ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header, int squareRow, int boardCol) {
+    private boolean yesHighlight(int row, int col, Collection<ChessMove> moves, boolean highlight){
+        // returns true if square should be highlighted
+        if(highlight){
+            for(ChessMove move: moves){
+                ChessPosition p = move.getEndPosition();
+                if(p.getRow() - 1 == row && p.getColumn() - 1 == col){return true;}
+            }
+        }
+        return false;
+    }
+
+    private void doSquare(ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header,
+                          int squareRow, int boardCol, boolean doHighlight) {
         boolean black = isBlack;
         if((boardCol == 0 || boardCol == BOARD_SIZE_IN_SQUARES + 1)){
             if((squareRow == SQUARE_SIZE_IN_CHARS / 2)){
@@ -105,6 +121,7 @@ public class DrawChessBoard {
         }
         else{
             setColor(out, black);
+            if(doHighlight){setBlue(out);}
             if (squareRow == SQUARE_SIZE_IN_CHARS / 2) { //halfway down put it
                 int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                 int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
@@ -158,4 +175,5 @@ public class DrawChessBoard {
     }
     private static void setGrey(PrintStream out) {out.print(SET_BG_COLOR_LIGHT_GREY);}
     private static void setMagenta(PrintStream out) {out.print(SET_BG_COLOR_MAGENTA);}
+    private static void setBlue(PrintStream out) {out.print(SET_BG_COLOR_BLUE);}
 }

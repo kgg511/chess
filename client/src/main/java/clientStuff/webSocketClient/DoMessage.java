@@ -23,7 +23,7 @@ public class DoMessage {
         System.out.print(SET_TEXT_COLOR_GREEN); //undo
     }
     public void drawGame(ChessGame game){
-        drawer.drawBoards(game.getBoard(), out);
+        drawer.drawBoards(game.getBoard(), out, false, null);
     }
 
 }

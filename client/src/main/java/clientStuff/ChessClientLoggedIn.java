@@ -106,7 +106,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             state = State.GAME;
             var b = new ChessBoard();
             b.resetBoard();
-            drawer.drawBoards(b, out);
+            drawer.drawBoards(b, out, false, null);
             return "Successfully joined game";
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
@@ -122,7 +122,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             state = State.GAME;
             var b = new ChessBoard();
             b.resetBoard();
-            drawer.drawBoards(b, out);
+            drawer.drawBoards(b, out, false, null);
             return "Successfully joined game as an observer";
         }
         throw new ResponseException(400, "Expected: <ID>");

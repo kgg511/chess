@@ -1,5 +1,7 @@
 package clientStuff;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import ui.DrawChessBoard;
@@ -8,6 +10,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+
 
 import static ui.EscapeSequences.*;
 import clientStuff.webSocketClient.WebSocketCommunicator;
@@ -85,7 +89,7 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private void redrawBoard() throws ResponseException {
-        drawer.drawBoards(getChessGame().getBoard(), out);
+        drawer.drawBoards(getChessGame().getBoard(), out, false, null);
     }
     private chess.ChessGame getChessGame() throws ResponseException{
         ArrayList<GameData> games = server.listGames();
@@ -119,11 +123,15 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private void highlightLegal(String... params) throws ResponseException{ //https
-        //we need to gameboard
-        //we need a function to draw the board but highlight the certain squares
-        //
-        if(params.length >= 1){
-
+        if(params.length >= 1){ //'e6'
+            chess.ChessGame game = getChessGame();
+            String position = params[0];
+            int col = position.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
+            int row = (int) position.charAt(1);
+            chess.ChessPosition p = new chess.ChessPosition(row, col);
+            Collection<ChessMove> moves = game.validMoves(p);
+            if(moves == null){throw new ResponseException(400, "No possible moves from this position");}
+            drawer.drawBoards(game.getBoard(), out, true, moves);
         }
         else{
             throw new ResponseException(400, "Expected: <position>");
