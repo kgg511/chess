@@ -14,7 +14,6 @@ public class DoMessage {
     private final DrawChessBoard drawer = new DrawChessBoard();
 
     public void messageUser(String message){
-
         System.out.println(message);
     }
 

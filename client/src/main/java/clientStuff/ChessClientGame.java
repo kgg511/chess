@@ -18,13 +18,21 @@ public class ChessClientGame implements ChessClientInterface{
     private State state = State.GAME;
 
     private WebSocketCommunicator ws;
-    //private final NotificationHandler notificationHandler;
 
-    public ChessClientGame(int port, String host, ServerFacade f){
+    private int gameID; //this is GAMEID, just remember that the user typed in game number
+
+    public ChessClientGame(int port, String host, ServerFacade f, int gameID){
         this.serverUrl = host + ":" + port;
         if(f != null){server = f;}
         else{server = new ServerFacade(port, host);}
+        gameID = gameID;
     }
+
+    @Override
+    public int getGameID() {
+        return gameID;
+    }
+
     public void setColor(){System.out.print(SET_TEXT_COLOR_GREEN);}
     public ServerFacade getFacade(){return this.server;}
     public State getState(){return this.state;}
@@ -68,12 +76,17 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private String leaveGame(String... params) throws ResponseException{
+        //should autofill in
+
+
         state = State.SIGNEDIN; //transition to logged in UI
         //game id
         //remove from session
         ws = null;
-
-
+        ws.leaveGame(); //authToken and gameid
+        //hmmmmmmmm serverfacade has authToken...when register
+        //a client has a authToken...maybe they have a gameid in the game...
+        //YES
         return "You have left the game";
 
 //        if(params.length >= 1){ //create, name

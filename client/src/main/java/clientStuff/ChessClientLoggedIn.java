@@ -18,6 +18,8 @@ public class ChessClientLoggedIn implements ChessClientInterface{
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private WebSocketCommunicator ws;
     private State state = State.SIGNEDIN;
+    private int gameID; //set when user join game
+
 
     public ChessClientLoggedIn(int port, String host, ServerFacade f) {
         this.serverUrl = host + ":" + port;
@@ -25,6 +27,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
         else{server = new ServerFacade(port, host);}
     }
     public State getState(){ return this.state;}
+    public int getGameID(){return gameID;}
     public ServerFacade getFacade(){return this.server;}
     public String eval(String input) {
         try {
@@ -99,6 +102,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             GameData game = games.get(Integer.parseInt(params[0]) - 1); //convert to 0 indexing
             int id = game.gameID();
             Response.JoinGameResponse response = server.joinGame(params[1], id);
+            gameID = id; //set gameID to joined gameID
             state = State.GAME;
             var b = new ChessBoard();
             b.resetBoard();

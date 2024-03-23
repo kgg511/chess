@@ -23,6 +23,9 @@ public class ChessClientLoggedOut implements ChessClientInterface{
     }
     public State getState(){ return this.state;}
     public ServerFacade getFacade(){return this.server;}
+    @Override
+    public int getGameID() {return -1;} //GameID is irrelevant
+
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");

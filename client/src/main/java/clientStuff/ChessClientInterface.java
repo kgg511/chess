@@ -1,6 +1,7 @@
 package clientStuff;
 
 public interface ChessClientInterface {
+    public int getGameID();
     public State getState();
     public String eval(String input);
 
