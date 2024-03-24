@@ -24,17 +24,19 @@ public class WebSocketCommunicator extends Endpoint{
                 @Override
                 public void onMessage(String message) {
                     ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
+                    System.out.println("the client has received a message from websocket!");
+                    System.out.println(msg.getServerMessageType());
                     switch (msg.getServerMessageType()) {
                         case LOAD_GAME:
                             //convert to load game, use the game
-                            LoadGameNotification load = (LoadGameNotification) msg;
+                            LoadGameNotification load = new Gson().fromJson(message, LoadGameNotification.class);
                             doMessage.drawGame(load.getMessage());
                         case NOTIFICATION:
-                            MessageNotification notification = (MessageNotification) msg;
+                            MessageNotification notification = new Gson().fromJson(message, MessageNotification.class);
                             doMessage.messageUser(notification.getMessage());
                         case ERROR:
                             //IDK unpack the error and print it to the console I guess
-                            ErrorNotification error = (ErrorNotification) msg;
+                            ErrorNotification error = new Gson().fromJson(message, ErrorNotification.class);
                             doMessage.giveError(error.getMessage());
                     }
                 }
@@ -47,7 +49,7 @@ public class WebSocketCommunicator extends Endpoint{
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         // Implement your logic when the WebSocket connection is closed
-        System.out.println("WebSocket connection closed.");
+        System.out.println("WebSocket connection closed." + closeReason.toString());
     }
 
     //Endpoint requires this method, but you don't have to do anything

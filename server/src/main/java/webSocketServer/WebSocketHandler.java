@@ -29,7 +29,7 @@ import javax.xml.crypto.Data;
 //how websocket takes client messages and then sends back different messages to the appropriate clients
 @WebSocket
 public class WebSocketHandler {
-    private final GameConnectionManager connections = new GameConnectionManager();
+    private GameConnectionManager connections = new GameConnectionManager();
     private Session session = null;
     private GameService service = null;
     private ServerMessage msg = null; //used for error handling
@@ -38,56 +38,58 @@ public class WebSocketHandler {
     //this should send ACTIONS, aka usergame commands
     //Notifications, on the other hand, usually describe messages or events sent from the server to the client.
 
+//    @OnWebSocketConnect
+//    public void onConnect(Session session){
+//        //hmmmmm add connection?
+//        //websocket created when they join a game
+//        //it would need to add them to the game...oh i could do that here?
+//
+//        //or, set other stuff?
+//    }
+
+
+//    @OnWebSocketClose
+//    public void onClose(Session session){
+//        //uhh delete from session?
+//        //IDK
+//    }
+
     @OnWebSocketConnect
-    public void onConnect(Session session){
-        //hmmmmm add connection?
-        //websocket created when they join a game
-        //it would need to add them to the game...oh i could do that here?
-
-        //or, set other stuff?
+    public void onConnect(Session session) {
+        // Store the session object for future use
+        this.session = session;
     }
 
-
-    @OnWebSocketClose
-    public void onClose(Session session){
-        //uhh delete from session?
-        //IDK
-    }
-
-
-    @OnWebSocketError
-    public void onError(Session session){
-        //maybe it sends an error?
-    }
-
-
+//String authToken,
     @OnWebSocketMessage
-    public void onMessage(Session session, String authToken, String message) throws IOException {
+    public void onMessage(Session session, String message) throws IOException {
         try{
-            session = session;
-            service = new GameService(connections, session, authToken);
             UserGameCommand cmd = new Gson().fromJson(message, UserGameCommand.class); //joinPlayerCommand, etc
+            String authToken = cmd.getAuthString();
+            service = new GameService(connections, session, authToken);
+
             if(cmd ==null){ System.out.println("what..you didn't pass in a command");}
             UserGameCommand.CommandType commandType = cmd.getCommandType();
             switch (commandType) {
                 case UserGameCommand.CommandType.JOIN_PLAYER:
-                    JoinPlayerCommand join = (JoinPlayerCommand) cmd;
+                    JoinPlayerCommand join = new Gson().fromJson(message, JoinPlayerCommand.class);
                     joinPlayer(join.getGameID(), join.getAuthString(), join.getColor(), session);
                     break;
                 case UserGameCommand.CommandType.JOIN_OBSERVER:
-                    JoinObserverCommand observe = (JoinObserverCommand) cmd;
+                    //fix later
+                    JoinObserverCommand observe = new Gson().fromJson(message, JoinObserverCommand.class);
                     joinObserver(observe.getGameID(), observe.getAuthString(), session);
                     break;
                 case UserGameCommand.CommandType.MAKE_MOVE:
-                    MakeMoveCommand move = (MakeMoveCommand) cmd;
+                    MakeMoveCommand move = new Gson().fromJson(message, MakeMoveCommand.class);
                     makeMove(move.getGameID(), move.getMove());
                     break;
                 case UserGameCommand.CommandType.LEAVE:
-                    LeaveCommand leaveC = (LeaveCommand) cmd;
+                    LeaveCommand leaveC = new Gson().fromJson(message, LeaveCommand.class);
                     leave(leaveC.getGameID());
                     break;
                 case UserGameCommand.CommandType.RESIGN:
-                    ResignCommand resignC = (ResignCommand) cmd;
+                    ResignCommand resignC = new Gson().fromJson(message, ResignCommand.class);
                     resign(resignC.getGameID());
                     break;
             }

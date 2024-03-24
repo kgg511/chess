@@ -1,6 +1,7 @@
 package clientStuff;
 
 import chess.ChessBoard;
+import clientStuff.webSocketClient.WebSocketCommunicator;
 import exception.ResponseException;
 
 import java.io.PrintStream;
@@ -25,6 +26,7 @@ public class ChessClientLoggedOut implements ChessClientInterface{
     public ServerFacade getFacade(){return this.server;}
     @Override
     public int getGameID() {return -1;} //GameID is irrelevant
+    public WebSocketCommunicator getWS(){return null;} //can't have WS
 
     public String eval(String input) {
         try {

@@ -2,6 +2,8 @@ package clientStuff;
 
 import Request.JoinGameRequest;
 import Response.*;
+import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class ServerFacade {
     }
     public CreateGameResponse createGame(String gameName) throws ResponseException{
         String path = "/game";
+        //chessgame is actually created on server side
         GameData game = new GameData(-1, "", "", gameName, null);
         CreateGameResponse r = this.makeRequest("POST", path, authToken, game, CreateGameResponse.class);
         return r;

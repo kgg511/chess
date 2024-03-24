@@ -1,6 +1,8 @@
 package service;
 
 import Response.CreateGameResponse;
+import chess.ChessBoard;
+import chess.ChessGame;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
 import model.*;
@@ -22,7 +24,13 @@ public class CreateGameService extends BaseService{
         else if(this.getGameDB().getGameByName(gameName) != null){
             throw new ResponseException(400, "Error: bad request: Game name in use");
         }
-        GameData game = new GameData(this.getGameDB().numGames() + 1, null, null, gameName, null);
+
+        //set up chess game
+        chess.ChessBoard b = new ChessBoard();
+        b.resetBoard();
+        chess.ChessGame g = new ChessGame(ChessGame.TeamColor.WHITE, b);
+
+        GameData game = new GameData(this.getGameDB().numGames() + 1, null, null, gameName, g);
         int id = this.getGameDB().insertGame(game);
         return new CreateGameResponse(id);
     }

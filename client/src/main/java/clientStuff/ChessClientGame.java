@@ -25,13 +25,16 @@ public class ChessClientGame implements ChessClientInterface{
     private WebSocketCommunicator ws;
     private int gameID; //this is GAMEID, just remember that the user typed in game number
 
-    public ChessClientGame(int port, String host, ServerFacade f, int gameID){
+    public ChessClientGame(int port, String host, ServerFacade f, int gameID, WebSocketCommunicator ws) throws ResponseException{
         this.serverUrl = host + ":" + port;
         if(f != null){server = f;}
         else{server = new ServerFacade(port, host);}
-        gameID = gameID;
+        this.gameID = gameID;
+        this.ws = ws;
+        if(this.ws == null){System.out.println("CHESSCLIENTGAME RECIVED A NULL WS!");}
     }
 
+    public WebSocketCommunicator getWS(){return ws;}
     @Override
     public int getGameID() {
         return gameID;

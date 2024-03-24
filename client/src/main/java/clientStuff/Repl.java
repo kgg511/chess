@@ -33,7 +33,7 @@ public class Repl {
                     client.setColor();
                 }
                 else if(client.getState() == State.GAME && client.getClass() != ChessClientGame.class){
-                    client = new ChessClientGame(port, host, client.getFacade(), client.getGameID());
+                    client = new ChessClientGame(port, host, client.getFacade(), client.getGameID(), client.getWS());
                     client.setColor();
                 }
 

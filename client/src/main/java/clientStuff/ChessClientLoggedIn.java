@@ -1,5 +1,6 @@
 package clientStuff;
 import chess.ChessBoard;
+import chess.ChessGame;
 import clientStuff.webSocketClient.WebSocketCommunicator;
 import exception.ResponseException;
 import java.io.PrintStream;
@@ -26,6 +27,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
         if(f != null){server = f;}
         else{server = new ServerFacade(port, host);}
     }
+    public WebSocketCommunicator getWS(){return this.ws;}
     public State getState(){ return this.state;}
     public int getGameID(){return gameID;}
     public ServerFacade getFacade(){return this.server;}
@@ -104,9 +106,16 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             Response.JoinGameResponse response = server.joinGame(params[1], id);
             gameID = id; //set gameID to joined gameID
             state = State.GAME;
-            var b = new ChessBoard();
-            b.resetBoard();
-            drawer.drawBoards(b, out, false, null);
+
+            //get color
+            ChessGame.TeamColor color = null;
+            if(params[1].toLowerCase().equals("white")){color= ChessGame.TeamColor.WHITE;}
+            else if(params[1].toLowerCase().equals("black")){color= ChessGame.TeamColor.BLACK;}
+            else{throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");}
+
+            //create WS and join
+            ws = new WebSocketCommunicator(serverUrl);
+            ws.joinPlayer(server.getAuthToken(), gameID, color);
             return "Successfully joined game";
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");
@@ -120,9 +129,10 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             int id = game.gameID();
             Response.JoinGameResponse response = server.joinGame("", id);
             state = State.GAME;
-            var b = new ChessBoard();
-            b.resetBoard();
-            drawer.drawBoards(b, out, false, null);
+
+            //create WS and join
+            ws = new WebSocketCommunicator(serverUrl);
+            ws.joinObserver(server.getAuthToken(), gameID);
             return "Successfully joined game as an observer";
         }
         throw new ResponseException(400, "Expected: <ID>");

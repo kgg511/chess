@@ -1,7 +1,6 @@
 package webSocketMessages.serverMessages;
 
 public class ErrorNotification extends ServerMessage{
-    ServerMessageType serverMessageType = ServerMessageType.ERROR;
     String message = "";
     public ErrorNotification(String message) {
         super(ServerMessageType.ERROR);

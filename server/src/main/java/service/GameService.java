@@ -17,7 +17,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService extends BaseService {
-    private final GameConnectionManager connections;
+    private GameConnectionManager connections;
     private Session session;
     private String authToken = "";
     private String username = "";
@@ -45,7 +45,7 @@ public class GameService extends BaseService {
         MessageNotification notification = new MessageNotification(username + " has joined as" + color);
         connections.broadcast(gameID, session, notification); //send notification back to everyone else
     }
-    public void joinObserver(int gameID) throws ResponseException, DataAccessException{
+    public void joinObserver(int gameID) throws ResponseException, DataAccessException, IOException{
         connections.addConnection(gameID, authToken, session); //add the players websocket connection
         ChessGame game = getGameDB().getGameById(gameID).game();
         LoadGameNotification message = new LoadGameNotification(game); //for sender
