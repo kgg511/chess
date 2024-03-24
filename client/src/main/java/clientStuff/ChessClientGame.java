@@ -109,7 +109,7 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private void makeMove(String... params) throws ResponseException{
-        if(params.length >= 2){
+        if(params.length >= 1){
             //TODO: verify move on front end
             //TODO: observers can't make moves!
             //TODO: ask about upgrade piece!

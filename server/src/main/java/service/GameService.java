@@ -57,12 +57,12 @@ public class GameService extends BaseService {
         String end = move.substring(2); //index 2 to the end
 
         int col1 = start.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
-        int row1 = (int) start.charAt(1);
+        int row1 = Character.getNumericValue(start.charAt(1));;
 
         int col2 = end.charAt(0) - 'a' + 1; //convert to 1 indexing
-        int row2 = (int) end.charAt(1);
+        int row2 = Character.getNumericValue(end.charAt(1));
 
-        System.out.println(col1 + "," + row1 + " " + col2 + "," + row2);
+        System.out.println(col1 + "," + row1 + " Move to " + col2 + "," + row2);
 
         ChessPosition p1 = new ChessPosition(row1, col1);
         ChessPosition p2 = new ChessPosition(row2, col2);
