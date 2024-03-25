@@ -78,7 +78,7 @@ public class DrawChessBoard {
                          String[] header, boolean highlight, Collection<ChessMove> moves){
         boolean black = isBlack;
         boolean doHighlight = highlight;
-        if(!flipped){
+        if(flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; boardCol++) { //add two for headers}
                     doSquare(board, out, black, row, header, squareRow, boardCol, highlight, moves);
@@ -87,7 +87,7 @@ public class DrawChessBoard {
                 out.println();
             }
         }
-        else if(flipped){
+        else if(!flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = BOARD_SIZE_IN_SQUARES + 1; boardCol >= 0; boardCol--) { //add two for headers}
                     doSquare(board, out, black, row, header, squareRow, boardCol, highlight, moves);
@@ -114,7 +114,7 @@ public class DrawChessBoard {
         boolean black = isBlack;
         if((boardCol == 0 || boardCol == BOARD_SIZE_IN_SQUARES + 1)){
             if((squareRow == SQUARE_SIZE_IN_CHARS / 2)){
-                drawHeader(out, header[row]);
+                drawHeader(out, header[row]);//header.length() - 1 - row
             }
             else{drawHeader(out, " ");}
         }

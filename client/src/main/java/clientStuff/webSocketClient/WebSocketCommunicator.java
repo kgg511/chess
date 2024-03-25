@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+
 public class WebSocketCommunicator extends Endpoint{
     Session session;
     DoMessage doMessage = new DoMessage();
@@ -25,7 +28,6 @@ public class WebSocketCommunicator extends Endpoint{
                 @Override
                 public void onMessage(String message) {
                     ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
-                    System.out.println("the client has received a message from websocket!");
                     System.out.println(msg.getServerMessageType());
                     switch (msg.getServerMessageType()) {
                         case LOAD_GAME:
@@ -53,6 +55,7 @@ public class WebSocketCommunicator extends Endpoint{
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         // Implement your logic when the WebSocket connection is closed
+        System.out.print(SET_TEXT_COLOR_WHITE);
         System.out.println("WebSocket connection closed." + closeReason.toString());
     }
 
@@ -60,6 +63,7 @@ public class WebSocketCommunicator extends Endpoint{
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         System.out.println("WebSocket connection opened.");
+        System.out.print(SET_TEXT_COLOR_GREEN);
     }
 
     public void leaveGame(String authToken, int gameID) throws ResponseException{
