@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 public class WebSocketCommunicator extends Endpoint{
     Session session;
     DoMessage doMessage = new DoMessage();
+    public int role;
     //we don't return strings, we send the messages to websocket then when we hear a response back
     //the repsonse is the output
     public WebSocketCommunicator(String url) throws ResponseException {
@@ -30,14 +31,17 @@ public class WebSocketCommunicator extends Endpoint{
                         case LOAD_GAME:
                             //convert to load game, use the game
                             LoadGameNotification load = new Gson().fromJson(message, LoadGameNotification.class);
-                            doMessage.drawGame(load.getMessage());
+                            doMessage.drawGame(load.getMessage(), role);
+                            break;
                         case NOTIFICATION:
                             MessageNotification notification = new Gson().fromJson(message, MessageNotification.class);
                             doMessage.messageUser(notification.getMessage());
+                            break;
                         case ERROR:
                             //IDK unpack the error and print it to the console I guess
                             ErrorNotification error = new Gson().fromJson(message, ErrorNotification.class);
                             doMessage.giveError(error.getMessage());
+                            break;
                     }
                 }
             });

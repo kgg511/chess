@@ -22,9 +22,9 @@ public class DoMessage {
         System.out.println(message);
         System.out.print(SET_TEXT_COLOR_GREEN); //undo
     }
-    public void drawGame(ChessGame game){
+    public void drawGame(ChessGame game, int role){
         System.out.println("yaya i got a load game");
-        drawer.drawBoards(game.getBoard(), out, false, null);
+        drawer.drawBoards(role, game.getBoard(), out, false, null);
     }
 
 }

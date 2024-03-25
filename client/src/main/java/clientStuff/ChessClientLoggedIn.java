@@ -21,7 +21,6 @@ public class ChessClientLoggedIn implements ChessClientInterface{
     private State state = State.SIGNEDIN;
     private int gameID; //set when user join game
 
-
     public ChessClientLoggedIn(int port, String host, ServerFacade f) {
         this.serverUrl = host + ":" + port;
         if(f != null){server = f;}
@@ -108,13 +107,21 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             state = State.GAME;
 
             //get color
+            int temp;
             ChessGame.TeamColor color = null;
-            if(params[1].toLowerCase().equals("white")){color= ChessGame.TeamColor.WHITE;}
-            else if(params[1].toLowerCase().equals("black")){color= ChessGame.TeamColor.BLACK;}
+            if(params[1].toLowerCase().equals("white")){
+                color= ChessGame.TeamColor.WHITE;
+                temp = 0;
+            }
+            else if(params[1].toLowerCase().equals("black")){
+                color= ChessGame.TeamColor.BLACK;
+                temp = 1;
+            }
             else{throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK]");}
 
             //create WS and join
             ws = new WebSocketCommunicator(serverUrl);
+            ws.role = temp;
             ws.joinPlayer(server.getAuthToken(), gameID, color);
             return "Successfully joined game";
         }
@@ -129,10 +136,11 @@ public class ChessClientLoggedIn implements ChessClientInterface{
             int id = game.gameID();
             Response.JoinGameResponse response = server.joinGame("", id);
             state = State.GAME;
-
+            gameID = id;
             //create WS and join
             ws = new WebSocketCommunicator(serverUrl);
             ws.joinObserver(server.getAuthToken(), gameID);
+            ws.role = -1;
             return "Successfully joined game as an observer";
         }
         throw new ResponseException(400, "Expected: <ID>");

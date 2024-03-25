@@ -25,10 +25,11 @@ public class DrawChessBoard {
         draw.drawBoardRegular(b, out, false, null);
     }
 
-    public void drawBoards(ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){
-        drawBoardRegular(b, out, highlight, moves);
+    public void drawBoards(int role, ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){
+        if(role == -1 || role == 0){drawBoardFlipped(b, out, highlight, moves);}
+        else if(role == 1){drawBoardRegular(b, out, highlight, moves);}
+        else{System.out.println("How'd you get that role?");}
         out.println();
-        drawBoardFlipped(b, out, highlight, moves);
     }
 
     public void drawBoardRegular(ChessBoard b, PrintStream out, boolean highlight, Collection<ChessMove> moves){

@@ -24,7 +24,6 @@ public class ChessClientGame implements ChessClientInterface{
     private State state = State.GAME;
     private WebSocketCommunicator ws;
     private int gameID; //this is GAMEID, just remember that the user typed in game number
-
     public ChessClientGame(int port, String host, ServerFacade f, int gameID, WebSocketCommunicator ws) throws ResponseException{
         this.serverUrl = host + ":" + port;
         if(f != null){server = f;}
@@ -92,7 +91,9 @@ public class ChessClientGame implements ChessClientInterface{
     }
 
     private void redrawBoard() throws ResponseException {
-        drawer.drawBoards(getChessGame().getBoard(), out, false, null);
+        //need to know if they are white, black, observer...pass in gid
+        //gid
+        drawer.drawBoards(ws.role, getChessGame().getBoard(), out, false, null);
     }
     private chess.ChessGame getChessGame() throws ResponseException{
         ArrayList<GameData> games = server.listGames();
@@ -136,7 +137,7 @@ public class ChessClientGame implements ChessClientInterface{
             chess.ChessPosition p = new chess.ChessPosition(row, col);
             Collection<ChessMove> moves = game.validMoves(p);
             if(moves == null){throw new ResponseException(400, "No possible moves from this position");}
-            drawer.drawBoards(game.getBoard(), out, true, moves);
+            drawer.drawBoards(ws.role, game.getBoard(), out, true, moves);
         }
         else{
             throw new ResponseException(400, "Expected: <position>");
