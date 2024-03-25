@@ -119,10 +119,12 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.hashCode(grid);
     }
+
+
+    //ummmm w
     public String toString() {
         //ArrayList<ChessPiece> pieces
         String result = "";
-        System.out.println("It's time to print out the board! :)");
         //print the chess pieces
         String line = "";
         for (int i = 0; i < this.grid.length; i++) {

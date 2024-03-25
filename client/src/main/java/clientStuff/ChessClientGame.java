@@ -92,7 +92,6 @@ public class ChessClientGame implements ChessClientInterface{
 
     private void redrawBoard() throws ResponseException {
         //need to know if they are white, black, observer...pass in gid
-        //gid
         drawer.drawBoards(ws.role, getChessGame().getBoard(), out, false, null);
     }
     private chess.ChessGame getChessGame() throws ResponseException{
@@ -133,7 +132,7 @@ public class ChessClientGame implements ChessClientInterface{
             chess.ChessGame game = getChessGame();
             String position = params[0];
             int col = position.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
-            int row = position.charAt(1);
+            int row = Character.getNumericValue(position.charAt(1));
             chess.ChessPosition p = new chess.ChessPosition(row, col);
             Collection<ChessMove> moves = game.validMoves(p);
             if(moves == null){throw new ResponseException(400, "No possible moves from this position");}

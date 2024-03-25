@@ -77,12 +77,11 @@ public class DrawChessBoard {
     private void drawRow(boolean flipped, ChessBoard board, PrintStream out, boolean isBlack, int row,
                          String[] header, boolean highlight, Collection<ChessMove> moves){
         boolean black = isBlack;
-        boolean doHighlight = false;
+        boolean doHighlight = highlight;
         if(!flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; boardCol++) { //add two for headers}
-                    doHighlight = yesHighlight(squareRow, boardCol, moves, highlight);
-                    doSquare(board, out, black, row, header, squareRow, boardCol, doHighlight);
+                    doSquare(board, out, black, row, header, squareRow, boardCol, highlight, moves);
                     black = !black;
                 }
                 out.println();
@@ -91,8 +90,7 @@ public class DrawChessBoard {
         else if(flipped){
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; squareRow++) {
                 for (int boardCol = BOARD_SIZE_IN_SQUARES + 1; boardCol >= 0; boardCol--) { //add two for headers}
-                    doHighlight = yesHighlight(squareRow, boardCol, moves, highlight);
-                    doSquare(board, out, black, row, header, squareRow, boardCol, doHighlight);
+                    doSquare(board, out, black, row, header, squareRow, boardCol, highlight, moves);
                     black = !black;
                 }
                 out.println();
@@ -105,14 +103,14 @@ public class DrawChessBoard {
         if(highlight){
             for(ChessMove move: moves){
                 ChessPosition p = move.getEndPosition();
-                if(p.getRow() - 1 == row && p.getColumn() - 1 == col){return true;}
+                if(p.getRow() == row && p.getColumn() == col){return true;}
             }
         }
         return false;
     }
 
     private void doSquare(ChessBoard board, PrintStream out, boolean isBlack, int row, String[] header,
-                          int squareRow, int boardCol, boolean doHighlight) {
+                          int squareRow, int boardCol, boolean highlight, Collection<ChessMove> moves) {
         boolean black = isBlack;
         if((boardCol == 0 || boardCol == BOARD_SIZE_IN_SQUARES + 1)){
             if((squareRow == SQUARE_SIZE_IN_CHARS / 2)){
@@ -122,7 +120,7 @@ public class DrawChessBoard {
         }
         else{
             setColor(out, black);
-            if(doHighlight){setBlue(out);}
+            if(yesHighlight(row+1, boardCol, moves, highlight)){setHighlight(out, black);}
             if (squareRow == SQUARE_SIZE_IN_CHARS / 2) { //halfway down put it
                 int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                 int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
@@ -174,7 +172,13 @@ public class DrawChessBoard {
         if(black){setGrey(out);}
         else if(!black){setMagenta(out);}
     }
+    private static void setHighlight(PrintStream out, boolean black){
+        if(black){setDark(out);}
+        else if(!black){setBlue(out);}
+    }
+
     private static void setGrey(PrintStream out) {out.print(SET_BG_COLOR_LIGHT_GREY);}
     private static void setMagenta(PrintStream out) {out.print(SET_BG_COLOR_MAGENTA);}
     private static void setBlue(PrintStream out) {out.print(SET_BG_COLOR_BLUE);}
+    private static void setDark(PrintStream out) {out.print(SET_BG_COLOR_DARK_GREY);}
 }
