@@ -50,6 +50,9 @@ public class GameService extends BaseService {
         ChessGame game = getGameDB().getGameById(gameID).game();
         LoadGameNotification message = new LoadGameNotification(game); //for sender
         connections.sendToSession(session, message); //send load game back to client
+
+        MessageNotification notification = new MessageNotification(username + " has joined as an observer");
+        connections.broadcast(gameID, session, notification);
     }
 
     private ChessMove convertMoveToCoords(String move){ //e6

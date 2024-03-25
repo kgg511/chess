@@ -105,7 +105,7 @@ public class ChessClientGame implements ChessClientInterface{
     private void leaveGame() throws ResponseException{
         state = State.SIGNEDIN; //transition to logged in UI
         ws.leaveGame(server.getAuthToken(), gameID); //edits DB & removes connection on serverside
-        ws = null; //no more websocket for you
+
     }
 
     private void makeMove(String... params) throws ResponseException{
@@ -123,7 +123,6 @@ public class ChessClientGame implements ChessClientInterface{
 
     private void resignGame() throws ResponseException{
         ws.resignGame(server.getAuthToken(), gameID);
-        ws = null;
         //state not changed, players must leave command
     }
 

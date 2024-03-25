@@ -25,6 +25,7 @@ public class ChessClientLoggedIn implements ChessClientInterface{
         this.serverUrl = host + ":" + port;
         if(f != null){server = f;}
         else{server = new ServerFacade(port, host);}
+        ws = null;
     }
     public WebSocketCommunicator getWS(){return this.ws;}
     public State getState(){ return this.state;}
