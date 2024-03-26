@@ -34,7 +34,7 @@ public class GameService extends BaseService {
         if(data == null){throw new ResponseException(400, "AuthToken doesn't exist");}
         return data.username();
     }
-    public void joinPlayer(int gameID, ChessGame.TeamColor color) throws ResponseException, DataAccessException, java.io.IOException{
+    public void joinPlayer(int gameID, ChessGame.TeamColor color, Session session) throws ResponseException, DataAccessException, java.io.IOException{
         //Server sends a LOAD_GAME message back to the root client.
         // Server sends a Notification message to all other clients about what color they joined as
         connections.addConnection(gameID, authToken, session); //add the players websocket connection
@@ -90,8 +90,7 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, msg);
     }
     //ERROR HANDLING????
-    public void makeMove(int gameID, String move) throws dataAccess.DataAccessException, exception.ResponseException, InvalidMoveException, IOException {
-        ChessMove pMove = convertMoveToCoords(move);
+    public void makeMove(int gameID, ChessMove move) throws dataAccess.DataAccessException, exception.ResponseException, InvalidMoveException, IOException {
         GameData data = getGameDB().getGameById(gameID);
         ChessGame game = data.game();
         ChessGame.TeamColor colorOpposing;
@@ -101,8 +100,8 @@ public class GameService extends BaseService {
         else{throw new ResponseException(400, "you are not a player how did you get here");}
 
         //verify move
-        if(game.getBoard().getPiece(pMove.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
-        game.makeMove(pMove);
+        if(game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
+        game.makeMove(move);
         GameData updated = new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game);
         getGameDB().updateGame(updated);
 
@@ -112,7 +111,8 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, message);
 
         //Notification to all but the client that move has been made
-        String moveMessage = username + " made the move " + move;
+        String moveMessage = username + " made the move " + move + "\n";
+
         MessageNotification notification = new MessageNotification(moveMessage);
         connections.broadcast(gameID, session, notification);
 

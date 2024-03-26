@@ -67,7 +67,14 @@ public class GameConnectionManager{
 
     public void sendToSession(Session session, ServerMessage notification) throws IOException{
         //send notification to only the specified session
-        session.getRemote().sendString(new Gson().toJson(notification));
+        if(session.isOpen()){
+            System.out.println("OPEN");
+        }
+        try{session.getRemote().sendString(new Gson().toJson(notification));}
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
         //session.getBasicRemote().sendText(new Gson().toJson(notification));
     }
 

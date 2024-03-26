@@ -1,5 +1,7 @@
 package clientStuff.webSocketClient;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import webSocketMessages.serverMessages.*;
@@ -33,7 +35,7 @@ public class WebSocketCommunicator extends Endpoint{
                         case LOAD_GAME:
                             //convert to load game, use the game
                             LoadGameNotification load = new Gson().fromJson(message, LoadGameNotification.class);
-                            doMessage.drawGame(load.getMessage(), role);
+                            doMessage.drawGame(load.getGame(), role);
                             break;
                         case NOTIFICATION:
                             MessageNotification notification = new Gson().fromJson(message, MessageNotification.class);
@@ -68,7 +70,7 @@ public class WebSocketCommunicator extends Endpoint{
 
     public void leaveGame(String authToken, int gameID) throws ResponseException{
         try{
-            LeaveCommand cmd = new LeaveCommand(authToken, gameID);
+            LeaveCommand cmd = new LeaveCommand(gameID, authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         }
         catch (IOException ex) {
@@ -78,7 +80,7 @@ public class WebSocketCommunicator extends Endpoint{
     public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor playerColor) throws ResponseException{ //this sends the message to the websocket
         //yes this is in loggedinclient but it uses WS so it goes here
         try{
-            JoinPlayerCommand cmd = new JoinPlayerCommand(authToken, gameID, playerColor); //send JOIN_PLAYER
+            JoinPlayerCommand cmd = new JoinPlayerCommand(gameID, playerColor, authToken); //send JOIN_PLAYER
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         }
         catch (IOException ex) {
@@ -89,7 +91,7 @@ public class WebSocketCommunicator extends Endpoint{
     public void joinObserver(String authToken, int gameID) throws ResponseException{ //this sends the message to the websocket
         //yes this is in loggedinclient but it uses WS so it goes here
         try{
-            JoinObserverCommand cmd = new JoinObserverCommand(authToken, gameID);
+            JoinObserverCommand cmd = new JoinObserverCommand(gameID,authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         }
         catch (IOException ex) {
@@ -98,7 +100,8 @@ public class WebSocketCommunicator extends Endpoint{
     }
     public void makeMove(String authToken, int gameID, String move) throws ResponseException{ //actually send to websocket
         try{
-            MakeMoveCommand cmd = new MakeMoveCommand(authToken, gameID, move);
+            ChessMove m = convertMoveToCoords(move);
+            MakeMoveCommand cmd = new MakeMoveCommand(gameID, m, authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         }
         catch (IOException ex) {
@@ -107,12 +110,30 @@ public class WebSocketCommunicator extends Endpoint{
     }
     public void resignGame(String authToken, int gameID) throws ResponseException{
         try{
-            ResignCommand cmd = new ResignCommand(authToken, gameID);
+            ResignCommand cmd = new ResignCommand(gameID, authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         }
         catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
 
+    }
+
+    private ChessMove convertMoveToCoords(String move){ //e6
+        String start = move.substring(0, 2); //index 0-1
+        String end = move.substring(2); //index 2 to the end
+
+        int col1 = start.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
+        int row1 = Character.getNumericValue(start.charAt(1));;
+
+        int col2 = end.charAt(0) - 'a' + 1; //convert to 1 indexing
+        int row2 = Character.getNumericValue(end.charAt(1));
+
+        System.out.println(col1 + "," + row1 + " Move to " + col2 + "," + row2);
+
+        ChessPosition p1 = new ChessPosition(row1, col1);
+        ChessPosition p2 = new ChessPosition(row2, col2);
+
+        return new ChessMove(p1,p2,null);
     }
 }

@@ -64,6 +64,7 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
         try{
+            this.session=session;
             UserGameCommand cmd = new Gson().fromJson(message, UserGameCommand.class); //joinPlayerCommand, etc
             String authToken = cmd.getAuthString();
             service = new GameService(connections, session, authToken);
@@ -73,7 +74,7 @@ public class WebSocketHandler {
             switch (commandType) {
                 case UserGameCommand.CommandType.JOIN_PLAYER:
                     JoinPlayerCommand join = new Gson().fromJson(message, JoinPlayerCommand.class);
-                    joinPlayer(join.getGameID(), join.getAuthString(), join.getColor(), session);
+                    joinPlayer(join.getGameID(), join.getAuthString(), join.getPlayerColor(), session);
                     break;
                 case UserGameCommand.CommandType.JOIN_OBSERVER:
                     //fix later
@@ -111,7 +112,7 @@ public class WebSocketHandler {
         // Server sends a Notification message to all other clients in that game informing them what color
         //the root client is joining as.
         try{
-            service.joinPlayer(gid, playerColor);
+            service.joinPlayer(gid, playerColor, session);
         }
         catch(DataAccessException e){
             msg = new ErrorNotification("500 joinPlayer DB exception:" + e.toString());
@@ -137,7 +138,7 @@ public class WebSocketHandler {
         }
 
     }
-    private void makeMove(int gid, String move) throws IOException{
+    private void makeMove(int gid, ChessMove move) throws IOException{
         ServerMessage msg = null;
         try{service.makeMove(gid, move);}
         catch(InvalidMoveException e){

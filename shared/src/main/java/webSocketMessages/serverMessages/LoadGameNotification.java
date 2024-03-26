@@ -3,11 +3,12 @@ package webSocketMessages.serverMessages;
 import chess.ChessGame;
 
 public class LoadGameNotification extends ServerMessage{ //sends game to client
-    ChessGame message;
-    public LoadGameNotification(ChessGame message) {
+    ChessGame game;
+    public LoadGameNotification(ChessGame game) {
         super(ServerMessageType.LOAD_GAME);
-        this.message = message;
+        this.game = game;
     }
-    public ChessGame getMessage(){return message;}
+    public ChessGame getGame(){return this.game;}
+
 
 }
