@@ -18,8 +18,6 @@ public class WebSocketCommunicator extends Endpoint{
     Session session;
     DoMessage doMessage = new DoMessage();
     public int role;
-    //we don't return strings, we send the messages to websocket then when we hear a response back
-    //the repsonse is the output
     public WebSocketCommunicator(String url) throws ResponseException {
         try {
             url = url.replace("http", "ws");

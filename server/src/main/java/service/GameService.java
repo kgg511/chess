@@ -57,7 +57,7 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, notification);
     }
 
-    private MessageNotification doneCases(int gameID, ChessGame game, ChessGame.TeamColor colorOpposing) throws java.io.IOException{
+    private MessageNotification doneCases(ChessGame game, ChessGame.TeamColor colorOpposing){
         //after each move check if either side is in stalemate
         //you can't move yourself into check/checkmate so check opposing after move
         MessageNotification msg = null;
@@ -97,7 +97,7 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, notification);
 
         //check if game is over
-        MessageNotification msg = doneCases(gameID, game, colorOpposing); //check stale/checkmate
+        MessageNotification msg = doneCases(game, colorOpposing); //check stale/checkmate
         if(msg != null){
             endGame(gameID, msg);
         }
@@ -126,8 +126,6 @@ public class GameService extends BaseService {
          MessageNotification message = new MessageNotification(username + " has left the game");
          connections.broadcast(gameID, session, message); //tell other users
     }
-
-
     public GameData getVerifyGame(int gameID) throws ResponseException, DataAccessException{
         GameData data = getGameDB().getGameById(gameID);
         if(data == null){throw new ResponseException(400,"GameID not associated with a game");}
@@ -139,15 +137,12 @@ public class GameService extends BaseService {
             throw new ResponseException(400, "Observers cannot perform this action");
         }
     }
-
     public void endGame(int gameID, MessageNotification msg) throws DataAccessException, ResponseException, java.io.IOException{
         connections.broadcast(gameID, session, msg); //tell ALL
         connections.sendToSession(session, msg);
-
         boolean success = getGameDB().deleteByGameID(gameID); //remove game from database
         connections.removeGameConnections(gameID); //remove all their connections
     }
-
     public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
         //verifies game exists & verifies that person is a player
         verifyPlayer(gameID);

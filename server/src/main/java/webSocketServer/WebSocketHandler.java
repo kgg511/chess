@@ -38,12 +38,12 @@ public class WebSocketHandler {
             switch (commandType) {
                 case UserGameCommand.CommandType.JOIN_PLAYER:
                     JoinPlayerCommand join = new Gson().fromJson(message, JoinPlayerCommand.class);
-                    joinPlayer(join.getGameID(), join.getAuthString(), join.getPlayerColor(), session);
+                    joinPlayer(join.getGameID(), join.getPlayerColor(), session);
                     break;
                 case UserGameCommand.CommandType.JOIN_OBSERVER:
                     //fix later
                     JoinObserverCommand observe = new Gson().fromJson(message, JoinObserverCommand.class);
-                    joinObserver(observe.getGameID(), observe.getAuthString(), session);
+                    joinObserver(observe.getGameID(), session);
                     break;
                 case UserGameCommand.CommandType.MAKE_MOVE:
                     MakeMoveCommand move = new Gson().fromJson(message, MakeMoveCommand.class);
@@ -69,7 +69,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void joinPlayer(int gid, String authToken, chess.ChessGame.TeamColor playerColor, Session session) throws java.io.IOException {
+    private void joinPlayer(int gid, chess.ChessGame.TeamColor playerColor, Session session) throws java.io.IOException {
         try{
             service.joinPlayer(gid, playerColor, session);
         }
@@ -83,7 +83,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void joinObserver(int gid, String authToken, Session session) throws IOException{
+    private void joinObserver(int gid, Session session) throws IOException{
         try{
             service.joinObserver(gid);
         }

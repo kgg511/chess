@@ -40,10 +40,6 @@ public class GameConnectionManager{
         Map<String, Session> map = connections.get(gid);
         map = new HashMap<>();
     }
-
-    public Map<String, Session> getConnectionsForGame(int gid){
-        return connections.get(gid);
-    }
     public void broadcast(int gid, Session senderSession, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<String>(); //person closed their computer
         Map<String, Session> gameConnections = connections.get(gid);
@@ -71,10 +67,6 @@ public class GameConnectionManager{
         catch(Exception e){
             e.printStackTrace();
         }
-
-        //session.getBasicRemote().sendText(new Gson().toJson(notification));
     }
-
-
 
 }

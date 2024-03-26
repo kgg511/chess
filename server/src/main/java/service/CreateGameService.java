@@ -30,13 +30,6 @@ public class CreateGameService extends BaseService{
         //set up chess game
         chess.ChessBoard b = new ChessBoard();
         b.resetBoard();
-
-        //added for testing
-        System.out.println("DOING TESTING CODE");
-        chess.ChessPiece pawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        chess.ChessPosition pos = new ChessPosition(7, 2); //row 7, column 2
-        b.addPiece(pos, pawn);
-
         chess.ChessGame g = new ChessGame(ChessGame.TeamColor.WHITE, b);
 
 
