@@ -86,16 +86,16 @@ public class ChessGame {
         ChessPiece promo;
         ChessPiece killed = null; //save piece at destination
         //make move
+        if(board.getPiece(m.getEndPosition()) != null){killed = board.getPiece(m.getEndPosition());}
+
         if(m.getPromotionPiece() != null){
             promo = new ChessPiece(p.getTeamColor(), m.getPromotionPiece());
-            board.addPiece(m.getEndPosition(), promo); //move piece
+            board.addPiece(m.getEndPosition(), promo); //move piece...wait but what about
         }
         else{
-            if(board.getPiece(m.getEndPosition()) != null){
-                killed = board.getPiece(m.getEndPosition());
-            }
             board.addPiece(m.getEndPosition(), p); //move piece
         }
+
         board.addPiece(m.getStartPosition(), null); //remove piece from start
 
         return killed;
@@ -104,7 +104,8 @@ public class ChessGame {
     public void undoMove(ChessBoard board, ChessMove m, ChessPiece p, ChessPiece killed){
         //undo move
         board.addPiece(m.getStartPosition(), p);
-        board.addPiece(m.getEndPosition(), killed); //killed may be null but who cares
+        board.addPiece(m.getEndPosition(), killed);
+         //killed may be null but who cares
     }
 
 
@@ -121,6 +122,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         Collection<ChessMove> moves = validMoves(move.getStartPosition());
+        //valid moves should only work with a copy
         ChessPiece p = null;
         ChessGame.TeamColor color = null;
         if(moves.contains(move)){ //if not invalid move, make the move

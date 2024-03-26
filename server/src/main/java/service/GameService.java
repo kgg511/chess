@@ -83,6 +83,7 @@ public class GameService extends BaseService {
 
         //verify move
         if(game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == colorOpposing){throw new ResponseException(400, "You can't move your opponent's pieces!");}
+
         game.makeMove(move);
         GameData updated = new GameData(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName(), game);
         getGameDB().updateGame(updated);

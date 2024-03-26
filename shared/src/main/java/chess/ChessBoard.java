@@ -23,6 +23,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
+        //should be 0-7 or 1-8
         if(position.getRow()-1 < 0 || position.getRow()-1 > 7 || position.getColumn()-1 < 0 || position.getColumn()-1 > 7){
             System.out.println("out of bounds");
             return;

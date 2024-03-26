@@ -3,6 +3,8 @@ package service;
 import Response.CreateGameResponse;
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
 import model.*;
@@ -28,7 +30,15 @@ public class CreateGameService extends BaseService{
         //set up chess game
         chess.ChessBoard b = new ChessBoard();
         b.resetBoard();
+
+        //added for testing
+        System.out.println("DOING TESTING CODE");
+        chess.ChessPiece pawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        chess.ChessPosition pos = new ChessPosition(7, 2); //row 7, column 2
+        b.addPiece(pos, pawn);
+
         chess.ChessGame g = new ChessGame(ChessGame.TeamColor.WHITE, b);
+
 
         GameData game = new GameData(this.getGameDB().numGames() + 1, null, null, gameName, g);
         int id = this.getGameDB().insertGame(game);
