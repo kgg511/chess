@@ -1,6 +1,8 @@
 package clientStuff;
 
 import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import ui.DrawChessBoard;
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import static ui.EscapeSequences.*;
 import clientStuff.webSocketClient.WebSocketCommunicator;
+import java.util.Scanner;
 public class ChessClientGame implements ChessClientInterface{
     public final ServerFacade server;
     private final String serverUrl;
@@ -102,10 +105,47 @@ public class ChessClientGame implements ChessClientInterface{
         ws.leaveGame(server.getAuthToken(), gameID); //edits DB & removes connection on serverside
 
     }
+    private boolean canUpgrade(ChessMove move) throws ResponseException{
+        chess.ChessGame g = getChessGame();
+        // pawn in starting position
+        // pawn moving to end row
+        // move is valid
+        if(!(g.getBoard().getPiece(move.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN)){
+            return false;}
+        if(!(move.getEndPosition().getRow() == 1 || move.getEndPosition().getRow() == 8)){
+            return false;}
+
+        for(ChessMove mov: g.validMoves(move.getStartPosition())){
+            if(mov.getEndPosition().getRow() == move.getEndPosition().getRow() && mov.getEndPosition().getColumn() == move.getEndPosition().getColumn()){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void makeMove(String... params) throws ResponseException{
         if(params.length >= 1){
-            ws.makeMove(server.getAuthToken(), gameID, params[0]);
+            ChessMove m = convertMoveToCoords(params[0]);
+
+            chess.ChessGame g = getChessGame();
+            if(canUpgrade(m)){
+                Scanner scanner = new Scanner(System.in);
+                String upgrade = "";
+                while(!upgrade.equals("ROOK") && !upgrade.equals("BISHOP") && !upgrade.equals("KNIGHT") && !upgrade.equals("QUEEN")){
+                    System.out.println("Please specify which piece you would like to upgrade your pawn to: [ROOK|BISHOP|KNIGHT|QUEEN]");
+                    upgrade = scanner.nextLine().toUpperCase();
+                }
+                ChessPiece.PieceType type = null;
+                switch(upgrade){
+                    case "ROOK": type = ChessPiece.PieceType.ROOK; break;
+                    case "BISHOP": type = ChessPiece.PieceType.BISHOP; break;
+                    case "KNIGHT": type = ChessPiece.PieceType.KNIGHT; break;
+                    case "QUEEN": type = ChessPiece.PieceType.QUEEN; break;
+                }
+                m = new ChessMove(m.getStartPosition(), m.getEndPosition(), type);
+            }
+
+            ws.makeMove(server.getAuthToken(), gameID, m);
         }
         else{
             throw new ResponseException(400, "Expected: <chessmove> 'EX: b4c4'");
@@ -129,6 +169,24 @@ public class ChessClientGame implements ChessClientInterface{
         else{
             throw new ResponseException(400, "Expected: <position>");
         }
+    }
+
+    private ChessMove convertMoveToCoords(String move){ //e6
+        String start = move.substring(0, 2); //index 0-1
+        String end = move.substring(2); //index 2 to the end
+
+        int col1 = start.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
+        int row1 = Character.getNumericValue(start.charAt(1));;
+
+        int col2 = end.charAt(0) - 'a' + 1; //convert to 1 indexing
+        int row2 = Character.getNumericValue(end.charAt(1));
+
+        System.out.println(col1 + "," + row1 + " Move to " + col2 + "," + row2);
+
+        ChessPosition p1 = new ChessPosition(row1, col1);
+        ChessPosition p2 = new ChessPosition(row2, col2);
+
+        return new ChessMove(p1,p2, null); //put piece there
     }
 
 }

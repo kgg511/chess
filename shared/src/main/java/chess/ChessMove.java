@@ -22,6 +22,9 @@ public class ChessMove {
     }
 
     public String toString(){
+        if(this.promotionPiece != null){
+            return this.startPosition.toString() + "->" + this.endPosition.toString() + "promotion:" + promotionPiece.toString();
+        }
         return this.startPosition.toString() + "->" + this.endPosition.toString();
     }
 

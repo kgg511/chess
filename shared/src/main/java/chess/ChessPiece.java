@@ -98,7 +98,8 @@ public class ChessPiece {
         this.completeMoves = new HashSet<>();
         for(ChessPosition endPosition: l){ //go through the moves and make ChessMove objects
             if(this.type == PieceType.PAWN && (endPosition.getRow() == 8 || endPosition.getRow() == 1)){ //if its a pawn and end position is at end do it 4 times
-                System.out.println("SPECIAL CASE PAWN");
+                move = new ChessMove(myPosition, endPosition, null);
+                this.completeMoves.add(move);
                 move = new ChessMove(myPosition, endPosition, PieceType.ROOK);
                 this.completeMoves.add(move);
                 move = new ChessMove(myPosition, endPosition, PieceType.KNIGHT);

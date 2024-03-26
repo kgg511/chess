@@ -73,6 +73,7 @@ public class ChessGame {
             undoMove(this.board, m, pieceHere, killed);
         }
         //remove all moves which put us into check
+        //remainingMoves = remainingMoves;
         return remainingMoves;
 
         //allmoves is based on the original board

@@ -75,7 +75,6 @@ public class MovesBoth {
 
         else if(board.getPiece(p) != null){ //yes IF we are not a pawn and its the other side
             if(board.getPiece(p).getTeamColor() != this.color){
-                if(pawnKill && this.pawn){System.out.println("I am a pawn and ready to kill");}
                 if(pawnKill || !this.pawn){ //pawn can only kill on forward diag
                     valid.add(p);
                 }
