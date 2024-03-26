@@ -60,6 +60,7 @@ public class ChessClientGame implements ChessClientInterface{
                     break;
                 case "move":
                     makeMove(params);
+                    break;
                 case "resign":
                     resignGame();
                     break;

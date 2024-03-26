@@ -61,14 +61,11 @@ public class GameService extends BaseService {
         //after each move check if either side is in stalemate
         //you can't move yourself into check/checkmate so check opposing after move
         MessageNotification msg = null;
-        if(game.checkStale(WHITE) || game.checkStale(ChessGame.TeamColor.BLACK)){
-            msg = new MessageNotification("stalemate");
+        if(game.isInCheckmate(colorOpposing)){
+            msg = new MessageNotification(colorOpposing + " is in checkmate! " + colorOpposing + " LOSES. Type 'Leave' to return to lobby.");
         }
-        else if(game.isInCheck(colorOpposing)){
-            msg = new MessageNotification(colorOpposing + " is in check!");
-        }
-        else if(game.isInCheckmate(colorOpposing)){
-            msg = new MessageNotification(colorOpposing + " is in checkmate!");
+        else if(game.checkStale(WHITE) || game.checkStale(ChessGame.TeamColor.BLACK)){
+            msg = new MessageNotification("Stalemate. No one wins.");
         }
         return msg;
     }
@@ -99,9 +96,17 @@ public class GameService extends BaseService {
         MessageNotification notification = new MessageNotification(moveMessage);
         connections.broadcast(gameID, session, notification);
 
-        MessageNotification msg = doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
+        //check if game is over
+        MessageNotification msg = doneCases(gameID, game, colorOpposing); //check stale/checkmate
         if(msg != null){
             endGame(gameID, msg);
+        }
+
+        //see if it's just check
+        if(game.isInCheck(colorOpposing)){
+            MessageNotification check = new MessageNotification(colorOpposing + " is in check!");
+            connections.broadcast(gameID, session, check); //tell ALL
+            connections.sendToSession(session, check);
         }
     }
 
