@@ -149,7 +149,19 @@ public class WebSocketHandler {
         }
 
     }
-    private void resign(int gid){
+    private void resign(int gid) throws java.io.IOException{
+        try{
+            service.resignGame(gid);
+            //remove the session stuff
+        }
+        catch(DataAccessException e){
+            msg = new ErrorNotification("500 leave DB exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
+        catch(ResponseException e){
+            msg = new ErrorNotification(e.statusCode() + " leave exception:" + e.toString());
+            connections.sendToSession(session, msg);
+        }
 
     }
 

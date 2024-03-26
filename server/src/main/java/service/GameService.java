@@ -36,9 +36,6 @@ public class GameService extends BaseService {
         return data.username();
     }
     public void joinPlayer(int gameID, ChessGame.TeamColor color, Session session) throws ResponseException, DataAccessException, java.io.IOException{
-        //Server sends a LOAD_GAME message back to the root client.
-        //we must check tat this USERNAME IS in the correct spot
-
         //verify this person was added to db as this color
         GameData data = getGameDB().getGameById(gameID);
         if (data == null){throw new ResponseException(400, "Invalid Game ID");}
@@ -99,9 +96,10 @@ public class GameService extends BaseService {
         connections.sendToSession(session, msg);
         connections.broadcast(gameID, session, msg);
     }
-    //ERROR HANDLING????
     public void makeMove(int gameID, ChessMove move) throws dataAccess.DataAccessException, exception.ResponseException, InvalidMoveException, IOException {
-        GameData data = getGameDB().getGameById(gameID);
+        //if their game is not in the database we should throw an error?
+
+        GameData data = getVerifyGame(gameID);
         ChessGame game = data.game();
         ChessGame.TeamColor colorOpposing;
 
@@ -126,36 +124,53 @@ public class GameService extends BaseService {
         MessageNotification notification = new MessageNotification(moveMessage);
         connections.broadcast(gameID, session, notification);
 
-        doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
+        //doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
     }
 
     public void leaveGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
         connections.removeConnection(gameID, authToken); //remove WS connection
-        GameData old = getGameDB().getGameById(gameID);
-        if(old == null){throw new ResponseException(400,"GameID not associated with a game");}
-
+        GameData old = getVerifyGame(gameID);
         //remove user from db
         GameData updated = null;
         boolean success = true;
-        if(old.whiteUsername().equals(username)){
+        if(old.whiteUsername() != null && old.whiteUsername().equals(username)){
             success = getGameDB().updateGame(new GameData(old.gameID(), null, old.blackUsername(), old.gameName(), old.game()));}
-        else if(old.blackUsername().equals(username)){
+        else if(old.blackUsername() != null && old.blackUsername().equals(username)){
             success = getGameDB().updateGame(new GameData(old.gameID(), old.whiteUsername(), null, old.gameName(), old.game()));}
-        if(!success){throw new ResponseException(400, "IDK but leaveGame not working?");}
+        if(!success){throw new ResponseException(400, "Could not leave game");}
 
         //A player left the game. The notification message should include the player’s name
          MessageNotification message = new MessageNotification(username + " has left the game");
          connections.broadcast(gameID, session, message); //tell other users
+    }
 
+
+    public GameData getVerifyGame(int gameID) throws ResponseException, DataAccessException{
+        GameData data = getGameDB().getGameById(gameID);
+        if(data == null){throw new ResponseException(400,"GameID not associated with a game");}
+        return data;
+    }
+    public void verifyPlayer(int gameID) throws ResponseException, DataAccessException{
+        GameData data = getVerifyGame(gameID);
+        if(!data.whiteUsername().equals(username) && !data.blackUsername().equals(username)){
+            throw new ResponseException(400, "Observers cannot perform this action");
+        }
     }
 
     public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
+//        Server sends a Notification message to all clients in that game informing them that the root client left.
+//        This applies to both players and observers.
+
+        //verifies game exists & verifies that person is a player
+        verifyPlayer(gameID);
         MessageNotification message = new MessageNotification(username + " has resigned and the game is over");
         connections.broadcast(gameID, session, message); //tell ALL
         connections.sendToSession(session, message);
 
-        boolean success = getGameDB().deleteByGameID(gameID); //remove from database
+        //resigning game actions
+        boolean success = getGameDB().deleteByGameID(gameID); //remove game from database
         connections.removeGameConnections(gameID); //remove all their connections
+
 
         //TODO: how can we exit players from the game? I guess they could leave
     }
