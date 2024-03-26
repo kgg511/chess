@@ -33,34 +33,12 @@ public class WebSocketHandler {
     private Session session = null;
     private GameService service = null;
     private ServerMessage msg = null; //used for error handling
-            //new GameService(GameConnectionManager connections, sender, authToken);
-    //Actions typically refer to messages or events sent from the client to the server.
-    //this should send ACTIONS, aka usergame commands
-    //Notifications, on the other hand, usually describe messages or events sent from the server to the client.
-
-//    @OnWebSocketConnect
-//    public void onConnect(Session session){
-//        //hmmmmm add connection?
-//        //websocket created when they join a game
-//        //it would need to add them to the game...oh i could do that here?
-//
-//        //or, set other stuff?
-//    }
-
-
-//    @OnWebSocketClose
-//    public void onClose(Session session){
-//        //uhh delete from session?
-//        //IDK
-//    }
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
         // Store the session object for future use
         this.session = session;
     }
-
-//String authToken,
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
         try{

@@ -5,6 +5,7 @@ import exception.ResponseException;
 import chess.*;
 import model.*;
 import service.BaseService;
+import spark.Response;
 import webSocketMessages.serverMessages.LoadGameNotification;
 import webSocketMessages.serverMessages.MessageNotification;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -36,10 +37,17 @@ public class GameService extends BaseService {
     }
     public void joinPlayer(int gameID, ChessGame.TeamColor color, Session session) throws ResponseException, DataAccessException, java.io.IOException{
         //Server sends a LOAD_GAME message back to the root client.
+        //we must check tat this USERNAME IS in the correct spot
+
+        //verify this person was added to db as this color
+        GameData data = getGameDB().getGameById(gameID);
+        if (data == null){throw new ResponseException(400, "Game not in database");}
+        else if(color == WHITE && !username.equals(data.whiteUsername())){throw new ResponseException(400, "Color taken by different user");}
+        else if(color == BLACK && !username.equals(data.blackUsername())){throw new ResponseException(400, "Color taken by different user");}
         // Server sends a Notification message to all other clients about what color they joined as
         connections.addConnection(gameID, authToken, session); //add the players websocket connection
-        ChessGame game = getGameDB().getGameById(gameID).game(); //we assume HTTPS added us to db
-        LoadGameNotification message = new LoadGameNotification(game); //for sender
+
+        LoadGameNotification message = new LoadGameNotification(data.game()); //for sender
         connections.sendToSession(session, message); //send load game back to client
 
         MessageNotification notification = new MessageNotification(username + " has joined as" + color);

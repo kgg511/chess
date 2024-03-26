@@ -1,6 +1,9 @@
 package webSocketServer;
 import com.google.gson.Gson;
+import exception.ResponseException;
+import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.websocket.api.Session;
+import webSocketMessages.serverMessages.ErrorNotification;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import javax.websocket.Endpoint;
@@ -14,17 +17,19 @@ import java.util.HashMap;
 public class GameConnectionManager{
     public final ConcurrentHashMap<Integer, Map<String, Session>> connections = new ConcurrentHashMap<>();
     //each game has a dictionary of authToken: Session connection
-    public void addConnection(int gid, String authToken, Session session){
+    public void addConnection(int gid, String authToken, Session session) throws ResponseException {
         assert session != null;
         Map<String, Session> map = null;
-        System.out.println("the keys I have are" + connections.keySet().toString());
+
         if(!connections.containsKey(gid)){
             map = new HashMap<>();
             map.put(authToken, session);
         }
         else{
             map = connections.get(gid);
-            if(map.containsKey(authToken)){System.out.println("NO YOU ARE ALREADY IN THE GAME");}
+            if(map.containsKey(authToken)){
+                throw new ResponseException(400, "You cannot join the game twice on the same device.");
+            }
             map.put(authToken, session);
         }
         connections.put(gid, map);
@@ -67,9 +72,6 @@ public class GameConnectionManager{
 
     public void sendToSession(Session session, ServerMessage notification) throws IOException{
         //send notification to only the specified session
-        if(session.isOpen()){
-            System.out.println("OPEN");
-        }
         try{session.getRemote().sendString(new Gson().toJson(notification));}
         catch(Exception e){
             e.printStackTrace();
