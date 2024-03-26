@@ -4,16 +4,11 @@ import dataAccess.DataAccessException;
 import exception.ResponseException;
 import chess.*;
 import model.*;
-import service.BaseService;
-import spark.Response;
 import webSocketMessages.serverMessages.LoadGameNotification;
 import webSocketMessages.serverMessages.MessageNotification;
-import webSocketMessages.serverMessages.ServerMessage;
 import webSocketServer.GameConnectionManager;
 import org.eclipse.jetty.websocket.api.Session;
-
 import java.io.IOException;
-
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
@@ -62,25 +57,7 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, notification);
     }
 
-    private ChessMove convertMoveToCoords(String move){ //e6
-        String start = move.substring(0, 2); //index 0-1
-        String end = move.substring(2); //index 2 to the end
-
-        int col1 = start.charAt(0) - 'a' + 1; //letter gives column, convert to 1 indexing
-        int row1 = Character.getNumericValue(start.charAt(1));;
-
-        int col2 = end.charAt(0) - 'a' + 1; //convert to 1 indexing
-        int row2 = Character.getNumericValue(end.charAt(1));
-
-        System.out.println(col1 + "," + row1 + " Move to " + col2 + "," + row2);
-
-        ChessPosition p1 = new ChessPosition(row1, col1);
-        ChessPosition p2 = new ChessPosition(row2, col2);
-
-        return new ChessMove(p1,p2,null);
-    }
-
-    private void doneCases(int gameID, ChessGame game, ChessGame.TeamColor colorOpposing) throws java.io.IOException{
+    private MessageNotification doneCases(int gameID, ChessGame game, ChessGame.TeamColor colorOpposing) throws java.io.IOException{
         //after each move check if either side is in stalemate
         //you can't move yourself into check/checkmate so check opposing after move
         MessageNotification msg = null;
@@ -93,12 +70,9 @@ public class GameService extends BaseService {
         else if(game.isInCheckmate(colorOpposing)){
             msg = new MessageNotification(colorOpposing + " is in checkmate!");
         }
-        connections.sendToSession(session, msg);
-        connections.broadcast(gameID, session, msg);
+        return msg;
     }
     public void makeMove(int gameID, ChessMove move) throws dataAccess.DataAccessException, exception.ResponseException, InvalidMoveException, IOException {
-        //if their game is not in the database we should throw an error?
-
         GameData data = getVerifyGame(gameID);
         ChessGame game = data.game();
         ChessGame.TeamColor colorOpposing;
@@ -124,7 +98,10 @@ public class GameService extends BaseService {
         MessageNotification notification = new MessageNotification(moveMessage);
         connections.broadcast(gameID, session, notification);
 
-        //doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
+        MessageNotification msg = doneCases(gameID, game, colorOpposing); //check stale/check/checkmate
+        if(msg != null){
+            endGame(gameID, msg);
+        }
     }
 
     public void leaveGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
@@ -157,21 +134,20 @@ public class GameService extends BaseService {
         }
     }
 
-    public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
-//        Server sends a Notification message to all clients in that game informing them that the root client left.
-//        This applies to both players and observers.
+    public void endGame(int gameID, MessageNotification msg) throws DataAccessException, ResponseException, java.io.IOException{
+        connections.broadcast(gameID, session, msg); //tell ALL
+        connections.sendToSession(session, msg);
 
-        //verifies game exists & verifies that person is a player
-        verifyPlayer(gameID);
-        MessageNotification message = new MessageNotification(username + " has resigned and the game is over");
-        connections.broadcast(gameID, session, message); //tell ALL
-        connections.sendToSession(session, message);
-
-        //resigning game actions
         boolean success = getGameDB().deleteByGameID(gameID); //remove game from database
         connections.removeGameConnections(gameID); //remove all their connections
+    }
 
+    public void resignGame(int gameID) throws DataAccessException, ResponseException, java.io.IOException{
+        //verifies game exists & verifies that person is a player
+        verifyPlayer(gameID);
 
-        //TODO: how can we exit players from the game? I guess they could leave
+        //resigning game actions: tell all, clean up
+        MessageNotification message = new MessageNotification(username + " has resigned and the game is over");
+        endGame(gameID, message);
     }
 }

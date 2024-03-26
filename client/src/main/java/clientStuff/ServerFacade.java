@@ -2,10 +2,7 @@ package clientStuff;
 
 import Request.JoinGameRequest;
 import Response.*;
-import chess.ChessBoard;
-import chess.ChessGame;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

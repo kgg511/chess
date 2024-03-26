@@ -2,10 +2,8 @@ package clientStuff.webSocketClient;
 
 import chess.ChessGame;
 import ui.DrawChessBoard;
-
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_RED;

@@ -1,16 +1,8 @@
 package clientStuff;
 
-import chess.ChessBoard;
 import clientStuff.webSocketClient.WebSocketCommunicator;
 import exception.ResponseException;
-
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.ArrayList;
-import model.*;
-import ui.DrawChessBoard;
-
 import static ui.EscapeSequences.*;
 
 public class ChessClientLoggedOut implements ChessClientInterface{

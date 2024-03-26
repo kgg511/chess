@@ -1,10 +1,8 @@
 package ui;
 import chess.*;
-
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-
 import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {

@@ -1,5 +1,4 @@
 package clientStuff;
-import chess.ChessBoard;
 import chess.ChessGame;
 import clientStuff.webSocketClient.WebSocketCommunicator;
 import exception.ResponseException;
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import model.*;
 import ui.DrawChessBoard;
-
 import static ui.EscapeSequences.*;
 
 public class ChessClientLoggedIn implements ChessClientInterface{

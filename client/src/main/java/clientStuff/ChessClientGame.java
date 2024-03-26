@@ -1,21 +1,16 @@
 package clientStuff;
 
 import chess.ChessMove;
-import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import ui.DrawChessBoard;
-
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
-
 import static ui.EscapeSequences.*;
 import clientStuff.webSocketClient.WebSocketCommunicator;
-//stuff using websocket does not need to return a string that is done by doMessage
 public class ChessClientGame implements ChessClientInterface{
     public final ServerFacade server;
     private final String serverUrl;
@@ -110,10 +105,6 @@ public class ChessClientGame implements ChessClientInterface{
 
     private void makeMove(String... params) throws ResponseException{
         if(params.length >= 1){
-            //TODO: verify move on front end
-            //TODO: observers can't make moves!
-            //TODO: ask about upgrade piece!
-
             ws.makeMove(server.getAuthToken(), gameID, params[0]);
         }
         else{
@@ -123,9 +114,7 @@ public class ChessClientGame implements ChessClientInterface{
 
     private void resignGame() throws ResponseException{
         ws.resignGame(server.getAuthToken(), gameID);
-        //state not changed, players must leave command
     }
-
     private void highlightLegal(String... params) throws ResponseException{ //https
         if(params.length >= 1){ //'e6'
             chess.ChessGame game = getChessGame();

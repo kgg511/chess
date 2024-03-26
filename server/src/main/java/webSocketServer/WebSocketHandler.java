@@ -1,32 +1,18 @@
 package webSocketServer;
 
-import Response.ExceptionResponse;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import exception.ResponseException;
-import org.eclipse.jetty.util.IO;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
-import server.Server;
-import service.JoinGameService;
-
 import java.io.IOException;
-import java.util.Timer;
 import chess.InvalidMoveException;
-import spark.Request;
-import spark.Response;
 import webSocketMessages.serverMessages.ErrorNotification;
-import webSocketMessages.serverMessages.LoadGameNotification;
-import webSocketMessages.serverMessages.MessageNotification;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketServer.*; //whyd i have to impor this
 import webSocketMessages.userCommands.*;
 import service.GameService;
 
-import javax.xml.crypto.Data;
-
-//how websocket takes client messages and then sends back different messages to the appropriate clients
 @WebSocket
 public class WebSocketHandler {
     private GameConnectionManager connections = new GameConnectionManager();
@@ -83,12 +69,7 @@ public class WebSocketHandler {
         }
     }
 
-    //we receive ACTIONS from the client, and then we call methods which broadcast notifications
-    //Integer gameID, ChessGame.TeamColor playerColor
     private void joinPlayer(int gid, String authToken, chess.ChessGame.TeamColor playerColor, Session session) throws java.io.IOException {
-        //Server sends a LOAD_GAME message back to the root client.
-        // Server sends a Notification message to all other clients in that game informing them what color
-        //the root client is joining as.
         try{
             service.joinPlayer(gid, playerColor, session);
         }
@@ -152,7 +133,6 @@ public class WebSocketHandler {
     private void resign(int gid) throws java.io.IOException{
         try{
             service.resignGame(gid);
-            //remove the session stuff
         }
         catch(DataAccessException e){
             msg = new ErrorNotification("500 leave DB exception:" + e.toString());
