@@ -41,7 +41,7 @@ public class GameService extends BaseService {
 
         //verify this person was added to db as this color
         GameData data = getGameDB().getGameById(gameID);
-        if (data == null){throw new ResponseException(400, "Game not in database");}
+        if (data == null){throw new ResponseException(400, "Invalid Game ID");}
         else if(color == WHITE && !username.equals(data.whiteUsername())){throw new ResponseException(400, "Color taken by different user");}
         else if(color == BLACK && !username.equals(data.blackUsername())){throw new ResponseException(400, "Color taken by different user");}
         // Server sends a Notification message to all other clients about what color they joined as
@@ -54,8 +54,10 @@ public class GameService extends BaseService {
         connections.broadcast(gameID, session, notification); //send notification back to everyone else
     }
     public void joinObserver(int gameID) throws ResponseException, DataAccessException, IOException{
+        GameData data = getGameDB().getGameById(gameID);
+        if (data == null){throw new ResponseException(400, "Invalid Game ID");}
+        ChessGame game = data.game();
         connections.addConnection(gameID, authToken, session); //add the players websocket connection
-        ChessGame game = getGameDB().getGameById(gameID).game();
         LoadGameNotification message = new LoadGameNotification(game); //for sender
         connections.sendToSession(session, message); //send load game back to client
 
