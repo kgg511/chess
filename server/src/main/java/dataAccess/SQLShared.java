@@ -58,8 +58,8 @@ public class SQLShared implements SharedInterface {
         }
     }
 
-    public void clearDB(String DBName) throws DataAccessException, ResponseException{
-        var statement = "TRUNCATE TABLE " + DBName + ";";
+    public void clearDB(String dbName) throws DataAccessException, ResponseException{
+        var statement = "TRUNCATE TABLE " + dbName + ";";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 int rowsChanged = ps.executeUpdate();
@@ -69,8 +69,8 @@ public class SQLShared implements SharedInterface {
         }
     }
 
-    public boolean isEmpty(String DBName) throws DataAccessException, ResponseException{
-        String sql = "SELECT COUNT(*) FROM " + DBName + ";";
+    public boolean isEmpty(String dbName) throws DataAccessException, ResponseException{
+        String sql = "SELECT COUNT(*) FROM " + dbName + ";";
         try(var conn = DatabaseManager.getConnection()){
             try(PreparedStatement statement = conn.prepareStatement(sql)){
                 ResultSet rs = statement.executeQuery();
