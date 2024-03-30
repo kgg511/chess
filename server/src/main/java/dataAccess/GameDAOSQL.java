@@ -28,9 +28,7 @@ public class GameDAOSQL extends SQLShared implements GameDAOInterface {
     };
     public int insertGame(GameData game) throws ResponseException, DataAccessException{
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, gameObj) VALUES (?, ?, ?, ?)";
-        assert game.game() != null;
         String json = new Gson().toJson(game.game());
-        System.out.println("the games json is " + json);
         int id = executeUpdate(statement, true, game.whiteUsername(),
                 game.blackUsername(), game.gameName(), json);
         return id;

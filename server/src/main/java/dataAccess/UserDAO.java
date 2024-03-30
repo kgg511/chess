@@ -3,8 +3,8 @@ import dataAccess.interfaces.UserDAOInterface;
 import model.UserData;
 
 import java.util.ArrayList;
-public class UserDAO implements UserDAOInterface {
-    private static UserDAO instance = null;
+public class UserDAO implements UserDAOInterface{
+    public static UserDAO instance = null;
     public ArrayList<UserData> userDB = new ArrayList<UserData>();
 
     public static synchronized UserDAO getInstance() {

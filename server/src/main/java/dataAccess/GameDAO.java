@@ -16,6 +16,7 @@ public class GameDAO implements GameDAOInterface {
         }
         return instance;
     }
+
     public int insertGame(GameData game) throws DataAccessException{
         this.gameDB.add(game);
         return game.gameID();
