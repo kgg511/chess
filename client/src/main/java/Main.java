@@ -2,11 +2,15 @@ import clientStuff.Repl;
 
 public class Main {
     public static void main(String[] args) {
-        int port = 8080;
+        System.out.println("client running");
+        int port = 8080; //default stuff
+        String hostPort;
         String hostname = "http://localhost";
-        if (args.length == 2) {
-            hostname = "http://" + args[0];
-            port = Integer.parseInt(args[1]);
+        if (args.length > 0) {
+            hostPort = args[0];
+            String[] parts = hostPort.split(":");
+            hostname = parts[0];
+            port = Integer.parseInt(parts[1]);
         }
 
         new Repl(port, hostname).run();

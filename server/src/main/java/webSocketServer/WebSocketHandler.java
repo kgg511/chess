@@ -41,7 +41,6 @@ public class WebSocketHandler {
                     joinPlayer(join.getGameID(), join.getPlayerColor(), session);
                     break;
                 case UserGameCommand.CommandType.JOIN_OBSERVER:
-                    //fix later
                     JoinObserverCommand observe = new Gson().fromJson(message, JoinObserverCommand.class);
                     joinObserver(observe.getGameID(), session);
                     break;

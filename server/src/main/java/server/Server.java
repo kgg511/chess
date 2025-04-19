@@ -32,8 +32,4 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
-
-    public static void main(String[] args) {
-        new Server().run(8080);
-    }
 }
